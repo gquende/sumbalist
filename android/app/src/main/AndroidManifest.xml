@@ -1,8 +1,13 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
     <application
-        android:label="SumbaList"
-        android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+
+
+            android:label="SumbaList"
+            android:name="${applicationName}"
+            android:icon="@mipmap/ic_launcher">
+
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -30,4 +35,7 @@
             android:name="flutterEmbedding"
             android:value="2" />
     </application>
+
 </manifest>
+
+
