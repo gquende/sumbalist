@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:sumbalist/constants/files.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
+
+import '../utils/constants/files.dart';
 
 class OnBoarding extends StatefulWidget {
   const OnBoarding({super.key});
