@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../../constants/app_colors.dart';
 import '../../../controllers/shopping_list_controller.dart';
 import '../../../models/shopping_list_item.dart';
+import '../../../utils/constants/app_colors.dart';
 
 class ShoplistItemWidget extends StatefulWidget {
   ShoppinglistItem item;

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../constants/app_colors.dart';
 import '../../../models/shopping_list.dart';
+import '../../../utils/constants/app_colors.dart';
 import '../shopping_list_details.dart';
 
 class ShoppingListCard extends StatelessWidget {

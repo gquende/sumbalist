@@ -3,8 +3,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
-import '../../constants/files.dart';
 import '../../controllers/shopping_list_controller.dart';
+import '../../utils/constants/files.dart';
 import 'components/shoppinglist_card.dart';
 
 class ShoppingListView extends StatefulWidget {

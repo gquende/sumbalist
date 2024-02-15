@@ -3,11 +3,11 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
-import '../../../constants/app_colors.dart';
 import '../../../controllers/shopping_list_controller.dart';
 import '../../../mocks/mocks.dart';
 import '../../../models/list_categories.dart';
 import '../../../models/shopping_list.dart';
+import '../../../utils/constants/app_colors.dart';
 import '../shopping_list_details.dart';
 
 Future<void> shoplistForm(BuildContext context) async {

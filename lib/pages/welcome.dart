@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
+import '../utils/constants/app_colors.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});

@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
-import '../../constants/app_colors.dart';
-import '../../constants/files.dart';
+
 import '../../controllers/shopping_list_controller.dart';
 import '../../models/shopping_list.dart';
 import '../../models/shopping_list_item.dart';
+import '../../utils/constants/app_colors.dart';
+import '../../utils/constants/files.dart';
 import 'components/add_item.dart';
 
 class ShoplistDetails extends StatefulWidget {

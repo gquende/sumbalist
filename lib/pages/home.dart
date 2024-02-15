@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sumbalist/pages/shoppinglist/components/create_list.dart';
 import 'package:sumbalist/pages/shoppinglist/shopping_list_view.dart';
-import '../constants/app_colors.dart';
+import '../utils/constants/app_colors.dart';
 
 class Home extends StatefulWidget {
   @override
