@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
-
 import 'package:uuid/uuid.dart';
 
 import '../../../controllers/shopping_list_controller.dart';
@@ -284,6 +283,7 @@ class _AddItemBodyState extends State<AddItemBody> {
                         height: 10,
                       ),
                       CommonButton(
+                          active: true,
                           title: "Adicionar",
                           action: () async {
                             var uuid = Uuid();
