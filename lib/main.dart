@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import 'package:sumbalist/pages/onboarding.dart';
+import 'package:sumbalist/pages/welcome.dart';
 
 import 'configs/config.dart';
 import 'utils/theme/theme.dart';
