@@ -4,9 +4,9 @@ import 'package:get_it/get_it.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../controllers/shopping_list_controller.dart';
-import '../../../mocks/mocks.dart';
-import '../../../models/list_categories.dart';
+import '../../../mocks/shopping_list_category_mock.dart';
 import '../../../models/shopping_list.dart';
+import '../../../models/shopping_list_categories.dart';
 import '../../../utils/constants/app_colors.dart';
 import '../shopping_list_details.dart';
 
@@ -16,11 +16,12 @@ Future<void> shoplistForm(BuildContext context) async {
   var size = MediaQuery.of(context).size;
   TextEditingController shoplistNameController = TextEditingController();
 
-  var categorySelected = ListCategory(uuid: '', name: '').obs;
-  categorySelected.value = shoplistCategories.first;
+  var index = 0.obs;
+
+  var categorySelected = ShoppingListCategory(uuid: '', name: '').obs;
+  categorySelected.value = shoppingListCategoriesMock.first;
 
   await showDialog(
-      barrierDismissible: false,
       context: context,
       builder: (context) {
         return Dialog(
@@ -30,8 +31,8 @@ Future<void> shoplistForm(BuildContext context) async {
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
             },
-            child: SingleChildScrollView(
-              child: Container(
+            child: SingleChildScrollView(child: Obx(() {
+              return Container(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.35,
                   decoration: BoxDecoration(
@@ -49,35 +50,18 @@ Future<void> shoplistForm(BuildContext context) async {
                           SizedBox(
                             height: 5,
                           ),
-                          Container(
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: [
-                                  BoxShadow(
-                                      color: Colors.black12,
-                                      offset: Offset(0, 0.3),
-                                      spreadRadius: 1,
-                                      blurRadius: 1)
-                                ]),
-                            width: size.width * 0.895,
-                            height: 55,
-                            child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Obx(() {
-                                  return DropdownButton<ListCategory>(
-                                      isExpanded: true,
-                                      underline: SizedBox(),
-                                      value: categorySelected.value,
-                                      items: shoplistCategories
-                                          .map((e) => DropdownMenuItem(
-                                              value: e, child: Text(e.name)))
-                                          .toList(),
-                                      onChanged: (value) {
-                                        categorySelected.value = value!;
-                                      });
-                                })),
-                          ),
+                          Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: List.generate(
+                                  shoppingListCategoriesMock.length, (i) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    index.value = i; //Set category by index
+                                  },
+                                  child: categoryIcon(index == i,
+                                      shoppingListCategoriesMock[i], context),
+                                );
+                              })),
                           SizedBox(
                             height: 20,
                           ),
@@ -91,11 +75,11 @@ Future<void> shoplistForm(BuildContext context) async {
                             decoration: BoxDecoration(
                                 color: Colors.white,
                                 boxShadow: [
-                                  BoxShadow(
+                                  /* BoxShadow(
                                       offset: Offset(0, 0),
                                       color: Colors.black12,
                                       spreadRadius: .7,
-                                      blurRadius: 0)
+                                      blurRadius: 0)*/
                                 ],
                                 borderRadius: BorderRadius.circular(5)),
                             child: Padding(
@@ -126,7 +110,7 @@ Future<void> shoplistForm(BuildContext context) async {
                                 var shoplist = ShoppingList(
                                     uuid: uuid.v4(),
                                     userUUID: "dede",
-                                    categoryUUID: "dedede",
+                                    categoryUUID: "$index",
                                     statusUUID: "Aberto",
                                     name: shoplistNameController.text,
                                     total: 0,
@@ -162,11 +146,27 @@ Future<void> shoplistForm(BuildContext context) async {
                                 )),
                           ),
                         ],
-                      ))),
-            ),
+                      )));
+            })),
           ),
         );
       });
 
   return null;
+}
+
+Widget categoryIcon(
+    bool active, ShoppingListCategory category, BuildContext context) {
+  return Container(
+    width: 55,
+    height: 55,
+    decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(5),
+        color: active ? Color.fromRGBO(253, 185, 19, 0.1) : Color(0xffF9F9F9),
+        border: active ? Border.all(color: PRIMARYCOLOR) : null),
+    child: Icon(
+      category.icon,
+      color: active ? Theme.of(context).primaryColor : Color(0xff9C9C9C),
+    ),
+  );
 }

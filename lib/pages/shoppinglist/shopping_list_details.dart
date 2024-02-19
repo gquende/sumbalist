@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:uuid/uuid.dart';
 
 import '../../controllers/shopping_list_controller.dart';
 import '../../models/shopping_list.dart';
 import '../../models/shopping_list_item.dart';
 import '../../utils/constants/app_colors.dart';
 import '../../utils/constants/files.dart';
+import '../widgets/common_button.dart';
 import 'components/add_item.dart';
 
 class ShoplistDetails extends StatefulWidget {
@@ -198,10 +200,23 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                       return Column(
                         children: List.generate(
                             snap.data?.length ?? 0,
-                            (index) => Padding(
-                                  padding: const EdgeInsets.only(bottom: 8.0),
-                                  child: _shoppinglistItemWidget(
-                                      item: snap.data![index]),
+                            (index) => Dismissible(
+                                  key: UniqueKey(),
+                                  child: Padding(
+                                    padding: const EdgeInsets.only(bottom: 8.0),
+                                    child: _shoppinglistItemWidget(
+                                        item: snap.data![index]),
+                                  ),
+                                  onDismissed: (direction) {
+                                    if (direction ==
+                                        DismissDirection.endToStart) {
+                                      controller.itemRepository
+                                          .deleteItem(snap.data![index])
+                                          .then((value) {
+                                        setState(() {});
+                                      });
+                                    }
+                                  },
                                 )),
                       );
                     })
@@ -228,82 +243,457 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
   Widget _shoppinglistItemWidget({required ShoppinglistItem item}) {
     var size = MediaQuery.of(context).size;
 
-    return GestureDetector(
-      onTap: () {
-        showDialog(
-            context: context,
-            builder: (context) {
-              return Container(
-                width: size.width * 0.5,
-                height: size.height * 0.4,
-              );
-            });
-      },
-      child: Container(
-        width: size.width,
-        height: 80,
-        decoration: BoxDecoration(
-            color: Color(0xfff2f2f2), borderRadius: BorderRadius.circular(5)),
-        child: Padding(
-          padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Row(
-                children: [
-                  CircleAvatar(
-                    child: Icon(Icons.foggy),
-                    backgroundColor: Theme.of(context).primaryColor,
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
+    return Stack(
+      children: [
+        Container(
+          width: size.width,
+          height: 80,
+          decoration: BoxDecoration(
+              color: Color(0xfff2f2f2), borderRadius: BorderRadius.circular(5)),
+          child: Padding(
+            padding: const EdgeInsets.only(left: 12.0, right: 8.0),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    showModal(item);
+                    /*
+                    Get.bottomSheet(
+                      AddItemBody(
+                        list: widget.shoppingList,
+                        item: item,
+                      ),
+                      backgroundColor: Colors.white,
+                    ).then((value) {
+                      setState(() {});
+                    });*/
+                  },
+                  child: Row(
                     children: [
-                      Text(
-                        item.itemName,
-                        style: Theme.of(context).textTheme.labelLarge,
+                      Container(
+                        width: 55,
+                        height: 55,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5),
+                            color: Theme.of(context).primaryColor),
+                        alignment: Alignment.center,
+                        child: Icon(Icons.shopping_cart),
                       ),
                       SizedBox(
-                        height: size.height * 0.006,
+                        width: 10,
                       ),
-                      Row(
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text("Qtd: ${item.qty}"),
-                          SizedBox(
-                            width: 10,
+                          Text(
+                            item.itemName,
+                            style: Theme.of(context).textTheme.labelLarge,
                           ),
-                          Text('Preço: ${item.price}'),
                           SizedBox(
-                            width: 10,
+                            height: size.height * 0.006,
                           ),
-                          Text('Prioride: ${item.priority}')
+                          Text(
+                            item.description,
+                            style: Theme.of(context).textTheme.labelMedium,
+                          ),
+                          SizedBox(
+                            height: size.height * 0.006,
+                          ),
+                          Container(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  "${item.price * item.qty} AOA",
+                                  style:
+                                      Theme.of(context).textTheme.labelMedium,
+                                ),
+                              ],
+                            ),
+                          ),
                         ],
-                      )
+                      ),
                     ],
                   ),
-                ],
-              ),
-              Checkbox(
-                value: item.isDone,
-                onChanged: (value) {
-                  item.isDone = value!;
-
-                  controller.updateItem(item).then((value) {
-                    setState(() {
-                      controller.shoppingList.refresh();
-                    });
-                  });
-                },
-                activeColor: PRIMARYCOLOR,
-                focusColor: Colors.blue,
-              )
-            ],
+                ),
+              ],
+            ),
           ),
         ),
-      ),
+        Positioned(
+            left: size.width / 1.42,
+            top: 43,
+            child: Container(
+              height: 25,
+              width: 100,
+              padding: EdgeInsets.only(left: 0, right: 0, bottom: 0),
+              alignment: Alignment.center,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      if (item.qty > 1) {
+                        item.qty--;
+                        controller.updateItem(item).then((value) {
+                          setState(() {});
+                        });
+
+                        setState(() {});
+                      }
+                    },
+                    child: Container(
+                      width: 30,
+                      height: 25,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Colors.grey,
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(5),
+                            bottomLeft: Radius.circular(5),
+                          )),
+                      child: Text(
+                        "-",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 20),
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "${item.qty}",
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      item.qty++;
+
+                      controller.updateItem(item).then((value) {
+                        setState(() {});
+                      });
+                    },
+                    child: Container(
+                      width: 30,
+                      height: 25,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.only(
+                            topRight: Radius.circular(5),
+                            bottomRight: Radius.circular(5),
+                          )),
+                      child: Text(
+                        "+",
+                        style: TextStyle(
+                            fontWeight: FontWeight.w600, fontSize: 20),
+                      ),
+                    ),
+                  )
+                ],
+              ),
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.grey)),
+            )),
+        Positioned(
+            left: size.width / 1.16,
+            top: -3,
+            child: Checkbox(
+              value: item.isDone,
+              onChanged: (value) {
+                item.isDone = value!;
+
+                controller.updateItem(item).then((value) {
+                  setState(() {
+                    controller.shoppingList.refresh();
+                  });
+                });
+              },
+              activeColor: PRIMARYCOLOR,
+              focusColor: Colors.blue,
+            ))
+      ],
     );
+  }
+
+  showModal(ShoppinglistItem? item) {
+    var size = MediaQuery.of(context).size;
+
+    var priority = 1.obs;
+    var categoryIdSelected = 1.obs;
+
+    if (item != null) {
+      controller.nameFieldController.text = item!.itemName;
+      controller.descriptionController.text = item!.description;
+      controller.qtyController.text = "${item!.qty}";
+      controller.priceController.text = "${item!.price}";
+      controller.priority = item!.priority;
+      priority.value = item!.priority;
+    }
+    showModalBottomSheet<dynamic>(
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext bc) {
+          return Wrap(children: [
+            Container(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 8.0, right: 8.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text("Nome"),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: size.width,
+                      height: 55,
+                      decoration: BoxDecoration(
+                          color: Color(0xffe5e5e5),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TextField(
+                          controller: controller.nameFieldController,
+                          decoration: InputDecoration(
+                              hintText: "",
+                              contentPadding: EdgeInsets.only(bottom: 10),
+                              focusColor: Color(0xff000000),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(11))),
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(11))),
+                              fillColor: Color(0xffe5e5e5),
+                              labelStyle: TextStyle(color: Color(0xff000000)),
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text("Preço"),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: size.width,
+                      height: 55,
+                      decoration: BoxDecoration(
+                          color: Color(0xffe5e5e5),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TextField(
+                          controller: controller.priceController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              hintText: "",
+                              contentPadding: EdgeInsets.only(bottom: 10),
+                              focusColor: Color(0xff000000),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(11))),
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(11))),
+                              fillColor: Color(0xffe5e5e5),
+                              labelStyle: TextStyle(color: Color(0xff000000)),
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Text("Quantidade"),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    Container(
+                      width: size.width,
+                      height: 55,
+                      decoration: BoxDecoration(
+                          color: Color(0xffe5e5e5),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TextField(
+                          controller: controller.qtyController,
+                          keyboardType: TextInputType.number,
+                          decoration: InputDecoration(
+                              hintText: "",
+                              contentPadding: EdgeInsets.only(bottom: 10),
+                              focusColor: Color(0xff000000),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(11))),
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(11))),
+                              fillColor: Color(0xffe5e5e5),
+                              labelStyle: TextStyle(color: Color(0xff000000)),
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Text("Descrição"),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: size.width,
+                      height: 55,
+                      decoration: BoxDecoration(
+                          color: Color(0xffe5e5e5),
+                          borderRadius: BorderRadius.circular(8)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(10),
+                        child: TextField(
+                          controller: controller.descriptionController,
+                          decoration: InputDecoration(
+                              hintText: "",
+                              contentPadding: EdgeInsets.only(bottom: 10),
+                              focusColor: Color(0xff000000),
+                              filled: true,
+                              enabledBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(11))),
+                              focusedBorder: const OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(11))),
+                              fillColor: Color(0xffe5e5e5),
+                              labelStyle: TextStyle(color: Color(0xff000000)),
+                              border: OutlineInputBorder()),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          "Prioridade",
+                        ),
+                        Row(
+                          children: [
+                            Column(
+                              children: [
+                                Radio(
+                                    value: 1,
+                                    groupValue: priority.value,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        priority.value = value as int;
+                                      });
+                                    }),
+                                Text("1"),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Radio(
+                                    value: 2,
+                                    groupValue: priority.value,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        priority.value = value as int;
+                                      });
+                                    }),
+                                Text("2"),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Radio(
+                                    value: 3,
+                                    groupValue: priority.value,
+                                    onChanged: (value) {
+                                      setState(() {
+                                        priority.value = value as int;
+                                      });
+                                    }),
+                                Text("3"),
+                              ],
+                            ),
+                          ],
+                        )
+                      ],
+                    ),
+                    SizedBox(
+                      height: 20,
+                    ),
+                    CommonButton(
+                        active: true,
+                        title: item == null ? "Adicionar" : "Actualizar",
+                        action: () async {
+                          if (item == null) {
+                            var uuid = Uuid();
+
+                            ShoppinglistItem item = ShoppinglistItem(
+                                uuid: uuid.v4(),
+                                isDone: false,
+                                listUUID: widget.shoppingList.uuid,
+                                itemName: controller.nameFieldController.text,
+                                description:
+                                    controller.descriptionController.text,
+                                qty: int.parse(controller.qtyController.text),
+                                price: double.parse(
+                                    controller.priceController.text),
+                                priority: controller.priority);
+
+                            var value = await controller.addItem(item);
+
+                            if (value != 0)
+                              controller.shoppingList.value.items?.add(item);
+                          } else {
+                            item!.itemName =
+                                controller.nameFieldController.text;
+                            item!.description =
+                                controller.descriptionController.text;
+                            item!.qty =
+                                int.parse(controller.qtyController.text);
+                            item!.price =
+                                double.parse(controller.priceController.text);
+                            item!.priority = controller.priority;
+
+                            var value = await controller
+                                .updateItem(item as ShoppinglistItem);
+                          }
+
+                          Navigator.of(context).pop();
+                        }),
+                    SizedBox(
+                      height: 15,
+                    )
+                  ],
+                ),
+              ),
+            )
+          ]);
+        });
   }
 }
