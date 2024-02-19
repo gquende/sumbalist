@@ -12,7 +12,6 @@ class ShoppingListController extends BaseController {
   TextEditingController qtyController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-
   Rx<ShoppingList> shoppingList = ShoppingList(
           uuid: '',
           userUUID: '',
@@ -25,17 +24,35 @@ class ShoppingListController extends BaseController {
   int priority = 1;
   var isLoading = false.obs;
 
-  var shoppinglist = <ShoppingList>[].obs;
+  var allShoppingList = <ShoppingList>[].obs;
 
   ShoppingListRepository repository;
   ShoppingListItemRepository itemRepository;
 
   ShoppingListController(this.repository, this.itemRepository);
 
+  Future<ShoppingList?> getShoppingList(String uuid) async {
+    try {
+      isLoading.value = true;
+      var value = await repository.getList(uuid);
+
+      isLoading.value = false;
+      return value;
+    } catch (error) {
+      isLoading.value = false;
+
+      debugPrint(
+          "ShoppinglistController:: getShoppingList::ERROR : ${error.toString()}");
+    }
+
+    isLoading.value = false;
+    return null;
+  }
+
   Future<bool> createShoppinglist(ShoppingList shoppingList) async {
     try {
       var item = await repository.create(shoppingList);
-      await getShoppingList();
+      await getAllShoppingList();
       print(item);
       return true;
     } catch (error) {
@@ -45,10 +62,10 @@ class ShoppingListController extends BaseController {
     return false;
   }
 
-  Future<List<ShoppingList>> getShoppingList() async {
+  Future<List<ShoppingList>> getAllShoppingList() async {
     try {
       isLoading.value = true;
-      shoppinglist.value = await repository.getAllList();
+      allShoppingList.value = await repository.getAllList();
 
       isLoading.value = false;
     } catch (error) {
@@ -59,7 +76,7 @@ class ShoppingListController extends BaseController {
     }
 
     isLoading.value = false;
-    return shoppinglist.value;
+    return allShoppingList.value;
   }
 
   Future<List<ShoppinglistItem>> getItemsOfShoppingList(String listUuid) async {
@@ -83,6 +100,26 @@ class ShoppingListController extends BaseController {
 
       shoppingList.value.items!.add(item);
       isLoading.value = false;
+
+      resetData();
+      return value;
+    } catch (error) {
+      errorLog("getShoppingList", "teste");
+      isLoading.value = false;
+    }
+
+    isLoading.value = false;
+    return null;
+  }
+
+  Future<bool?> removeItem(ShoppinglistItem item) async {
+    try {
+      isLoading.value = true;
+      var value = await itemRepository.deleteItem(item);
+
+      shoppingList.value.items!.remove(item);
+      isLoading.value = false;
+
       return value;
     } catch (error) {
       errorLog("getShoppingList", "teste");
@@ -105,8 +142,11 @@ class ShoppingListController extends BaseController {
         }
       }
 
-      return value;
+      //Update shoppinglist
+
+      resetData();
       isLoading.value = false;
+      return value;
     } catch (error) {
       isLoading.value = false;
       errorLog("updateItem", error);
@@ -114,5 +154,13 @@ class ShoppingListController extends BaseController {
 
     isLoading.value = false;
     return false;
+  }
+
+  void resetData() {
+    this.nameFieldController.text = "";
+    this.qtyController.text = "";
+    this.priceController.text = "";
+    this.descriptionController.text = "";
+    this.priority = 1;
   }
 }

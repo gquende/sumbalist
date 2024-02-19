@@ -22,7 +22,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
   @override
   void initState() {
     // TODO: implement initState
-    controller.getShoppingList();
+    controller.getAllShoppingList();
   }
 
   @override
@@ -50,7 +50,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
                     child: CircularProgressIndicator(),
                   );
                 } else if (controller.isLoading.value == false &&
-                    controller.shoppinglist.value.isEmpty) {
+                    controller.allShoppingList.value.isEmpty) {
                   return Container(
                     width: size.width,
                     height: size.height / 1.5,
@@ -84,11 +84,11 @@ class _ShoppingListViewState extends State<ShoppingListView> {
 
                 return Column(
                   children: List.generate(
-                      controller.shoppinglist.value.length,
+                      controller.allShoppingList.value.length,
                       (index) => Padding(
                             padding: const EdgeInsets.only(bottom: 8.0),
                             child: ShoppingListCard(
-                                controller.shoppinglist.value[index]),
+                                controller.allShoppingList.value[index]),
                           )),
                 );
               })
