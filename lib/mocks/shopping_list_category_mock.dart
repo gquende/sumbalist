@@ -8,3 +8,10 @@ var shoppingListCategoriesMock = <ShoppingListCategory>[
   ShoppingListCategory(uuid: "2", name: "Festa", icon: Icons.celebration),
   ShoppingListCategory(uuid: "3", name: "Escola", icon: Icons.school)
 ];
+
+Map<String, IconData> iconCategory = {
+  "0": Icons.category,
+  "1": Icons.home,
+  "2": Icons.celebration,
+  "3": Icons.school,
+};

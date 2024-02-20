@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:sumbalist/mocks/shopping_list_category_mock.dart';
 
 import '../../../models/shopping_list.dart';
 import '../../../utils/constants/app_colors.dart';
+import '../../../utils/currency.dart';
 import '../shopping_list_details.dart';
 
 class ShoppingListCard extends StatelessWidget {
@@ -20,12 +22,15 @@ class ShoppingListCard extends StatelessWidget {
       },
       child: Container(
         width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height / 3.8,
+        height: MediaQuery.of(context).size.height / 5,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: Colors.white,
             boxShadow: [
-              BoxShadow(color: Colors.black12, blurRadius: 7, spreadRadius: 1)
+              BoxShadow(
+                  color: Color.fromRGBO(0, 0, 0, 0.08),
+                  blurRadius: 11,
+                  spreadRadius: 2)
             ]),
         child: Padding(
           padding: const EdgeInsets.all(12.0),
@@ -39,12 +44,18 @@ class ShoppingListCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          CircleAvatar(
-                            child: Icon(
-                              Icons.kitchen,
-                              color: Colors.white,
+                          Container(
+                            width: 55,
+                            height: 55,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5),
+                              color: Color.fromRGBO(253, 185, 19, 0.2),
                             ),
-                            backgroundColor: PRIMARYCOLOR,
+                            child: Icon(
+                              iconCategory["${shoppinglist.categoryUUID}"],
+                              size: 35,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
                           SizedBox(
                             width: 10,
@@ -57,17 +68,17 @@ class ShoppingListCard extends StatelessWidget {
                                 child: Text(
                                   "${shoppinglist.name}",
                                   style: TextStyle(
-                                      fontSize: 16,
-                                      fontFamily: 'Poppins-Bold',
-                                      color: Colors.black54),
+                                      fontSize: 24,
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.w500),
                                   overflow: TextOverflow.ellipsis,
                                 ),
                               ),
                               Text(
-                                "${shoppinglist.calculateTotal()}",
+                                formatCurrency(shoppinglist.calculateTotal()),
                                 style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: 'Poppins-Medium',
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.w400,
                                     color: Colors.grey),
                               ),
                             ],
@@ -75,24 +86,38 @@ class ShoppingListCard extends StatelessWidget {
                         ],
                       ),
                       GestureDetector(
-                        onTap: () {},
-                        child: CircleAvatar(
-                          child: Icon(
-                            Icons.arrow_forward_ios_outlined,
-                            color: Colors.white,
-                          ),
-                          backgroundColor: Color(0xffe5e5e5),
-                        ),
-                      ),
+                          onTap: () {},
+                          child: Row(
+                            children: [
+                              CircleAvatar(
+                                radius: 4,
+                                backgroundColor: Colors.grey[300],
+                              ),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              CircleAvatar(
+                                radius: 4,
+                                backgroundColor: Colors.grey[300],
+                              ),
+                              SizedBox(
+                                width: 3,
+                              ),
+                              CircleAvatar(
+                                radius: 4,
+                                backgroundColor: Colors.grey[300],
+                              ),
+                              SizedBox(
+                                width: 5,
+                              )
+                            ],
+                          )),
                     ],
                   ),
                   SizedBox(
                     height: 8,
                   ),
                 ],
-              ),
-              Divider(
-                height: 9,
               ),
               Column(
                 children: [
@@ -106,7 +131,7 @@ class ShoppingListCard extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
-                            "${shoppinglist.getPercentBuyed().round()}% Concluído",
+                            "Concluído",
                             style: TextStyle(
                                 fontFamily: 'Poppins-Medium',
                                 fontSize: 16,
@@ -114,11 +139,12 @@ class ShoppingListCard extends StatelessWidget {
                             // style: Text(),
                           ),
                           Text(
-                            "${shoppinglist.calculateTotalBuyed()} AOA",
+                            "${formatCurrency(shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemBuyed()})",
                             style: TextStyle(
                                 fontFamily: 'Poppins-Medium',
                                 fontSize: 18,
-                                color: Colors.grey),
+                                color: Colors.black,
+                                fontWeight: FontWeight.w500),
                           )
                         ],
                       ),
@@ -135,11 +161,12 @@ class ShoppingListCard extends StatelessWidget {
                             // style: Text(),
                           ),
                           Text(
-                            "${shoppinglist.calculateTotal() - shoppinglist.calculateTotalBuyed()} AOA",
+                            "${formatCurrency(shoppinglist.calculateTotal() - shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemPending()})",
                             style: TextStyle(
                                 fontFamily: 'Poppins-Medium',
                                 fontSize: 18,
-                                color: PRIMARYCOLOR),
+                                fontWeight: FontWeight.w500,
+                                color: Colors.grey),
                           )
                         ],
                       )
@@ -152,20 +179,24 @@ class ShoppingListCard extends StatelessWidget {
                     children: [
                       Container(
                         width: (size.width - 40),
-                        height: 12,
+                        height: 14,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: Color(0xff67727d).withOpacity(0.1)),
                       ),
                       Container(
                         width: (size.width - 40) *
-                            shoppinglist.getPercentBuyed() /
+                            shoppinglist.getPercentBuyedByItem() /
                             100,
-                        height: 12,
+                        height: 14,
                         decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(50),
                             color: PRIMARYCOLOR),
                       ),
+                      Positioned(
+                          left: (size.width - 50) / 2,
+                          child: Text(
+                              "${(shoppinglist.getPercentBuyedByItem()).round()} %"))
                     ],
                   )
                 ],
