@@ -1,7 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import '../constants/app_colors.dart';
+
+import '../utils/constants/app_colors.dart';
 import 'home.dart';
 
 class Login extends StatefulWidget {
@@ -121,7 +122,7 @@ class _LoginState extends State<Login> {
                   GestureDetector(
                     onTap: () {
                       debugPrint("Clicked on Login");
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                           MaterialPageRoute(builder: (context) => Home()));
                     },
                     child: Container(

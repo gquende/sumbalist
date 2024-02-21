@@ -70,8 +70,35 @@ class ShoppingList extends BaseModel {
     return total;
   }
 
+  calculateTotalItemBuyed() {
+    int total = 0;
+    this.items!.forEach((element) {
+      if (element.isDone == true) {
+        total++;
+      }
+    });
+
+    return total;
+  }
+
+  calculateTotalItemPending() {
+    int total = 0;
+    this.items!.forEach((element) {
+      if (element.isDone == false) {
+        total++;
+      }
+    });
+
+    return total;
+  }
+
   double getPercentBuyed() {
     return double.parse(
         "${((calculateTotalBuyed() / (calculateTotal() == 0 ? 1 : calculateTotal())) * 100)}");
+  }
+
+  double getPercentBuyedByItem() {
+    return double.parse(
+        "${((calculateTotalItemBuyed() / ((items?.length) == 0 ? 1 : items?.length)) * 100)}");
   }
 }

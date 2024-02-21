@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import '../constants/app_colors.dart';
+import 'package:sumbalist/pages/home.dart';
+import '../utils/constants/app_colors.dart';
+import 'login.dart';
 
 class Welcome extends StatelessWidget {
   const Welcome({super.key});
@@ -8,7 +10,7 @@ class Welcome extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
     return Scaffold(
-      backgroundColor: Color(0xffDC9C00),
+      backgroundColor: Theme.of(context).primaryColor,
       body: Padding(
         padding: const EdgeInsets.only(
           left: 20.0,
@@ -18,6 +20,16 @@ class Welcome extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.end,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Container(
+              width: size.width,
+              height: size.height * 0.5,
+              child: Center(
+                child: Text(
+                  "SUMBALIST",
+                  style: Theme.of(context).textTheme.headlineLarge,
+                ),
+              ),
+            ),
             Text(
               "Bem vindo",
               style: TextStyle(
@@ -41,7 +53,10 @@ class Welcome extends StatelessWidget {
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(8)),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushReplacement(
+                      MaterialPageRoute(builder: (context) => Home()));
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -55,10 +70,11 @@ class Welcome extends StatelessWidget {
                     ),
                     Text(
                       "Entrar com google",
-                      style: TextStyle(color: PRIMARYCOLOR),
+                      style: TextStyle(color: Theme.of(context).primaryColor),
                     )
                   ],
                 ),
+                style: TextButton.styleFrom(backgroundColor: THIRDCOLOR),
               ),
             ),
             SizedBox(
@@ -96,9 +112,15 @@ class Welcome extends StatelessWidget {
                 SizedBox(
                   width: 5,
                 ),
-                Text(
-                  "Entrar",
-                  style: TextStyle(color: THIRDCOLOR),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pushReplacement(
+                        MaterialPageRoute(builder: (context) => Login()));
+                  },
+                  child: Text(
+                    "Entrar",
+                    style: TextStyle(color: THIRDCOLOR),
+                  ),
                 ),
               ],
             ),

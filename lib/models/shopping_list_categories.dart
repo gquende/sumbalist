@@ -1,13 +1,17 @@
+import 'package:flutter/cupertino.dart';
+
 import 'base_model.dart';
 
-class ListCategory extends BaseModel {
+class ShoppingListCategory extends BaseModel {
   String name;
+  IconData? icon;
 
-  ListCategory(
+  ShoppingListCategory(
       {required String uuid,
       required this.name,
       int? id,
       String? created_at,
-      String? updated_at})
+      String? updated_at,
+      this.icon})
       : super(uuid, id, created_at, updated_at);
 }

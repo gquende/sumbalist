@@ -1,11 +1,5 @@
-import '../models/list_categories.dart';
-import '../models/shopping_list_item.dart';
 import '../models/shopping_list.dart';
-
-var shoplistCategories = <ListCategory>[
-  ListCategory(uuid: "1", name: "Geral"),
-  ListCategory(uuid: "2", name: "Casa")
-];
+import '../models/shopping_list_item.dart';
 
 var shoplistItemsMock = [
   ShoppinglistItem(

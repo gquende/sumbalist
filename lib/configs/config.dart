@@ -8,15 +8,13 @@ import '../repository/shopping_list_repository.dart';
 
 Future<void> initConfig() async {
   var locator = GetIt.instance;
-  AppDatabase database = AppDatabase(urlDatabase: "okulanda.db");
-  //await database.open("kubico_db.db");
+  AppDatabase database = AppDatabase(urlDatabase: "sumbalist.db");
+
   var shoppingListRepository = ShoppingListRepository(database);
   var shoppingListItemRepository = ShoppingListItemRepository(database);
   var shoplistController = ShoppingListController(
       shoppingListRepository, shoppingListItemRepository);
-
   locator.registerSingleton(shoplistController);
-
   Get.put(ShoppingListController(
       shoppingListRepository, shoppingListItemRepository));
 }

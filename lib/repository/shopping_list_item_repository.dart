@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 
-
 import '../core/database.dart';
 import '../models/shopping_list_item.dart';
 

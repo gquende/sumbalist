@@ -1,6 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:sumbalist/repository/shopping_list_item_repository.dart';
-
 import '../core/database.dart';
 import '../models/shopping_list.dart';
 
@@ -39,6 +38,7 @@ class ShoppingListRepository {
     return <ShoppingList>[];
   }
 
+  //Create a Shoppinglist
   Future<int?> create(ShoppingList item) async {
     try {
       var result = await this._appDatabase.db?.insert(_table, item.toMap());
@@ -49,6 +49,7 @@ class ShoppingListRepository {
     }
   }
 
+  //Delete a Shoppinglist
   Future<bool> delete(ShoppingList item) async {
     try {
       var result = await this
@@ -67,6 +68,7 @@ class ShoppingListRepository {
     return false;
   }
 
+  //Update a Shoppinglist
   Future<bool> update(ShoppingList item) async {
     try {
       var result = await this._appDatabase.db?.update(_table, item.toMap(),
@@ -83,6 +85,7 @@ class ShoppingListRepository {
     return false;
   }
 
+  //get a ShoppingList based by uuid
   Future<ShoppingList?> getList(String uuid) async {
     try {
       ShoppingList? shoppingList;

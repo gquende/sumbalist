@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import 'package:sumbalist/pages/onboarding.dart';
 
 import 'configs/config.dart';
