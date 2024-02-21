@@ -156,6 +156,28 @@ class ShoppingListController extends BaseController {
     return false;
   }
 
+  Future<bool?> deleteShoppinglist(ShoppingList list) async {
+    try {
+      var value = await repository.delete(list);
+      getAllShoppingList();
+
+      return value;
+    } catch (error) {
+      debugPrint("${error.toString()}");
+    }
+  }
+
+  Future<bool?> updateShoppinglist(ShoppingList list) async {
+    try {
+      var value = await repository.update(list);
+      //getAllShoppingList();
+
+      return value;
+    } catch (error) {
+      debugPrint("${error.toString()}");
+    }
+  }
+
   void resetData() {
     this.nameFieldController.text = "";
     this.qtyController.text = "";

@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-
 import 'package:lottie/lottie.dart';
-
 import 'package:sumbalist/pages/welcome.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
-
 import '../utils/constants/files.dart';
 
 class OnBoarding extends StatefulWidget {

@@ -10,16 +10,24 @@ import '../../../models/shopping_list_categories.dart';
 import '../../../utils/constants/app_colors.dart';
 import '../shopping_list_details.dart';
 
-Future<void> shoplistForm(BuildContext context) async {
+Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
   var controller = await GetIt.instance.get<ShoppingListController>();
 
   var size = MediaQuery.of(context).size;
   TextEditingController shoplistNameController = TextEditingController();
 
+  //Check item is not null to update
+
   var index = 0.obs;
 
-  var categorySelected = ShoppingListCategory(uuid: '', name: '').obs;
-  categorySelected.value = shoppingListCategoriesMock.first;
+  if (item != null) {
+    shoplistNameController.text = item.name;
+
+    index.value = int.parse(item.categoryUUID);
+  }
+
+  //var categorySelected = ShoppingListCategory(uuid: '', name: '').obs;
+  //categorySelected.value = shoppingListCategoriesMock.first;
 
   await showDialog(
       context: context,
@@ -98,30 +106,31 @@ Future<void> shoplistForm(BuildContext context) async {
                           ),
                           GestureDetector(
                             onTap: () async {
-                              debugPrint("Saindo...");
+                              if (shoplistNameController.text.isNotEmpty) {
+                                if (item == null) {
+                                  var uuid = Uuid();
+                                  var shoplist = ShoppingList(
+                                      uuid: uuid.v4(),
+                                      userUUID: "dede",
+                                      categoryUUID: "$index",
+                                      statusUUID: "Aberto",
+                                      name: shoplistNameController.text,
+                                      total: 0,
+                                      items: []);
 
-                              var controller = await GetIt.instance
-                                  .get<ShoppingListController>();
+                                  await controller.createShoppinglist(shoplist);
 
-                              if (shoplistNameController.text.isNotEmpty &&
-                                  categorySelected != null) {
-                                var uuid = Uuid();
+                                  Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                          builder: (ctx) => ShoplistDetails(
+                                              shoppingList: shoplist)));
+                                } else {
+                                  item.name = shoplistNameController.text;
+                                  item.categoryUUID = "${index.value}";
 
-                                var shoplist = ShoppingList(
-                                    uuid: uuid.v4(),
-                                    userUUID: "dede",
-                                    categoryUUID: "$index",
-                                    statusUUID: "Aberto",
-                                    name: shoplistNameController.text,
-                                    total: 0,
-                                    items: []);
-
-                                await controller.createShoppinglist(shoplist);
-
-                                Navigator.of(context).pushReplacement(
-                                    MaterialPageRoute(
-                                        builder: (ctx) => ShoplistDetails(
-                                            shoppingList: shoplist)));
+                                  controller.updateShoppinglist(item);
+                                  Navigator.pop(context);
+                                }
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                                     content: Text(
@@ -142,7 +151,9 @@ Future<void> shoplistForm(BuildContext context) async {
                                     ],
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
-                                  child: Text("Adicionar"),
+                                  child: item == null
+                                      ? Text("Adicionar")
+                                      : Text("Actualizar"),
                                 )),
                           ),
                         ],
