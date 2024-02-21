@@ -53,7 +53,7 @@ class ShoppingListController extends BaseController {
     try {
       var item = await repository.create(shoppingList);
       await getAllShoppingList();
-      print(item);
+
       return true;
     } catch (error) {
       debugPrint(error.toString());

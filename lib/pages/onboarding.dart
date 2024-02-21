@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+
 import 'package:lottie/lottie.dart';
-import 'package:sumbalist/pages/login.dart';
+
 import 'package:sumbalist/pages/welcome.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
 
