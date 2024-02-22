@@ -8,6 +8,7 @@ import '../../controllers/shopping_list_controller.dart';
 import '../../models/shopping_list.dart';
 import '../../models/shopping_list_item.dart';
 import '../../utils/constants/app_colors.dart';
+
 import '../../utils/constants/files.dart';
 import '../widgets/common_button.dart';
 
@@ -192,7 +193,33 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                               ],
                             ),
                           )
-                        : Column(
+                        : /*Container(
+                            width: size.width,
+                            height: size.height / 1.2,
+                            child: ReorderableListView(
+                                children: controller.shoppingList.value.items!
+                                    .map((e) => Dismissible(
+                                          key: UniqueKey(),
+                                          child: Padding(
+                                            padding: const EdgeInsets.only(
+                                                bottom: 8.0),
+                                            child: _shoppinglistItemWidget(
+                                                item: e),
+                                          ),
+                                          onDismissed: (direction) {
+                                            if (direction ==
+                                                DismissDirection.endToStart) {
+                                              controller
+                                                  .removeItem(e)
+                                                  .then((value) {});
+                                            }
+                                          },
+                                        ))
+                                    .toList(),
+                                onReorder: _onReorder),
+                          )*/
+
+                        Column(
                             children: List.generate(
                                 controller.shoppingList.value.items!.length ??
                                     0,
@@ -203,7 +230,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                                             const EdgeInsets.only(bottom: 8.0),
                                         child: _shoppinglistItemWidget(
                                             item: controller.shoppingList.value
-                                                .items![index]),
+                                                .items![index],
+                                            index: index),
                                       ),
                                       onDismissed: (direction) {
                                         if (direction ==
@@ -216,8 +244,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                                               .then((value) {});
                                         }
                                       },
-                                    )),
-                          ),
+                                    ))),
                   ],
                 );
               })),
@@ -243,7 +270,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
     );
   }
 
-  Widget _shoppinglistItemWidget({required ShoppinglistItem item}) {
+  Widget _shoppinglistItemWidget(
+      {required ShoppinglistItem item, required int index}) {
     var size = MediaQuery.of(context).size;
 
     return Stack(
@@ -333,7 +361,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                       if (item.qty > 1) {
                         item.qty--;
                         controller.updateItem(item).then((value) {
-                          setState(() {});
+                          // setState(() {});
                         });
 
                         setState(() {});
@@ -401,6 +429,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
 
                 controller.updateItem(item).then((value) {
                   setState(() {
+                    _reorderItem(index);
                     controller.shoppingList.refresh();
                   });
                 });
@@ -691,5 +720,34 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
             })
           ]);
         });
+  }
+
+  void _reorderItem(int oldIndex) {
+    debugPrint("Index: $oldIndex");
+
+    if (controller.shoppingList.value.items![oldIndex].isDone) {
+      ShoppinglistItem? removedItem =
+          controller.shoppingList.value.items!.removeAt(oldIndex);
+      debugPrint("Index: $oldIndex");
+
+      int newIndex = controller.shoppingList.value.items!
+          .indexWhere((item) => item.isDone);
+      if (newIndex == -1) {
+        newIndex = controller.shoppingList.value.items!.length;
+      }
+      setState(() {
+        controller.shoppingList.value.items!.insert(newIndex, removedItem);
+      });
+    }
+  }
+
+  //Extra
+
+  Widget _buildItem(
+      ShoppinglistItem item, int index, Animation<double> animation) {
+    return SizeTransition(
+      sizeFactor: animation,
+      child: _shoppinglistItemWidget(item: item, index: index),
+    );
   }
 }
