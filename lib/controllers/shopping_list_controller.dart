@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-
 import '../models/shopping_list.dart';
 import '../models/shopping_list_item.dart';
 import '../repository/shopping_list_item_repository.dart';

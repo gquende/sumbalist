@@ -47,7 +47,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
               Obx(() {
                 if (controller.isLoading.value) {
                   return Container(
-                    height: size.height / 2,
+                    height: size.height / 4,
                     child: Center(
                       child: CircularProgressIndicator(),
                     ),
