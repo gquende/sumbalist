@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-
 import 'package:get_it/get_it.dart';
 import 'package:sumbalist/mocks/shopping_list_category_mock.dart';
 
@@ -83,7 +82,7 @@ class ShoppingListCard extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    formatCurrency(
+                                    appCurrencyFormat(
                                         shoppinglist.calculateTotal()),
                                     style: TextStyle(
                                         fontSize: 20,
@@ -126,7 +125,7 @@ class ShoppingListCard extends StatelessWidget {
                                 // style: Text(),
                               ),
                               Text(
-                                "${formatCurrency(shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemBuyed()})",
+                                "${appCurrencyFormat(shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemBuyed()})",
                                 style: TextStyle(
                                     fontFamily: 'Poppins-Medium',
                                     fontSize: 18,
@@ -148,7 +147,7 @@ class ShoppingListCard extends StatelessWidget {
                                 // style: Text(),
                               ),
                               Text(
-                                "${formatCurrency(shoppinglist.calculateTotal() - shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemPending()})",
+                                "${appCurrencyFormat(shoppinglist.calculateTotal() - shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemPending()})",
                                 style: TextStyle(
                                     fontFamily: 'Poppins-Medium',
                                     fontSize: 18,
@@ -192,64 +191,65 @@ class ShoppingListCard extends StatelessWidget {
               ),
             ),
             Positioned(
-              left: size.width * 0.82,
+              left: size.width * 0.85,
               child: PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      PopupMenuItem(
-                          onTap: () {
-                            shoplistForm(context, shoppinglist);
-                          },
-                          child: Row(
-                            children: [
-                              Icon(Icons.edit),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text("Editar")
-                            ],
-                          )),
-                      PopupMenuItem(
+                itemBuilder: (context) {
+                  return [
+                    PopupMenuItem(
+                        onTap: () {
+                          shoplistForm(context, shoppinglist);
+                        },
                         child: Row(
                           children: [
-                            Icon(Icons.delete),
+                            Icon(Icons.edit),
                             SizedBox(
                               width: 5,
                             ),
-                            Text("Eliminar")
+                            Text("Editar")
                           ],
-                        ),
-                        onTap: () {
-                          controller.deleteShoppinglist(shoppinglist);
-                        },
-                      )
-                    ];
-                  },
-                  icon: Row(
-                    children: [
-                      CircleAvatar(
-                        radius: 4,
-                        backgroundColor: Colors.grey[300],
+                        )),
+                    PopupMenuItem(
+                      child: Row(
+                        children: [
+                          Icon(Icons.delete),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text("Eliminar")
+                        ],
                       ),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      CircleAvatar(
-                        radius: 4,
-                        backgroundColor: Colors.grey[300],
-                      ),
-                      SizedBox(
-                        width: 3,
-                      ),
-                      CircleAvatar(
-                        radius: 4,
-                        backgroundColor: Colors.grey[300],
-                      ),
-                      SizedBox(
-                        width: 5,
-                      )
-                    ],
-                  )),
+                      onTap: () {
+                        controller.deleteShoppinglist(shoppinglist);
+                      },
+                    )
+                  ];
+                },
+                icon: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 3,
+                      backgroundColor: Colors.grey[300],
+                    ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    CircleAvatar(
+                      radius: 3,
+                      backgroundColor: Colors.grey[300],
+                    ),
+                    SizedBox(
+                      width: 2,
+                    ),
+                    CircleAvatar(
+                      radius: 3,
+                      backgroundColor: Colors.grey[300],
+                    ),
+                    SizedBox(
+                      width: 5,
+                    )
+                  ],
+                ),
+              ),
             )
           ],
         ),

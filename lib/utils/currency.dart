@@ -1,6 +1,6 @@
 import 'package:currency_formatter/currency_formatter.dart';
 
-String formatCurrency(double value) {
+String appCurrencyFormat(double value) {
   var form = CurrencyFormatterSettings(
     symbol: 'AOA',
     symbolSide: SymbolSide.right,

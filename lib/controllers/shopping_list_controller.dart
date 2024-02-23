@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 import '../models/shopping_list.dart';
@@ -97,10 +98,7 @@ class ShoppingListController extends BaseController {
     try {
       isLoading.value = true;
       var value = await itemRepository.insertItem(item);
-
-      shoppingList.value.items!.add(item);
       isLoading.value = false;
-
       resetData();
       return value;
     } catch (error) {
@@ -184,5 +182,20 @@ class ShoppingListController extends BaseController {
     this.priceController.text = "";
     this.descriptionController.text = "";
     this.priority = 1;
+  }
+
+  bool validateForm(BuildContext context) {
+    if (nameFieldController.text.isEmpty ||
+        qtyController.text.isEmpty ||
+        priceController.text.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Preencha todos os campos"),
+        backgroundColor: Colors.red,
+      ));
+
+      return false;
+    } else {
+      return true;
+    }
   }
 }

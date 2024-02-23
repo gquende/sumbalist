@@ -16,8 +16,6 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
   var size = MediaQuery.of(context).size;
   TextEditingController shoplistNameController = TextEditingController();
 
-  //Check item is not null to update
-
   var index = 0.obs;
 
   if (item != null) {
@@ -25,9 +23,6 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
 
     index.value = int.parse(item.categoryUUID);
   }
-
-  //var categorySelected = ShoppingListCategory(uuid: '', name: '').obs;
-  //categorySelected.value = shoppingListCategoriesMock.first;
 
   await showDialog(
       context: context,
@@ -94,7 +89,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                               padding: const EdgeInsets.only(left: 0, right: 0),
                               child: TextField(
                                 controller: shoplistNameController,
-                                maxLines: 6,
+                                maxLines: 1,
                                 decoration:
                                     InputDecoration(border: InputBorder.none),
                                 keyboardType: TextInputType.text,
