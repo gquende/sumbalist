@@ -34,7 +34,7 @@ dependencies:
   currency_formatter: ^2.2.0
 
 dev_dependencies:
-  flutter_launcher_icons:
+  flutter_launcher_icons: "^0.13.1"
   flutter_test:
     sdk: flutter
 
