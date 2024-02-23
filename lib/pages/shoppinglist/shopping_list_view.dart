@@ -46,8 +46,11 @@ class _ShoppingListViewState extends State<ShoppingListView> {
               ),
               Obx(() {
                 if (controller.isLoading.value) {
-                  return Center(
-                    child: CircularProgressIndicator(),
+                  return Container(
+                    height: size.height / 2,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   );
                 } else if (controller.isLoading.value == false &&
                     controller.allShoppingList.value.isEmpty) {
@@ -86,7 +89,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
                   children: List.generate(
                       controller.allShoppingList.value.length,
                       (index) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8.0),
+                            padding: const EdgeInsets.only(bottom: 16.0),
                             child: ShoppingListCard(
                                 controller.allShoppingList.value[index]),
                           )),

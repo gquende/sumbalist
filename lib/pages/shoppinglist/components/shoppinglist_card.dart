@@ -82,7 +82,7 @@ class ShoppingListCard extends StatelessWidget {
                                     ),
                                   ),
                                   Text(
-                                    formatCurrency(
+                                    appCurrencyFormat(
                                         shoppinglist.calculateTotal()),
                                     style: TextStyle(
                                         fontSize: 20,
@@ -125,7 +125,7 @@ class ShoppingListCard extends StatelessWidget {
                                 // style: Text(),
                               ),
                               Text(
-                                "${formatCurrency(shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemBuyed()})",
+                                "${appCurrencyFormat(shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemBuyed()})",
                                 style: TextStyle(
                                     fontFamily: 'Poppins-Medium',
                                     fontSize: 18,
@@ -147,7 +147,7 @@ class ShoppingListCard extends StatelessWidget {
                                 // style: Text(),
                               ),
                               Text(
-                                "${formatCurrency(shoppinglist.calculateTotal() - shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemPending()})",
+                                "${appCurrencyFormat(shoppinglist.calculateTotal() - shoppinglist.calculateTotalBuyed())} (${shoppinglist.calculateTotalItemPending()})",
                                 style: TextStyle(
                                     fontFamily: 'Poppins-Medium',
                                     fontSize: 18,

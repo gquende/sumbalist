@@ -14,7 +14,7 @@ class ShoppingListItemRepository<T> {
     try {
       var list = <ShoppinglistItem>[];
       var result = await this._appDatabase.db?.rawQuery(
-        "SELECT * from ${_table} where listUUID='${listUUID}'",
+        "SELECT * from ${_table} where listUUID='${listUUID}' order by isDone",
         [],
       );
       if (result != null) {
