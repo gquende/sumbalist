@@ -25,6 +25,7 @@ class AppTheme {
       textButtonTheme: TTextButtonTheme.lightTextButtonTheme);
 
   static ThemeData darkMode = ThemeData(
+      brightness: Brightness.dark,
       appBarTheme: const AppBarTheme(
           elevation: 0,
           foregroundColor: Colors.white,

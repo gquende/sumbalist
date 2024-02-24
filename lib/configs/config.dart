@@ -14,6 +14,7 @@ Future<void> initConfig() async {
   var shoppingListItemRepository = ShoppingListItemRepository(database);
   var shoplistController = ShoppingListController(
       shoppingListRepository, shoppingListItemRepository);
+  shoplistController.getAllShoppingList();
   locator.registerSingleton(shoplistController);
   Get.put(ShoppingListController(
       shoppingListRepository, shoppingListItemRepository));
