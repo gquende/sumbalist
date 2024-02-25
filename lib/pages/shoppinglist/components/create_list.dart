@@ -90,8 +90,9 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                               child: TextField(
                                 controller: shoplistNameController,
                                 maxLines: 1,
-                                decoration:
-                                    InputDecoration(border: InputBorder.none),
+                                decoration: InputDecoration(
+                                    border: InputBorder.none,
+                                    labelText: "Nome da lista"),
                                 keyboardType: TextInputType.text,
                               ),
                             ),
