@@ -1,8 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sumbalist/mocks/mocks.dart';
 import 'package:sumbalist/models/users.dart';
+import 'package:sumbalist/services/firebase_service.dart';
 import 'package:sumbalist/utils/utils.dart';
 
 class LoginController extends GetxController {
@@ -21,6 +21,21 @@ class LoginController extends GetxController {
 
     if (usernameFieldController.value.text.isNotEmpty &&
         passwordFieldController.value.text.isNotEmpty) {
+      var data = await FirebaseService.auth.signInWithEmailAndPassword(
+          email: usernameFieldController.value.text,
+          password: passwordFieldController.value.text);
+
+      if (data?.user != null) {
+        var user = data.user;
+
+        return User(
+            uuid: user?.uid ?? '',
+            username: user?.email ?? '',
+            name: user?.displayName ?? '',
+            surname: user?.displayName ?? '',
+            phoneNumber: user?.phoneNumber ?? '');
+      }
+
       await Future.delayed(Duration(seconds: 5));
 
       return userMock;
