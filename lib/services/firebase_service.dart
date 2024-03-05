@@ -41,4 +41,9 @@ class FirebaseService {
       loginInController.setLoading(true);
     }
   }
+
+  static Future<UserCredential> createAccount(Map<String, dynamic> map) async {
+    return await auth.createUserWithEmailAndPassword(
+        email: map["email"], password: map["password"]);
+  }
 }
