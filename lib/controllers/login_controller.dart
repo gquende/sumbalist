@@ -23,12 +23,12 @@ class LoginController extends GetxController {
         passwordFieldController.value.text.isNotEmpty) {
       await Future.delayed(Duration(seconds: 5));
 
+      setLoading(false);
       return userMock;
     } else {
       Utils.showSnackBar(
           "Erro", "Preencha todos os campos", Icon(Icons.info), Colors.red);
     }
-
     setLoading(false);
     return null;
   }
