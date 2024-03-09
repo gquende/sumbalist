@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:sumbalist/pages/signup/components/user_credentials.dart';
 import 'package:sumbalist/pages/signup/components/user_info.dart';
+import 'package:sumbalist/pages/signup/components/user_phone.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
 
 class Signup extends StatefulWidget {
@@ -29,22 +31,23 @@ class _SignupState extends State<Signup> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  currentPage > 1
-                      ? GestureDetector(
-                          onTap: () {
-                            currentPage--;
+                  GestureDetector(
+                      onTap: () {
+                        currentPage--;
 
-                            setState(() {});
-                            pageController.previousPage(
-                                duration: Duration(milliseconds: 500),
-                                curve: Curves.ease);
-                          },
-                          child: CircleAvatar(
-                            backgroundColor: Colors.grey,
-                            child: Icon(Icons.arrow_back_ios),
-                          ),
-                        )
-                      : SizedBox(),
+                        setState(() {});
+                        pageController.previousPage(
+                            duration: Duration(milliseconds: 500),
+                            curve: Curves.ease);
+                      },
+                      child: currentPage > 1
+                          ? CircleAvatar(
+                              backgroundColor: Colors.grey,
+                              child: Icon(Icons.arrow_back_ios),
+                            )
+                          : Container(
+                              height: 40,
+                            )),
                   SizedBox(
                     height: size.height * 0.10,
                   ),
@@ -56,8 +59,8 @@ class _SignupState extends State<Signup> {
                       physics: NeverScrollableScrollPhysics(),
                       children: [
                         UserInfo(context),
-                        UserInfo(context),
-                        UserInfo(context)
+                        UserCredentials(context),
+                        UserPhone(context)
                       ],
                     ),
                   ),
@@ -67,7 +70,9 @@ class _SignupState extends State<Signup> {
                   CommonButton(
                       title: "Avançar",
                       action: () {
-                        currentPage++;
+                        if (currentPage < 3) {
+                          currentPage++;
+                        }
 
                         setState(() {});
                         pageController.nextPage(

@@ -5,6 +5,6 @@ class SignupController extends GetxController {
   final nameController = TextEditingController().obs;
   final surnameController = TextEditingController().obs;
   final emailController = TextEditingController().obs;
-  final password = TextEditingController().obs;
+  final passwordController = TextEditingController().obs;
   final phoneNumberController = TextEditingController().obs;
 }
