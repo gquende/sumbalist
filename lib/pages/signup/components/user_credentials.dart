@@ -76,7 +76,7 @@ Widget UserCredentials(BuildContext context) {
                   labelStyle: TextStyle(color: Color(0xff000000)),
                   border: OutlineInputBorder(),
                   suffixIcon: GestureDetector(
-                    child: Icon(Icos),
+                    child: Icon(Icons.key),
                   )),
             ),
           ),
