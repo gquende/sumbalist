@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sumbalist/controllers/signup_controller.dart';
 import 'package:sumbalist/pages/signup/components/user_credentials.dart';
 import 'package:sumbalist/pages/signup/components/user_info.dart';
 import 'package:sumbalist/pages/signup/components/user_phone.dart';
@@ -13,6 +14,8 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   PageController pageController = PageController();
+  var controller = SignupController();
+
   int currentPage = 0;
 
   @override
@@ -69,15 +72,19 @@ class _SignupState extends State<Signup> {
                   ),
                   CommonButton(
                       title: "Avançar",
-                      action: () {
+                      action: () async {
                         if (currentPage < 3) {
                           currentPage++;
                         }
 
-                        setState(() {});
-                        pageController.nextPage(
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.ease);
+                        if (currentPage == 3) {
+                          await controller.createAccount();
+                        } else {
+                          setState(() {});
+                          pageController.nextPage(
+                              duration: Duration(milliseconds: 500),
+                              curve: Curves.ease);
+                        }
                       },
                       active: true)
                 ],
