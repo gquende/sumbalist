@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 
 class CommonButton extends StatelessWidget {
   Function action;
-  String title;
+  // String title;
   bool active = true;
+  Widget title;
 
   CommonButton(
       {super.key,
@@ -29,12 +30,7 @@ class CommonButton extends StatelessWidget {
         height: 50,
         alignment: Alignment.center,
         decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
-        child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: Text(
-              title,
-              style: Theme.of(context).textTheme.titleSmall,
-            )),
+        child: Padding(padding: const EdgeInsets.all(10), child: title),
       ),
     );
   }

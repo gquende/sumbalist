@@ -929,7 +929,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
             ),
             CommonButton(
                 active: true,
-                title: item == null ? "Adicionar" : "Actualizar",
+                title: Text(item == null ? "Adicionar" : "Actualizar"),
                 action: () async {
                   if (controller.validateForm(context)) {
                     if (item == null) {

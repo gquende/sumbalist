@@ -158,7 +158,7 @@ class _OnBoardingState extends State<OnBoarding> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: CommonButton(
-                title: "Continuar",
+                title: Text("Continuar"),
                 active: read >= 2,
                 action: () {
                   Navigator.of(context).pushReplacement(

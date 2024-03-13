@@ -71,12 +71,13 @@ class _SignupState extends State<Signup> {
                     height: 10,
                   ),
                   CommonButton(
-                      title: "Avançar",
+                      title: controller.isLoading.value
+                          ? CircularProgressIndicator()
+                          : Text(currentPage == 3 ? "Concluir" : "Avançar"),
                       action: () async {
                         if (currentPage < 3) {
                           currentPage++;
                         }
-
                         if (currentPage == 3) {
                           await controller.createAccount();
                         } else {
