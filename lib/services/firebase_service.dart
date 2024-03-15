@@ -46,4 +46,9 @@ class FirebaseService {
     return await auth.createUserWithEmailAndPassword(
         email: map["email"], password: map["password"]);
   }
+
+  static Future<UserCredential> login(String username, String password) async {
+    return await auth.signInWithEmailAndPassword(
+        email: username, password: password);
+  }
 }

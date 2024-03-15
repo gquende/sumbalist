@@ -8,6 +8,8 @@ Widget UserCredentials(BuildContext context) {
   var size = MediaQuery.of(context).size;
   var controller = Get.put(SignupController());
 
+  var isObscure = true.obs;
+
   return Container(
     width: size.width,
     height: size.height / 2,
@@ -54,32 +56,37 @@ Widget UserCredentials(BuildContext context) {
               color: Color(0xffe5e5e5),
               borderRadius: BorderRadius.circular(50)),
           child: Padding(
-            padding: const EdgeInsets.all(10),
-            child: TextFormField(
-              controller: controller.passwordController.value,
-              decoration: InputDecoration(
-                  hintText: "password",
-                  contentPadding: EdgeInsets.only(bottom: 10),
-                  focusColor: Color(0xff000000),
-                  filled: true,
-                  prefixIcon: Icon(
-                    CupertinoIcons.padlock_solid,
-                    color: Color(0xff000000),
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(11))),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(11))),
-                  fillColor: Color(0xffe5e5e5),
-                  labelStyle: TextStyle(color: Color(0xff000000)),
-                  border: OutlineInputBorder(),
-                  suffixIcon: GestureDetector(
-                    child: Icon(Icons.key),
-                  )),
-            ),
-          ),
+              padding: const EdgeInsets.all(10),
+              child: Obx(() {
+                return TextFormField(
+                  controller: controller.passwordController.value,
+                  obscureText: isObscure.value,
+                  decoration: InputDecoration(
+                      hintText: "password",
+                      contentPadding: EdgeInsets.only(bottom: 10),
+                      focusColor: Color(0xff000000),
+                      filled: true,
+                      prefixIcon: Icon(
+                        CupertinoIcons.padlock_solid,
+                        color: Color(0xff000000),
+                      ),
+                      enabledBorder: const OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(Radius.circular(11))),
+                      focusedBorder: const OutlineInputBorder(
+                          borderSide: BorderSide.none,
+                          borderRadius: BorderRadius.all(Radius.circular(11))),
+                      fillColor: Color(0xffe5e5e5),
+                      labelStyle: TextStyle(color: Color(0xff000000)),
+                      border: OutlineInputBorder(),
+                      suffixIcon: GestureDetector(
+                        onTap: () {
+                          isObscure.value = !isObscure.value;
+                        },
+                        child: Icon(Icons.remove_red_eye),
+                      )),
+                );
+              })),
         ),
       ],
     ),
