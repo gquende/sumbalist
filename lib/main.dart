@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sumbalist/pages/home.dart';
+
+import 'package:sumbalist/pages/signup/signup.dart';
 
 import 'configs/config.dart';
 import 'utils/theme/theme.dart';
@@ -26,7 +27,7 @@ class App extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       theme: isDarkMode ? AppTheme.darkMode : AppTheme.light,
       darkTheme: AppTheme.darkMode,
-      home: Home(),
+      home: Signup(),
     );
   }
 }

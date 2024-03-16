@@ -1011,8 +1011,6 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
     }
   }
 
-  //Extra
-
   Widget _buildItem(
       ShoppinglistItem item, int index, Animation<double> animation) {
     return SizeTransition(
