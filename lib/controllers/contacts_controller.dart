@@ -44,8 +44,6 @@ class ContactsController extends GetxController {
       var contactsOnPhone =
           await ContactsService.getContacts(withThumbnails: false);
 
-      // await ContactsService.openContactForm();
-
       contactsOnPhone.forEach((element) {
         if (kDebugMode) {
           print(element.givenName);
@@ -62,8 +60,6 @@ class ContactsController extends GetxController {
 
       isLoading.value = false;
     } catch (error) {
-      debugPrint(error.toString());
-
       isLoading.value = false;
     }
   }

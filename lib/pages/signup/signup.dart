@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sumbalist/controllers/signup_controller.dart';
+import 'package:sumbalist/pages/home.dart';
 import 'package:sumbalist/pages/signup/components/user_credentials.dart';
 import 'package:sumbalist/pages/signup/components/user_info.dart';
 import 'package:sumbalist/pages/signup/components/user_phone.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
+
+import '../../models/users.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -14,7 +18,7 @@ class Signup extends StatefulWidget {
 
 class _SignupState extends State<Signup> {
   PageController pageController = PageController();
-  var controller = SignupController();
+  var controller = Get.put(SignupController());
 
   int currentPage = 0;
 
@@ -43,7 +47,7 @@ class _SignupState extends State<Signup> {
                             duration: Duration(milliseconds: 500),
                             curve: Curves.ease);
                       },
-                      child: currentPage > 1
+                      child: currentPage >= 1
                           ? CircleAvatar(
                               backgroundColor: Colors.grey,
                               child: Icon(Icons.arrow_back_ios),
@@ -70,24 +74,35 @@ class _SignupState extends State<Signup> {
                   SizedBox(
                     height: 10,
                   ),
-                  CommonButton(
+                  Obx(() => CommonButton(
                       title: controller.isLoading.value
-                          ? CircularProgressIndicator()
-                          : Text(currentPage == 3 ? "Concluir" : "Avançar"),
+                          ? Container(
+                              width: 30,
+                              height: 30,
+                              child: CircularProgressIndicator(
+                                valueColor:
+                                    AlwaysStoppedAnimation(Colors.black),
+                              ),
+                            )
+                          : Text(currentPage == 2 ? "Concluir" : "Avançar"),
                       action: () async {
-                        if (currentPage < 3) {
+                        if (currentPage < 2) {
                           currentPage++;
-                        }
-                        if (currentPage == 3) {
-                          await controller.createAccount();
-                        } else {
-                          setState(() {});
                           pageController.nextPage(
                               duration: Duration(milliseconds: 500),
                               curve: Curves.ease);
+                        } else if (currentPage >= 2) {
+                          await controller.createAccount();
+
+                          if (User.logged != null) {
+                            Navigator.of(context).pushReplacement(
+                                MaterialPageRoute(builder: (ctx) => Home()));
+                          }
                         }
+
+                        setState(() {});
                       },
-                      active: true)
+                      active: true))
                 ],
               ),
             ),
