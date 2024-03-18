@@ -70,6 +70,7 @@ class SignupController extends GetxController {
 
         shared.setString("USER", jsonEncode(User.logged?.toMap()));
 
+        await shared.setBool("isFirstTimeRun", false);
         return User.logged;
       }
     } catch (error) {

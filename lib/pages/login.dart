@@ -137,7 +137,7 @@ class _LoginState extends State<Login> {
                         User.logged = await controller.loginAccount(context);
 
                         if (User.logged != null) {
-                          Navigator.of(context).push(
+                          Navigator.of(context).pushReplacement(
                               MaterialPageRoute(builder: (context) => Home()));
                         }
                       }, child: Obx(() {

@@ -1,6 +1,8 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sumbalist/controllers/login_controller.dart';
+import 'package:sumbalist/utils/utils.dart';
 
 import '../controllers/shopping_list_controller.dart';
 import '../core/database.dart';
@@ -21,5 +23,7 @@ Future<void> initConfig() async {
   Get.put(ShoppingListController(
       shoppingListRepository, shoppingListItemRepository));
 
+  await LoginController.checkUserAuthenticated();
+  await Utils.checkIsFirstTimeRun();
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
