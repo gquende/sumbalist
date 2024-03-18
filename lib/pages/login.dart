@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sumbalist/controllers/login_controller.dart';
+import 'package:sumbalist/pages/signup/signup.dart';
 
 import '../models/users.dart';
 import '../utils/constants/app_colors.dart';
@@ -152,8 +153,7 @@ class _LoginState extends State<Login> {
                               child: controller.loading.value
                                   ? CircularProgressIndicator(
                                       valueColor: AlwaysStoppedAnimation(
-                                          Theme.of(context)
-                                              .secondaryHeaderColor),
+                                          SECONDARYCOLOR),
                                     )
                                   : Text("Entrar")),
                         );
@@ -206,8 +206,13 @@ class _LoginState extends State<Login> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           GestureDetector(
-                            onTap: () {
+                            onTap: () async {
                               debugPrint("Clicked on login with Google");
+                              var user = await controller.loginWithGoogle();
+                              if (user != null) {
+                                Navigator.of(context).pushReplacement(
+                                    MaterialPageRoute(builder: (_) => Home()));
+                              }
                             },
                             child: Container(
                               width: 40,
@@ -248,6 +253,9 @@ class _LoginState extends State<Login> {
                           GestureDetector(
                             onTap: () {
                               debugPrint("Clicked on Register...");
+
+                              Navigator.of(context).push(
+                                  MaterialPageRoute(builder: (_) => Signup()));
                             },
                             child: Text(
                               "Registar-se ",

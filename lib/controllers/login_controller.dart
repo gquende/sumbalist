@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sumbalist/mocks/mocks.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:sumbalist/models/users.dart';
 import 'package:sumbalist/services/firebase_service.dart';
 import 'package:sumbalist/utils/utils.dart';
@@ -10,6 +13,7 @@ class LoginController extends GetxController {
   RxBool loading = false.obs;
   final usernameFieldController = TextEditingController().obs;
   final passwordFieldController = TextEditingController().obs;
+
   GlobalKey<FormState> formKey = GlobalKey();
 
   void setLoading(bool value) {
@@ -17,34 +21,56 @@ class LoginController extends GetxController {
   }
 
   Future<User?> loginAccount(BuildContext context) async {
-    setLoading(true);
+    try {
+      setLoading(true);
 
-    if (usernameFieldController.value.text.isNotEmpty &&
-        passwordFieldController.value.text.isNotEmpty) {
-      var data = await FirebaseService.auth.signInWithEmailAndPassword(
-          email: usernameFieldController.value.text,
-          password: passwordFieldController.value.text);
+      if (usernameFieldController.value.text.isNotEmpty &&
+          passwordFieldController.value.text.isNotEmpty) {
+        var data = await FirebaseService.loginAccount(
+            usernameFieldController.value.text,
+            passwordFieldController.value.text);
 
-      if (data?.user != null) {
-        var user = data.user;
+        if (data != null) {
+          var user = User.fromMap(data);
+          var shared = await SharedPreferences.getInstance();
+          shared.setString("user", jsonEncode(user.toMap()));
 
-        return User(
-            uuid: user?.uid ?? '',
-            username: user?.email ?? '',
-            name: user?.displayName ?? '',
-            surname: user?.displayName ?? '',
-            phoneNumber: user?.phoneNumber ?? '');
+          debugPrint(jsonEncode(user.toMap()));
+          return user;
+        }
+
+        return null;
+      } else {
+        setLoading(false);
+        Utils.showSnackBar(
+            "Erro", "Preencha todos os campos", Icon(Icons.info), Colors.red);
       }
-
-      await Future.delayed(Duration(seconds: 5));
-
       setLoading(false);
-      return userMock;
-    } else {
-      Utils.showSnackBar(
-          "Erro", "Preencha todos os campos", Icon(Icons.info), Colors.red);
+    } catch (error) {
+      debugPrint(error.toString());
     }
-    setLoading(false);
+
     return null;
+  }
+
+  Future<User?> loginWithGoogle() async {
+    setLoading(true);
+    var credentials = await FirebaseService.loginWithGoogle();
+
+    if (credentials != null) {
+      User.logged = User(
+          uuid: credentials.uid,
+          username: credentials.email ?? '',
+          name: credentials.displayName ?? '',
+          surname: '',
+          phoneNumber: '');
+
+      final SharedPreferences shared = await SharedPreferences.getInstance();
+      shared.setString("user", jsonEncode(User.logged?.toMap()));
+
+      return User.logged;
+    }
+
+    setLoading(false);
   }
 }
