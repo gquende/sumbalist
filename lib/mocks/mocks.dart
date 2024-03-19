@@ -1,6 +1,10 @@
+import 'package:sumbalist/models/users.dart';
+import 'package:uuid/uuid.dart';
+
 import '../models/shopping_list.dart';
 import '../models/shopping_list_item.dart';
 
+Uuid uuidGenerator = Uuid();
 var shoplistItemsMock = [
   ShoppinglistItem(
       uuid: "23232",
@@ -39,3 +43,11 @@ ShoppingList shoplistMock2 = ShoppingList(
     statusUUID: "",
     total: 123,
     items: shoplistItemsMock);
+
+User userMock = User(
+    uuid: uuidGenerator.v4(),
+    username: "926884947",
+    name: "Geraldo",
+    surname: "Quende",
+    phoneNumber: "926884947",
+    password: "123456");

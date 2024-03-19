@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:sumbalist/controllers/login_controller.dart';
 import 'package:sumbalist/pages/home.dart';
+
+import 'package:sumbalist/pages/signup/signup.dart';
+import '../models/users.dart';
 import '../utils/constants/app_colors.dart';
 import 'login.dart';
 
 class Welcome extends StatelessWidget {
-  const Welcome({super.key});
+  LoginController controller = LoginController();
+
+  Welcome({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -53,9 +59,14 @@ class Welcome extends StatelessWidget {
               decoration: BoxDecoration(
                   color: Colors.white, borderRadius: BorderRadius.circular(8)),
               child: TextButton(
-                onPressed: () {
-                  Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => Home()));
+                onPressed: () async {
+                  await controller.loginWithGoogle();
+
+                  if (User.logged != null) {
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => Home()),
+                        (route) => false);
+                  }
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
@@ -87,7 +98,11 @@ class Welcome extends StatelessWidget {
                   borderRadius: BorderRadius.circular(8),
                   border: Border.all(color: Colors.white)),
               child: TextButton(
-                onPressed: () {},
+                onPressed: () {
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => Signup()),
+                      (route) => false);
+                },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -114,8 +129,9 @@ class Welcome extends StatelessWidget {
                 ),
                 GestureDetector(
                   onTap: () {
-                    Navigator.of(context).pushReplacement(
-                        MaterialPageRoute(builder: (context) => Login()));
+                    Navigator.of(context).pushAndRemoveUntil(
+                        MaterialPageRoute(builder: (_) => Login()),
+                        (route) => false);
                   },
                   child: Text(
                     "Entrar",

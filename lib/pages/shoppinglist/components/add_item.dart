@@ -254,7 +254,7 @@ class _AddItemBodyState extends State<AddItemBody> {
             ),
             CommonButton(
                 active: true,
-                title: widget.item == null ? "Adicionar" : "Actualizar",
+                title: Text(widget.item == null ? "Adicionar" : "Actualizar"),
                 action: () async {
                   if (widget.item == null) {
                     var uuid = Uuid();

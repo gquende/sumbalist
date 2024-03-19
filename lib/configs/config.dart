@@ -1,8 +1,12 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sumbalist/controllers/login_controller.dart';
+import 'package:sumbalist/utils/utils.dart';
 
 import '../controllers/shopping_list_controller.dart';
 import '../core/database.dart';
+import '../firebase_options.dart';
 import '../repository/shopping_list_item_repository.dart';
 import '../repository/shopping_list_repository.dart';
 
@@ -14,7 +18,12 @@ Future<void> initConfig() async {
   var shoppingListItemRepository = ShoppingListItemRepository(database);
   var shoplistController = ShoppingListController(
       shoppingListRepository, shoppingListItemRepository);
+  shoplistController.getAllShoppingList();
   locator.registerSingleton(shoplistController);
   Get.put(ShoppingListController(
       shoppingListRepository, shoppingListItemRepository));
+
+  await LoginController.checkUserAuthenticated();
+  await Utils.checkIsFirstTimeRun();
+  Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }

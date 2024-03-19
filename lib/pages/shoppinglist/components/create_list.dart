@@ -46,11 +46,11 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          SizedBox(
+                          const SizedBox(
                             height: 10,
                           ),
-                          Text("Categoria"),
-                          SizedBox(
+                          const Text("Categoria"),
+                          const SizedBox(
                             height: 5,
                           ),
                           Row(
@@ -65,11 +65,11 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                       shoppingListCategoriesMock[i], context),
                                 );
                               })),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
-                          Text("Nome da lista"),
-                          SizedBox(
+                          // const Text("Nome da lista"),
+                          const SizedBox(
                             height: 10,
                           ),
                           Container(
@@ -90,20 +90,21 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                               child: TextField(
                                 controller: shoplistNameController,
                                 maxLines: 1,
-                                decoration:
-                                    InputDecoration(border: InputBorder.none),
+                                decoration: const InputDecoration(
+                                    border: InputBorder.none,
+                                    labelText: "Nome da lista"),
                                 keyboardType: TextInputType.text,
                               ),
                             ),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 20,
                           ),
                           GestureDetector(
                             onTap: () async {
                               if (shoplistNameController.text.isNotEmpty) {
                                 if (item == null) {
-                                  var uuid = Uuid();
+                                  var uuid = const Uuid();
                                   var shoplist = ShoppingList(
                                       uuid: uuid.v4(),
                                       userUUID: "dede",
@@ -127,9 +128,10 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                   Navigator.pop(context);
                                 }
                               } else {
-                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                    content: Text(
-                                        "Insere um nome para lista e seleccione uma categoria")));
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                        content: Text(
+                                            "Insere um nome para lista e seleccione uma categoria")));
                               }
                             },
                             child: Container(
@@ -138,7 +140,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                 decoration: BoxDecoration(
                                     color: PRIMARYCOLOR,
                                     boxShadow: [
-                                      BoxShadow(
+                                      const BoxShadow(
                                           offset: Offset(0, 0),
                                           color: Colors.black12,
                                           spreadRadius: .7,
@@ -147,8 +149,8 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
                                   child: item == null
-                                      ? Text("Adicionar")
-                                      : Text("Actualizar"),
+                                      ? const Text("Adicionar")
+                                      : const Text("Actualizar"),
                                 )),
                           ),
                         ],
@@ -163,16 +165,28 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
 
 Widget categoryIcon(
     bool active, ShoppingListCategory category, BuildContext context) {
-  return Container(
-    width: 55,
-    height: 55,
-    decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(5),
-        color: active ? Color.fromRGBO(253, 185, 19, 0.1) : Color(0xffF9F9F9),
-        border: active ? Border.all(color: PRIMARYCOLOR) : null),
-    child: Icon(
-      category.icon,
-      color: active ? Theme.of(context).primaryColor : Color(0xff9C9C9C),
-    ),
+  return Column(
+    children: [
+      Container(
+        width: 55,
+        height: 55,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: active
+                ? const Color.fromRGBO(253, 185, 19, 0.1)
+                : const Color(0xffF9F9F9),
+            border: active ? Border.all(color: PRIMARYCOLOR) : null),
+        child: Icon(
+          category.icon,
+          color:
+              active ? Theme.of(context).primaryColor : const Color(0xff9C9C9C),
+        ),
+      ),
+      Text(
+        "${category.name}",
+        style: TextStyle(
+            color: active ? Theme.of(context).primaryColor : Colors.grey),
+      )
+    ],
   );
 }

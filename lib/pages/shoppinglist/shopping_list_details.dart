@@ -929,7 +929,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
             ),
             CommonButton(
                 active: true,
-                title: item == null ? "Adicionar" : "Actualizar",
+                title: Text(item == null ? "Adicionar" : "Actualizar"),
                 action: () async {
                   if (controller.validateForm(context)) {
                     if (item == null) {
@@ -1010,8 +1010,6 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
       });
     }
   }
-
-  //Extra
 
   Widget _buildItem(
       ShoppinglistItem item, int index, Animation<double> animation) {
