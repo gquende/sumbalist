@@ -73,15 +73,6 @@ class FirebaseService {
     return credentials;
   }
 
-  /*
-
-      static Future<UserCredential> login(String username, String password) async {
-        var data = await auth.signInWithEmailAndPassword(
-            email: username, password: password);
-      }
-
-  */
-
   static Future<User?> loginWithGoogle() async {
     User? user;
     try {
