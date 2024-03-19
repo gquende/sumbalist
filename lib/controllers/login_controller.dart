@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:sumbalist/models/users.dart';
 import 'package:sumbalist/services/firebase_service.dart';
 import 'package:sumbalist/utils/utils.dart';
@@ -34,8 +33,9 @@ class LoginController extends GetxController {
           var user = User.fromMap(data);
           var shared = await SharedPreferences.getInstance();
           shared.setString("user", jsonEncode(user.toMap()));
-
           debugPrint(jsonEncode(user.toMap()));
+          setLoading(false);
+          await shared.setBool("isFirstTimeRun", false);
           return user;
         }
 
@@ -68,9 +68,23 @@ class LoginController extends GetxController {
       final SharedPreferences shared = await SharedPreferences.getInstance();
       shared.setString("user", jsonEncode(User.logged?.toMap()));
 
+      await shared.setBool("isFirstTimeRun", false);
       return User.logged;
     }
 
     setLoading(false);
+  }
+
+  static Future<User?> checkUserAuthenticated() async {
+    try {
+      var shared = await SharedPreferences.getInstance();
+      var encodedData = shared.getString("user");
+
+      if (encodedData != null) {
+        User.logged = User.fromMap(jsonDecode(encodedData));
+      }
+    } catch (error) {
+      debugPrint(error.toString());
+    }
   }
 }

@@ -1,9 +1,11 @@
 import 'package:email_validator/email_validator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Utils {
+  static bool isFirstTimeRun = true;
+
   static void showSnackBar(
       String title, String message, Widget icon, Color color) {
     Get.showSnackbar(GetSnackBar(
@@ -24,5 +26,10 @@ class Utils {
 
   static bool validateEmail(String email) {
     return EmailValidator.validate(email);
+  }
+
+  static checkIsFirstTimeRun() async {
+    var shared = await SharedPreferences.getInstance();
+    isFirstTimeRun = (await shared.getBool("isFirstTimeRun")) ?? true;
   }
 }

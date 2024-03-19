@@ -3,6 +3,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+
 import '../utils/utils.dart';
 
 class FirebaseService {
@@ -14,37 +15,28 @@ class FirebaseService {
     Map<String, dynamic>? userData;
 
     try {
-      auth
-          .signInWithEmailAndPassword(
+      var credentials = await auth.signInWithEmailAndPassword(
         email: username,
         password: password,
-      )
-          .then((value) {
-        String node =
-            value.user!.email!.substring(0, value.user!.email!.indexOf('@'));
-        database.ref('users').child(node).onValue.listen((event) {
-          userData = {
-            "uuid": value.user?.uid ?? '',
-            "username": node,
-            "name": event.snapshot.child('name').value.toString(),
-            "surname": event.snapshot.child('surname').value.toString(),
-            "email": event.snapshot.child('email').value.toString(),
-            "phoneNumber": event.snapshot.child('phone').value.toString()
-          };
-        }).onError((error, stackTrace) {
-          //EM caso de erro
-          debugPrint(error.toString());
-        });
-      }).onError((error, stackTrace) {
-        //Erro de FirebaseBase
-        debugPrint(error.toString());
-      });
+      );
+
+      String node = credentials.user!.email!
+          .substring(0, credentials.user!.email!.indexOf('@'));
+      var snap = await database.ref('users').child(node).get();
+
+      userData = {
+        "uuid": credentials.user?.uid ?? '',
+        "username": node,
+        "name": (snap!.value as Map)["name"],
+        "surname": (snap!.value as Map)["surname"],
+        "email": (snap!.value as Map)["email"],
+        "phoneNumber": (snap!.value as Map)["phone"],
+      };
     } catch (e) {
       //Erro genérico
-
       debugPrint(e.toString());
     }
-
+    debugPrint(userData.toString());
     return userData;
   }
 
