@@ -17,8 +17,7 @@ Widget UserInfo(BuildContext context) {
           width: size.width,
           height: 55,
           decoration: BoxDecoration(
-              color: Color(0xffe5e5e5),
-              borderRadius: BorderRadius.circular(50)),
+              color: Color(0xffe5e5e5), borderRadius: BorderRadius.circular(8)),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: TextFormField(
@@ -34,10 +33,10 @@ Widget UserInfo(BuildContext context) {
                   ),
                   enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(11))),
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
                   focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(11))),
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
                   fillColor: Color(0xffe5e5e5),
                   labelStyle: TextStyle(color: Color(0xff000000)),
                   border: OutlineInputBorder()),
@@ -51,8 +50,7 @@ Widget UserInfo(BuildContext context) {
           width: size.width,
           height: 55,
           decoration: BoxDecoration(
-              color: Color(0xffe5e5e5),
-              borderRadius: BorderRadius.circular(50)),
+              color: Color(0xffe5e5e5), borderRadius: BorderRadius.circular(8)),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: TextFormField(
@@ -68,10 +66,10 @@ Widget UserInfo(BuildContext context) {
                   ),
                   enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(11))),
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
                   focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(11))),
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
                   fillColor: Color(0xffe5e5e5),
                   labelStyle: TextStyle(color: Color(0xff000000)),
                   border: OutlineInputBorder()),

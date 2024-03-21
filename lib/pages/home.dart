@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:sumbalist/pages/contacts_list.dart';
+
 import 'package:sumbalist/pages/shoppinglist/components/create_list.dart';
 import 'package:sumbalist/pages/shoppinglist/shopping_list_view.dart';
 
@@ -27,10 +27,7 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: PRIMARYCOLOR,
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => ContactsList()));
-
-          //floatButtonAction();
+          floatButtonAction();
         },
         child: Icon(Icons.add),
       ),
