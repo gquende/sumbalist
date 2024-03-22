@@ -23,7 +23,7 @@ Widget UserInfo(BuildContext context) {
             child: TextFormField(
               controller: controller.nameController.value,
               decoration: InputDecoration(
-                  hintText: "Primeiro nome",
+                  hintText: "Nome",
                   contentPadding: EdgeInsets.only(bottom: 10),
                   focusColor: Color(0xff000000),
                   filled: true,

@@ -6,6 +6,7 @@ import 'package:sumbalist/pages/signup/components/user_credentials.dart';
 import 'package:sumbalist/pages/signup/components/user_info.dart';
 import 'package:sumbalist/pages/signup/components/user_phone.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
+import 'package:sumbalist/utils/constants/app_colors.dart';
 
 import '../../models/users.dart';
 
@@ -49,8 +50,14 @@ class _SignupState extends State<Signup> {
                       },
                       child: currentPage >= 1
                           ? CircleAvatar(
-                              backgroundColor: Colors.grey,
-                              child: Icon(Icons.arrow_back_ios),
+                              backgroundColor: Color(0xffe5e5e5),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Color(0xffe5e5e5),
+                                ),
+                              ),
                             )
                           : Container(
                               height: 40,
@@ -84,7 +91,10 @@ class _SignupState extends State<Signup> {
                                     AlwaysStoppedAnimation(Colors.black),
                               ),
                             )
-                          : Text(currentPage == 2 ? "Concluir" : "Avançar"),
+                          : Text(
+                              currentPage == 2 ? "Concluir" : "Avançar",
+                              style: TextStyle(color: SECONDARYCOLOR),
+                            ),
                       action: () async {
                         if (currentPage < 2) {
                           currentPage++;
@@ -102,7 +112,29 @@ class _SignupState extends State<Signup> {
 
                         setState(() {});
                       },
-                      active: true))
+                      active: true)),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Já tem uma conta?",
+                        style: TextStyle(color: SECONDARYCOLOR),
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      GestureDetector(
+                        onTap: () {},
+                        child: Text(
+                          "Entrar",
+                          style: TextStyle(color: PRIMARYCOLOR),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

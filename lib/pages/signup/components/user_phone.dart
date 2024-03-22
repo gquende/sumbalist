@@ -13,7 +13,6 @@ Widget UserPhone(BuildContext context) {
     height: size.height / 2,
     child: Column(
       children: [
-        Text("Insi"),
         SizedBox(
           height: 20,
         ),

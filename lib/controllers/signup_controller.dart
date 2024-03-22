@@ -25,8 +25,8 @@ class SignupController extends GetxController {
 
       if (!Utils.validateEmail(emailController.value.text)) {
         Utils.showSnackBar(
-            'Warning',
-            'Enter Correct Email',
+            'Alerta',
+            'Insere um email válido',
             const Icon(
               FontAwesomeIcons.triangleExclamation,
               color: Colors.pink,
@@ -38,8 +38,8 @@ class SignupController extends GetxController {
       }
       if (passwordController.value.text.toString().length < 6) {
         Utils.showSnackBar(
-            'Warning',
-            'Password length should greater than 5',
+            'Alerta',
+            'A palavra dever ter mais 6 caracteres',
             const Icon(
               FontAwesomeIcons.triangleExclamation,
               color: Colors.pink,
