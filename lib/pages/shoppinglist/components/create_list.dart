@@ -29,7 +29,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
       builder: (context) {
         return Dialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           child: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -39,7 +39,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.35,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.secondary,
                       borderRadius: BorderRadius.circular(30)),
                   child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -76,17 +76,13 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                             width: size.width,
                             height: 55,
                             decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  /* BoxShadow(
-                                      offset: Offset(0, 0),
-                                      color: Colors.black12,
-                                      spreadRadius: .7,
-                                      blurRadius: 0)*/
-                                ],
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
                                 borderRadius: BorderRadius.circular(5)),
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 0, right: 0),
+                              padding:
+                                  const EdgeInsets.only(left: 10, right: 10),
                               child: TextField(
                                 controller: shoplistNameController,
                                 maxLines: 1,
@@ -149,7 +145,10 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
                                   child: item == null
-                                      ? const Text("Adicionar")
+                                      ? const Text(
+                                          "Adicionar",
+                                          style: TextStyle(color: Colors.black),
+                                        )
                                       : const Text("Actualizar"),
                                 )),
                           ),
@@ -174,7 +173,7 @@ Widget categoryIcon(
             borderRadius: BorderRadius.circular(5),
             color: active
                 ? const Color.fromRGBO(253, 185, 19, 0.1)
-                : const Color(0xffF9F9F9),
+                : Theme.of(context).colorScheme.secondaryContainer,
             border: active ? Border.all(color: PRIMARYCOLOR) : null),
         child: Icon(
           category.icon,

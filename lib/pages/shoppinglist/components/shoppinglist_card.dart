@@ -30,7 +30,7 @@ class ShoppingListCard extends StatelessWidget {
         height: MediaQuery.of(context).size.height / 5,
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.primaryContainer,
             boxShadow: [
               BoxShadow(
                   color: Color.fromRGBO(0, 0, 0, 0.08),
