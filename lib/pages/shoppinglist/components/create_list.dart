@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sumbalist/models/users.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../controllers/shopping_list_controller.dart';
@@ -39,7 +40,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.35,
                   decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.secondary,
+                      color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(30)),
                   child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -81,8 +82,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                     .secondaryContainer,
                                 borderRadius: BorderRadius.circular(5)),
                             child: Padding(
-                              padding:
-                                  const EdgeInsets.only(left: 10, right: 10),
+                              padding: const EdgeInsets.only(left: 0, right: 0),
                               child: TextField(
                                 controller: shoplistNameController,
                                 maxLines: 1,
@@ -103,9 +103,10 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                   var uuid = const Uuid();
                                   var shoplist = ShoppingList(
                                       uuid: uuid.v4(),
-                                      userUUID: "dede",
+                                      userUUID:
+                                          User.logged?.uuid ?? 'not defined',
                                       categoryUUID: "$index",
-                                      statusUUID: "Aberto",
+                                      statusUUID: "Open",
                                       name: shoplistNameController.text,
                                       total: 0,
                                       items: []);

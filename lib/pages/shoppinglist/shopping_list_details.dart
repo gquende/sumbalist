@@ -521,7 +521,6 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                           borderRadius: BorderRadius.all(Radius.circular(11))),
                       fillColor:
                           Theme.of(context).colorScheme.secondaryContainer,
-                      labelStyle: TextStyle(color: Color(0xff000000)),
                       border: OutlineInputBorder()),
                 ),
               ),
