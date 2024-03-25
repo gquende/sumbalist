@@ -70,7 +70,7 @@ class _LoginState extends State<Login> {
                             controller:
                                 controller.usernameFieldController.value,
                             decoration: InputDecoration(
-                                hintText: "Nome de utilizador",
+                                hintText: "Email",
                                 contentPadding: EdgeInsets.only(bottom: 10),
                                 focusColor: Color(0xff000000),
                                 filled: true,
