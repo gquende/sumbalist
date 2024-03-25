@@ -46,7 +46,7 @@ class _LoginState extends State<Login> {
                       ),
                       Container(
                         child: Text(
-                          "Faça suas compras de forma inteligente e conveniente, acesse suas listas de compras personalizadas",
+                          "Acesse suas listas de compras personalizadas e faça suas compras de forma inteligente e conveniente",
                           maxLines: 3,
                           style: TextStyle(fontSize: size.width / 26),
                         ),
@@ -60,7 +60,9 @@ class _LoginState extends State<Login> {
                         width: size.width,
                         height: 55,
                         decoration: BoxDecoration(
-                            color: Color(0xffe5e5e5),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
                             borderRadius: BorderRadius.circular(8)),
                         child: Padding(
                           padding: const EdgeInsets.all(10),
@@ -74,7 +76,6 @@ class _LoginState extends State<Login> {
                                 filled: true,
                                 prefixIcon: Icon(
                                   CupertinoIcons.person,
-                                  color: Color(0xff000000),
                                 ),
                                 enabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -84,7 +85,9 @@ class _LoginState extends State<Login> {
                                     borderSide: BorderSide.none,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8))),
-                                fillColor: Color(0xffe5e5e5),
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
                                 labelStyle: TextStyle(color: Color(0xff000000)),
                                 border: OutlineInputBorder()),
                           ),
@@ -97,7 +100,9 @@ class _LoginState extends State<Login> {
                         width: size.width,
                         height: 55,
                         decoration: BoxDecoration(
-                            color: Color(0xffe5e5e5),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
                             borderRadius: BorderRadius.circular(8)),
                         child: Padding(
                           padding: const EdgeInsets.all(10),
@@ -112,7 +117,6 @@ class _LoginState extends State<Login> {
                                 filled: true,
                                 prefixIcon: Icon(
                                   CupertinoIcons.padlock,
-                                  color: Color(0xff000000),
                                 ),
                                 enabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide.none,
@@ -122,7 +126,9 @@ class _LoginState extends State<Login> {
                                     borderSide: BorderSide.none,
                                     borderRadius:
                                         BorderRadius.all(Radius.circular(8))),
-                                fillColor: Color(0xffe5e5e5),
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
                                 labelStyle: TextStyle(color: Color(0xff000000)),
                                 border: OutlineInputBorder()),
                           ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sumbalist/controllers/signup_controller.dart';
 import 'package:sumbalist/pages/home.dart';
+import 'package:sumbalist/pages/login.dart';
 import 'package:sumbalist/pages/signup/components/user_credentials.dart';
 import 'package:sumbalist/pages/signup/components/user_info.dart';
 import 'package:sumbalist/pages/signup/components/user_phone.dart';
@@ -50,12 +51,16 @@ class _SignupState extends State<Signup> {
                       },
                       child: currentPage >= 1
                           ? CircleAvatar(
-                              backgroundColor: Color(0xffe5e5e5),
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 8),
                                 child: Icon(
                                   Icons.arrow_back_ios,
-                                  color: Color(0xffe5e5e5),
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
                                 ),
                               ),
                             )
@@ -121,13 +126,16 @@ class _SignupState extends State<Signup> {
                     children: [
                       Text(
                         "Já tem uma conta?",
-                        style: TextStyle(color: SECONDARYCOLOR),
                       ),
                       SizedBox(
                         width: 5,
                       ),
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (_) => Login()),
+                              (route) => false);
+                        },
                         child: Text(
                           "Entrar",
                           style: TextStyle(color: PRIMARYCOLOR),
