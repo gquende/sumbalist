@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -140,7 +141,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                                               ),
                                               child: Padding(
                                                 padding: const EdgeInsets.only(
-                                                    bottom: 8.0),
+                                                    bottom: 8.0, right: 16.0),
                                                 child: _shoppinglistItemWidget(
                                                     item: controller
                                                         .shoppingList
@@ -187,18 +188,18 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                                     Text(
                                       "Concluído",
                                       style: TextStyle(
-                                          fontFamily: 'Poppins-Medium',
-                                          fontSize: 16,
-                                          color: Colors.grey),
+                                        fontFamily: 'Poppins-Medium',
+                                        fontSize: 16,
+                                      ),
                                       // style: Text(),
                                     ),
                                     Text(
                                       "${appCurrencyFormat(controller.shoppingList.value.calculateTotalBuyed())} (${controller.shoppingList.value.calculateTotalItemBuyed()})",
                                       style: TextStyle(
-                                          fontFamily: 'Poppins-Medium',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.black),
+                                        fontFamily: 'Poppins-Medium',
+                                        fontSize: 18,
+                                        fontWeight: FontWeight.w500,
+                                      ),
                                     )
                                   ],
                                 ),
@@ -226,28 +227,32 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                               ],
                             ),
                             SizedBox(
-                              height: 8,
+                              height: 20,
                             ),
                             Stack(
                               children: [
                                 Container(
-                                  width: (size.width - 40),
-                                  height: 12,
+                                  width: (size.width - 20),
+                                  height: 15,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
                                       color:
                                           Color(0xff67727d).withOpacity(0.1)),
                                 ),
                                 Container(
-                                  width: (size.width - 40) *
+                                  width: (size.width - 20) *
                                       controller.shoppingList.value
                                           .getPercentBuyedByItem() /
                                       100,
-                                  height: 12,
+                                  height: 15,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
                                       color: PRIMARYCOLOR),
                                 ),
+                                Positioned(
+                                    left: (size.width - 30) / 2,
+                                    child: Text(
+                                        "${(controller.shoppingList.value.getPercentBuyedByItem()).round()} %"))
                               ],
                             )
                           ],
@@ -261,7 +266,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
         onPressed: () async {
           Get.bottomSheet(
             bottomSheet(null) as Widget,
-            backgroundColor: Colors.white,
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
           ).then((value) {
             setState(() {});
           });
@@ -282,7 +287,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
           width: size.width,
           height: 80,
           decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.primaryContainer,
+              color: Theme.of(context).colorScheme.secondaryContainer,
               borderRadius: BorderRadius.circular(5)),
           child: Padding(
             padding: const EdgeInsets.only(left: 12.0, right: 8.0),
@@ -310,7 +315,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                         alignment: Alignment.center,
                         child: Icon(
                           Icons.shopping_cart,
-                          color: Theme.of(context).colorScheme.primaryContainer,
+                          color: SECONDARYCOLOR,
                         ),
                       ),
                       SizedBox(
@@ -501,13 +506,16 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
               width: size.width,
               height: 55,
               decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.primaryContainer,
+                  color: Theme.of(context).colorScheme.secondaryContainer,
                   borderRadius: BorderRadius.circular(8)),
               child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: TextField(
                   controller: controller.nameFieldController,
                   decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        CupertinoIcons.rectangle_stack,
+                      ),
                       hintText: "",
                       contentPadding: EdgeInsets.only(bottom: 10),
                       focusColor:
@@ -551,6 +559,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                           controller: controller.priceController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
+                              prefixIcon:
+                                  Icon(CupertinoIcons.money_dollar_circle),
                               hintText: "",
                               contentPadding: EdgeInsets.only(bottom: 10),
                               focusColor: Color(0xff000000),
@@ -596,6 +606,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                           controller: controller.qtyController,
                           keyboardType: TextInputType.number,
                           decoration: InputDecoration(
+                              prefixIcon: Icon(CupertinoIcons.number),
                               hintText: "",
                               contentPadding: EdgeInsets.only(bottom: 10),
                               focusColor: Color(0xff000000),
@@ -638,6 +649,9 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                 child: TextField(
                   controller: controller.descriptionController,
                   decoration: InputDecoration(
+                      prefixIcon: Icon(
+                        CupertinoIcons.square_list,
+                      ),
                       hintText: "",
                       contentPadding: EdgeInsets.only(bottom: 10),
                       focusColor: Color(0xff000000),
@@ -660,7 +674,10 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
             ),
             CommonButton(
                 active: true,
-                title: Text(item == null ? "Adicionar" : "Actualizar"),
+                title: Text(
+                  item == null ? "Adicionar" : "Actualizar",
+                  style: TextStyle(color: SECONDARYCOLOR),
+                ),
                 action: () async {
                   if (controller.validateForm(context)) {
                     if (item == null) {

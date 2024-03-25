@@ -76,7 +76,6 @@ class ShoppingListCard extends StatelessWidget {
                                       "${shoppinglist.name}",
                                       style: TextStyle(
                                           fontSize: 24,
-                                          color: Colors.black,
                                           fontWeight: FontWeight.w500),
                                       overflow: TextOverflow.ellipsis,
                                     ),
@@ -93,11 +92,6 @@ class ShoppingListCard extends StatelessWidget {
                               )
                             ],
                           ),
-
-                          /*GestureDetector(
-                              onTap: () {},
-                              child: ),
-                          */
                         ],
                       ),
                       SizedBox(
@@ -119,9 +113,9 @@ class ShoppingListCard extends StatelessWidget {
                               Text(
                                 "Concluído",
                                 style: TextStyle(
-                                    fontFamily: 'Poppins-Medium',
-                                    fontSize: 16,
-                                    color: Colors.grey),
+                                  fontFamily: 'Poppins-Medium',
+                                  fontSize: 16,
+                                ),
                                 // style: Text(),
                               ),
                               Text(
@@ -129,7 +123,6 @@ class ShoppingListCard extends StatelessWidget {
                                 style: TextStyle(
                                     fontFamily: 'Poppins-Medium',
                                     fontSize: 18,
-                                    color: Colors.black,
                                     fontWeight: FontWeight.w500),
                               )
                             ],
@@ -249,6 +242,7 @@ class ShoppingListCard extends StatelessWidget {
                     )
                   ],
                 ),
+                color: Theme.of(context).colorScheme.secondaryContainer,
               ),
             )
           ],

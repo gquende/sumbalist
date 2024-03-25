@@ -168,7 +168,10 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                           "Adicionar",
                                           style: TextStyle(color: Colors.black),
                                         )
-                                      : const Text("Actualizar"),
+                                      : const Text(
+                                          "Actualizar",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
                                 )),
                           ),
                         ],

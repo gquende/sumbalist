@@ -22,7 +22,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
   @override
   void initState() {
     // TODO: implement initState
-    controller.getAllShoppingList().then((value) => null);
+    // controller.getAllShoppingList().then((value) => null);
   }
 
   @override
@@ -34,69 +34,130 @@ class _ShoppingListViewState extends State<ShoppingListView> {
       child: SingleChildScrollView(
         child: Padding(
           padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 30),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                "Lista de compras",
-                style: TextStyle(fontSize: 36, fontWeight: FontWeight.w600),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Obx(() {
-                if (controller.isLoading.value) {
-                  return Container(
-                    height: size.height / 4,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  );
-                } else if (controller.isLoading.value == false &&
-                    controller.allShoppingList.value.isEmpty) {
-                  return Container(
-                    width: size.width,
-                    height: size.height / 1.5,
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Center(
-                          child: SvgPicture.asset(
-                            AppAssets.NO_DATA_IMAGE,
-                            width: size.width / 1.7,
-                          ),
-                        ),
-                        SizedBox(
-                          height: 10,
-                        ),
-                        Text(
-                          "O que você precisa comprar hoje?",
-                          style: Theme.of(context).textTheme.titleMedium,
-                        ),
-                        SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          "Crie uma lista e rastreie",
-                          style: Theme.of(context).textTheme.titleSmall,
-                        )
-                      ],
-                    ),
-                  );
-                }
+          child: Obx(() {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                controller.allShoppingList.value.isNotEmpty
+                    ? Text(
+                        "Minhas listas",
+                        style: TextStyle(
+                            fontSize: 26, fontWeight: FontWeight.w600),
+                      )
+                    : SizedBox(),
+                SizedBox(
+                  height: 30,
+                ),
+                Obx(() {
+                  if (controller.isLoading.value == false &&
+                      controller.allShoppingList.value.isEmpty) {
+                    return FutureBuilder(
+                        future: controller.getAllShoppingList(),
+                        builder: (ctx, snap) {
+                          if (!snap.hasData &&
+                              controller.isLoading.value == true) {
+                            return Container(
+                              height: size.height / 4,
+                              child: Center(
+                                child: CircularProgressIndicator(),
+                              ),
+                            );
+                          }
 
-                return Column(
-                  children: List.generate(
-                      controller.allShoppingList.value.length,
-                      (index) => Padding(
-                            padding: const EdgeInsets.only(bottom: 16.0),
-                            child: ShoppingListCard(
-                                controller.allShoppingList.value[index]),
-                          )),
-                );
-              })
-            ],
-          ),
+                          if (controller.allShoppingList.value.isEmpty) {
+                            return Container(
+                              width: size.width,
+                              height: size.height / 1.5,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: SvgPicture.asset(
+                                      AppAssets.NO_DATA_IMAGE,
+                                      width: size.width / 1.7,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    "O que vai comprar hoje?",
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  ),
+                                  SizedBox(
+                                    height: 5,
+                                  ),
+                                  Text(
+                                    "Crie uma lista e acompanhe",
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  )
+                                ],
+                              ),
+                            );
+                          }
+
+                          return Column(
+                            children: List.generate(
+                                controller.allShoppingList.value.length,
+                                (index) => Padding(
+                                      padding:
+                                          const EdgeInsets.only(bottom: 16.0),
+                                      child: ShoppingListCard(controller
+                                          .allShoppingList.value[index]),
+                                    )),
+                          );
+                        });
+                  }
+
+                  /*  else if (controller.isLoading.value == false &&
+                      controller.allShoppingList.value.isEmpty) {
+                    return Container(
+                      width: size.width,
+                      height: size.height / 1.5,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Center(
+                            child: SvgPicture.asset(
+                              AppAssets.NO_DATA_IMAGE,
+                              width: size.width / 1.7,
+                            ),
+                          ),
+                          SizedBox(
+                            height: 10,
+                          ),
+                          Text(
+                            "O que você precisa comprar hoje?",
+                            style: Theme.of(context).textTheme.titleMedium,
+                          ),
+                          SizedBox(
+                            height: 5,
+                          ),
+                          Text(
+                            "Crie uma lista e rastreie",
+                            style: Theme.of(context).textTheme.titleSmall,
+                          )
+                        ],
+                      ),
+                    );
+
+                  }*/
+
+                  return Column(
+                    children: List.generate(
+                        controller.allShoppingList.value.length,
+                        (index) => Padding(
+                              padding: const EdgeInsets.only(bottom: 16.0),
+                              child: ShoppingListCard(
+                                  controller.allShoppingList.value[index]),
+                            )),
+                  );
+                })
+              ],
+            );
+          }),
         ),
       ),
     );

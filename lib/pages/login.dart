@@ -161,7 +161,10 @@ class _LoginState extends State<Login> {
                                       valueColor: AlwaysStoppedAnimation(
                                           SECONDARYCOLOR),
                                     )
-                                  : Text("Entrar")),
+                                  : Text(
+                                      "Entrar",
+                                      style: TextStyle(color: Colors.black),
+                                    )),
                         );
                       })),
                       SizedBox(
