@@ -20,7 +20,8 @@ Widget UserPhone(BuildContext context) {
           width: size.width,
           height: 55,
           decoration: BoxDecoration(
-              color: Color(0xffe5e5e5), borderRadius: BorderRadius.circular(8)),
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(8)),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: TextFormField(
@@ -32,7 +33,6 @@ Widget UserPhone(BuildContext context) {
                   filled: true,
                   prefixIcon: Icon(
                     CupertinoIcons.phone,
-                    color: Color(0xff000000),
                   ),
                   enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide.none,
@@ -40,7 +40,7 @@ Widget UserPhone(BuildContext context) {
                   focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide.none,
                       borderRadius: BorderRadius.all(Radius.circular(8))),
-                  fillColor: Color(0xffe5e5e5),
+                  fillColor: Theme.of(context).colorScheme.secondaryContainer,
                   labelStyle: TextStyle(color: Color(0xff000000)),
                   border: OutlineInputBorder()),
             ),

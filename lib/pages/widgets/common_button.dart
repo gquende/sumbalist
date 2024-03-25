@@ -19,7 +19,9 @@ class CommonButton extends StatelessWidget {
     return TextButton(
       style: active
           ? Theme.of(context).textButtonTheme.style
-          : TextButton.styleFrom(backgroundColor: Colors.grey),
+          : TextButton.styleFrom(
+              backgroundColor: Colors.grey,
+            ),
       onPressed: () {
         if (active) {
           action();
