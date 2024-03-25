@@ -18,6 +18,7 @@ class AppTheme {
   var mode5 = const Color(0xff151416);
 
   static ThemeData light = ThemeData(
+    scaffoldBackgroundColor: Colors.white,
     primaryColor: PRIMARYCOLOR,
     primaryColorDark: SECONDARYCOLOR,
     appBarTheme: TAppBarTheme.lightAppBarTheme,
