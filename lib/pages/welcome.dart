@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:sumbalist/controllers/login_controller.dart';
-import 'package:sumbalist/pages/home.dart';
-
 import 'package:sumbalist/pages/signup/signup.dart';
-import '../models/users.dart';
+
 import '../utils/constants/app_colors.dart';
 import 'login.dart';
 
@@ -30,24 +28,36 @@ class Welcome extends StatelessWidget {
               width: size.width,
               height: size.height * 0.5,
               child: Center(
-                child: Text(
-                  "SUMBALIST",
-                  style: Theme.of(context).textTheme.headlineLarge,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "SUMBALIST",
+                      style: Theme.of(context).textTheme.headlineLarge,
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      "Gestão de eficiente de lista de comprass",
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                  ],
                 ),
               ),
             ),
-            Text(
+            /* Text(
               "Bem vindo",
               style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
                   color: Colors.white),
-            ),
+            ),*/
             SizedBox(
               height: 10,
             ),
             Text(
-              "Tenha eficiência na gestão de sua casa",
+              "",
               style: TextStyle(color: Colors.white),
             ),
             SizedBox(
@@ -60,27 +70,15 @@ class Welcome extends StatelessWidget {
                   color: Colors.white, borderRadius: BorderRadius.circular(8)),
               child: TextButton(
                 onPressed: () async {
-                  await controller.loginWithGoogle();
-
-                  if (User.logged != null) {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (_) => Home()),
-                        (route) => false);
-                  }
+                  Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(builder: (_) => Signup()),
+                      (route) => false);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(
-                      Icons.g_mobiledata,
-                      size: 35,
-                      color: PRIMARYCOLOR,
-                    ),
-                    SizedBox(
-                      width: 2,
-                    ),
                     Text(
-                      "Entrar com google",
+                      "Registar-se",
                       style: TextStyle(color: Theme.of(context).primaryColor),
                     )
                   ],
@@ -100,14 +98,14 @@ class Welcome extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => Signup()),
+                      MaterialPageRoute(builder: (_) => Login()),
                       (route) => false);
                 },
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "Criar conta",
+                      "Entrar",
                       style: TextStyle(color: Colors.white),
                     )
                   ],
@@ -116,29 +114,6 @@ class Welcome extends StatelessWidget {
             ),
             SizedBox(
               height: 20,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  "Já tem uma conta?",
-                  style: TextStyle(color: Colors.white),
-                ),
-                SizedBox(
-                  width: 5,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pushAndRemoveUntil(
-                        MaterialPageRoute(builder: (_) => Login()),
-                        (route) => false);
-                  },
-                  child: Text(
-                    "Entrar",
-                    style: TextStyle(color: THIRDCOLOR),
-                  ),
-                ),
-              ],
             ),
             SizedBox(
               height: 40,

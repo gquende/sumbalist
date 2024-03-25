@@ -1,6 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sumbalist/models/users.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../controllers/shopping_list_controller.dart';
@@ -29,7 +31,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
       builder: (context) {
         return Dialog(
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
           child: GestureDetector(
             onTap: () {
               FocusScope.of(context).requestFocus(FocusNode());
@@ -39,7 +41,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 0.35,
                   decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(30)),
                   child: Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -76,24 +78,36 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                             width: size.width,
                             height: 55,
                             decoration: BoxDecoration(
-                                color: Colors.white,
-                                boxShadow: [
-                                  /* BoxShadow(
-                                      offset: Offset(0, 0),
-                                      color: Colors.black12,
-                                      spreadRadius: .7,
-                                      blurRadius: 0)*/
-                                ],
-                                borderRadius: BorderRadius.circular(5)),
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
+                                borderRadius: BorderRadius.circular(8)),
                             child: Padding(
-                              padding: const EdgeInsets.only(left: 0, right: 0),
-                              child: TextField(
+                              padding: const EdgeInsets.all(10),
+                              child: TextFormField(
                                 controller: shoplistNameController,
-                                maxLines: 1,
-                                decoration: const InputDecoration(
-                                    border: InputBorder.none,
-                                    labelText: "Nome da lista"),
-                                keyboardType: TextInputType.text,
+                                decoration: InputDecoration(
+                                    hintText: "Nome da lista",
+                                    contentPadding: EdgeInsets.only(bottom: 10),
+                                    focusColor: Color(0xff000000),
+                                    filled: true,
+                                    prefixIcon: Icon(
+                                      CupertinoIcons.square_list,
+                                    ),
+                                    enabledBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    focusedBorder: const OutlineInputBorder(
+                                        borderSide: BorderSide.none,
+                                        borderRadius: BorderRadius.all(
+                                            Radius.circular(8))),
+                                    fillColor: Theme.of(context)
+                                        .colorScheme
+                                        .secondaryContainer,
+                                    labelStyle:
+                                        TextStyle(color: Color(0xff000000)),
+                                    border: OutlineInputBorder()),
                               ),
                             ),
                           ),
@@ -107,9 +121,10 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                   var uuid = const Uuid();
                                   var shoplist = ShoppingList(
                                       uuid: uuid.v4(),
-                                      userUUID: "dede",
+                                      userUUID:
+                                          User.logged?.uuid ?? 'not defined',
                                       categoryUUID: "$index",
-                                      statusUUID: "Aberto",
+                                      statusUUID: "Open",
                                       name: shoplistNameController.text,
                                       total: 0,
                                       items: []);
@@ -149,8 +164,14 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
                                   child: item == null
-                                      ? const Text("Adicionar")
-                                      : const Text("Actualizar"),
+                                      ? const Text(
+                                          "Adicionar",
+                                          style: TextStyle(color: Colors.black),
+                                        )
+                                      : const Text(
+                                          "Actualizar",
+                                          style: TextStyle(color: Colors.black),
+                                        ),
                                 )),
                           ),
                         ],
@@ -174,7 +195,7 @@ Widget categoryIcon(
             borderRadius: BorderRadius.circular(5),
             color: active
                 ? const Color.fromRGBO(253, 185, 19, 0.1)
-                : const Color(0xffF9F9F9),
+                : Theme.of(context).colorScheme.secondaryContainer,
             border: active ? Border.all(color: PRIMARYCOLOR) : null),
         child: Icon(
           category.icon,

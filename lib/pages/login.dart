@@ -1,7 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:sumbalist/controllers/login_controller.dart';
 import 'package:sumbalist/pages/signup/signup.dart';
 
@@ -47,8 +46,9 @@ class _LoginState extends State<Login> {
                       ),
                       Container(
                         child: Text(
-                          "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam interdum, arcu vel euismod fermentum, sapien lectus ullamcorper arcu",
+                          "Acesse suas listas de compras personalizadas e faça suas compras de forma inteligente e conveniente",
                           maxLines: 3,
+                          style: TextStyle(fontSize: size.width / 26),
                         ),
                         width: size.width,
                         height: size.height / 6,
@@ -60,8 +60,10 @@ class _LoginState extends State<Login> {
                         width: size.width,
                         height: 55,
                         decoration: BoxDecoration(
-                            color: Color(0xffe5e5e5),
-                            borderRadius: BorderRadius.circular(50)),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
+                            borderRadius: BorderRadius.circular(8)),
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: TextFormField(
@@ -74,17 +76,18 @@ class _LoginState extends State<Login> {
                                 filled: true,
                                 prefixIcon: Icon(
                                   CupertinoIcons.person,
-                                  color: Color(0xff000000),
                                 ),
                                 enabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(11))),
+                                        BorderRadius.all(Radius.circular(8))),
                                 focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(11))),
-                                fillColor: Color(0xffe5e5e5),
+                                        BorderRadius.all(Radius.circular(8))),
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
                                 labelStyle: TextStyle(color: Color(0xff000000)),
                                 border: OutlineInputBorder()),
                           ),
@@ -97,8 +100,10 @@ class _LoginState extends State<Login> {
                         width: size.width,
                         height: 55,
                         decoration: BoxDecoration(
-                            color: Color(0xffe5e5e5),
-                            borderRadius: BorderRadius.circular(50)),
+                            color: Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer,
+                            borderRadius: BorderRadius.circular(8)),
                         child: Padding(
                           padding: const EdgeInsets.all(10),
                           child: TextFormField(
@@ -112,17 +117,18 @@ class _LoginState extends State<Login> {
                                 filled: true,
                                 prefixIcon: Icon(
                                   CupertinoIcons.padlock,
-                                  color: Color(0xff000000),
                                 ),
                                 enabledBorder: const OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(11))),
+                                        BorderRadius.all(Radius.circular(8))),
                                 focusedBorder: const OutlineInputBorder(
                                     borderSide: BorderSide.none,
                                     borderRadius:
-                                        BorderRadius.all(Radius.circular(11))),
-                                fillColor: Color(0xffe5e5e5),
+                                        BorderRadius.all(Radius.circular(8))),
+                                fillColor: Theme.of(context)
+                                    .colorScheme
+                                    .secondaryContainer,
                                 labelStyle: TextStyle(color: Color(0xff000000)),
                                 border: OutlineInputBorder()),
                           ),
@@ -147,7 +153,7 @@ class _LoginState extends State<Login> {
                           alignment: Alignment.center,
                           decoration: BoxDecoration(
                               color: PRIMARYCOLOR,
-                              borderRadius: BorderRadius.circular(50)),
+                              borderRadius: BorderRadius.circular(8)),
                           child: Padding(
                               padding: const EdgeInsets.all(10),
                               child: controller.loading.value
@@ -155,25 +161,16 @@ class _LoginState extends State<Login> {
                                       valueColor: AlwaysStoppedAnimation(
                                           SECONDARYCOLOR),
                                     )
-                                  : Text("Entrar")),
+                                  : Text(
+                                      "Entrar",
+                                      style: TextStyle(color: Colors.black),
+                                    )),
                         );
                       })),
-                      /*  SizedBox(
-                    height: 10,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      debugPrint("Clicked on Forget Password...");
-                    },
-                    child: Text(
-                      "Esqueceu a senha?",
-                      style: TextStyle(color: Colors.blue),
-                    ),
-                  ),*/
                       SizedBox(
                         height: 30,
                       ),
-                      Row(
+                      /* Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
@@ -245,7 +242,7 @@ class _LoginState extends State<Login> {
                       ),
                       SizedBox(
                         height: 30,
-                      ),
+                      ),*/
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [

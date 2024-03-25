@@ -2,10 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sumbalist/controllers/signup_controller.dart';
 import 'package:sumbalist/pages/home.dart';
+import 'package:sumbalist/pages/login.dart';
 import 'package:sumbalist/pages/signup/components/user_credentials.dart';
 import 'package:sumbalist/pages/signup/components/user_info.dart';
 import 'package:sumbalist/pages/signup/components/user_phone.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
+import 'package:sumbalist/utils/constants/app_colors.dart';
 
 import '../../models/users.dart';
 
@@ -49,8 +51,18 @@ class _SignupState extends State<Signup> {
                       },
                       child: currentPage >= 1
                           ? CircleAvatar(
-                              backgroundColor: Colors.grey,
-                              child: Icon(Icons.arrow_back_ios),
+                              backgroundColor: Theme.of(context)
+                                  .colorScheme
+                                  .primaryContainer,
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 8),
+                                child: Icon(
+                                  Icons.arrow_back_ios,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .secondaryContainer,
+                                ),
+                              ),
                             )
                           : Container(
                               height: 40,
@@ -84,7 +96,10 @@ class _SignupState extends State<Signup> {
                                     AlwaysStoppedAnimation(Colors.black),
                               ),
                             )
-                          : Text(currentPage == 2 ? "Concluir" : "Avançar"),
+                          : Text(
+                              currentPage == 2 ? "Concluir" : "Avançar",
+                              style: TextStyle(color: SECONDARYCOLOR),
+                            ),
                       action: () async {
                         if (currentPage < 2) {
                           currentPage++;
@@ -102,7 +117,32 @@ class _SignupState extends State<Signup> {
 
                         setState(() {});
                       },
-                      active: true))
+                      active: true)),
+                  SizedBox(
+                    height: 30,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Já tem uma conta?",
+                      ),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (_) => Login()),
+                              (route) => false);
+                        },
+                        child: Text(
+                          "Entrar",
+                          style: TextStyle(color: PRIMARYCOLOR),
+                        ),
+                      ),
+                    ],
+                  ),
                 ],
               ),
             ),

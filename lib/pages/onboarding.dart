@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
 import 'package:sumbalist/pages/welcome.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
+
 import '../utils/constants/files.dart';
 
 class OnBoarding extends StatefulWidget {
@@ -49,7 +50,7 @@ class _OnBoardingState extends State<OnBoarding> {
                           child: Column(
                             children: [
                               Text(
-                                "Planeja a sua lista",
+                                "Planeie sua lista compra",
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.center,
@@ -58,7 +59,7 @@ class _OnBoardingState extends State<OnBoarding> {
                                 height: 14,
                               ),
                               Text(
-                                "words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical",
+                                "O segredo para uma compra eficiente está no planeamento da sua lista de compra. Economize tempo planeando a sua lista de compras",
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center,
                               ),
@@ -93,7 +94,7 @@ class _OnBoardingState extends State<OnBoarding> {
                                 height: 14,
                               ),
                               Text(
-                                "words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical",
+                                "Transforme suas idas ao mercado em uma experiência eficiente e sem complicações",
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center,
                               ),
@@ -128,7 +129,7 @@ class _OnBoardingState extends State<OnBoarding> {
                                 height: 14,
                               ),
                               Text(
-                                "words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical",
+                                "Seja feliz com suas compras usando Sumbalist",
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center,
                               ),

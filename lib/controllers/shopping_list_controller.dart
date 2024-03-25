@@ -1,6 +1,6 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
 import '../models/shopping_list.dart';
 import '../models/shopping_list_item.dart';
 import '../repository/shopping_list_item_repository.dart';
@@ -29,7 +29,10 @@ class ShoppingListController extends BaseController {
   ShoppingListRepository repository;
   ShoppingListItemRepository itemRepository;
 
-  ShoppingListController(this.repository, this.itemRepository);
+  ShoppingListController(this.repository, this.itemRepository) {
+    priceController.text = "0";
+    qtyController.text = "1";
+  }
 
   Future<ShoppingList?> getShoppingList(String uuid) async {
     try {
@@ -177,8 +180,8 @@ class ShoppingListController extends BaseController {
 
   void resetData() {
     this.nameFieldController.text = "";
-    this.qtyController.text = "";
-    this.priceController.text = "";
+    this.qtyController.text = "1";
+    this.priceController.text = "0";
     this.descriptionController.text = "";
     this.priority = 1;
   }

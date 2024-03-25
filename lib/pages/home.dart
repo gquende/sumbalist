@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:sumbalist/pages/contacts_list.dart';
 import 'package:sumbalist/pages/shoppinglist/components/create_list.dart';
 import 'package:sumbalist/pages/shoppinglist/shopping_list_view.dart';
 
+import '../models/users.dart';
 import '../utils/constants/app_colors.dart';
 
 class Home extends StatefulWidget {
@@ -17,9 +17,36 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          "🛍SumbaList",
+        backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+        title: Padding(
+          padding: const EdgeInsets.only(top: 8.0, bottom: 8),
+          child: Row(
+            children: [
+              CircleAvatar(
+                backgroundColor:
+                    Theme.of(context).colorScheme.secondaryContainer,
+                child: Icon(Icons.person),
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Olá,",
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                  Text(
+                    "${User.logged?.name} ${User.logged?.surname}",
+                    style: Theme.of(context).textTheme.titleMedium,
+                  )
+                ],
+              )
+            ],
+          ),
         ),
+        elevation: 3,
       ),
       body: SingleChildScrollView(
         child: setPage(_currentIndex),
@@ -27,10 +54,7 @@ class _HomeState extends State<Home> {
       floatingActionButton: FloatingActionButton(
         backgroundColor: PRIMARYCOLOR,
         onPressed: () {
-          Navigator.of(context)
-              .push(MaterialPageRoute(builder: (context) => ContactsList()));
-
-          //floatButtonAction();
+          floatButtonAction();
         },
         child: Icon(Icons.add),
       ),

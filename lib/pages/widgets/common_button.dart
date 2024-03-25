@@ -19,7 +19,9 @@ class CommonButton extends StatelessWidget {
     return TextButton(
       style: active
           ? Theme.of(context).textButtonTheme.style
-          : TextButton.styleFrom(backgroundColor: Colors.grey),
+          : TextButton.styleFrom(
+              backgroundColor: Colors.grey,
+            ),
       onPressed: () {
         if (active) {
           action();
@@ -27,9 +29,9 @@ class CommonButton extends StatelessWidget {
       },
       child: Container(
         width: size.width,
-        height: 50,
+        height: 45,
         alignment: Alignment.center,
-        decoration: BoxDecoration(borderRadius: BorderRadius.circular(50)),
+        decoration: BoxDecoration(borderRadius: BorderRadius.circular(8)),
         child: Padding(padding: const EdgeInsets.all(10), child: title),
       ),
     );

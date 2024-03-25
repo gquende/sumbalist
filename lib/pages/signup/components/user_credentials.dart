@@ -19,8 +19,8 @@ Widget UserCredentials(BuildContext context) {
           width: size.width,
           height: 55,
           decoration: BoxDecoration(
-              color: Color(0xffe5e5e5),
-              borderRadius: BorderRadius.circular(50)),
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(8)),
           child: Padding(
             padding: const EdgeInsets.all(10),
             child: TextFormField(
@@ -32,15 +32,14 @@ Widget UserCredentials(BuildContext context) {
                   filled: true,
                   prefixIcon: Icon(
                     CupertinoIcons.mail,
-                    color: Color(0xff000000),
                   ),
                   enabledBorder: const OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(11))),
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
                   focusedBorder: const OutlineInputBorder(
                       borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(11))),
-                  fillColor: Color(0xffe5e5e5),
+                      borderRadius: BorderRadius.all(Radius.circular(8))),
+                  fillColor: Theme.of(context).colorScheme.secondaryContainer,
                   labelStyle: TextStyle(color: Color(0xff000000)),
                   border: OutlineInputBorder()),
             ),
@@ -53,8 +52,8 @@ Widget UserCredentials(BuildContext context) {
           width: size.width,
           height: 55,
           decoration: BoxDecoration(
-              color: Color(0xffe5e5e5),
-              borderRadius: BorderRadius.circular(50)),
+              color: Theme.of(context).colorScheme.secondaryContainer,
+              borderRadius: BorderRadius.circular(8)),
           child: Padding(
               padding: const EdgeInsets.all(10),
               child: Obx(() {
@@ -67,16 +66,16 @@ Widget UserCredentials(BuildContext context) {
                       focusColor: Color(0xff000000),
                       filled: true,
                       prefixIcon: Icon(
-                        CupertinoIcons.padlock_solid,
-                        color: Color(0xff000000),
+                        CupertinoIcons.padlock,
                       ),
                       enabledBorder: const OutlineInputBorder(
                           borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(11))),
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
                       focusedBorder: const OutlineInputBorder(
                           borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(11))),
-                      fillColor: Color(0xffe5e5e5),
+                          borderRadius: BorderRadius.all(Radius.circular(8))),
+                      fillColor:
+                          Theme.of(context).colorScheme.secondaryContainer,
                       labelStyle: TextStyle(color: Color(0xff000000)),
                       border: OutlineInputBorder(),
                       suffixIcon: GestureDetector(
