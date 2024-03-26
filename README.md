@@ -11,23 +11,36 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 
 ## Demonstração
 
-![GitHub Cards Preview](https://github.com/gquende/sumbalist/blob/develop/images/banner.png)
+
+<img src="https://github.com/gquende/sumbalist/blob/develop/images/1.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/2.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/3.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/4.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/5.png" height="300em"/>
 
 
+## Funcionalidades ✨
 
-# Funcionalidades ✨
+* [x] OnBoarding
+* [x] Autenticação
+* [x] Light e Dark Mode
+* [x] Criar Lista de compras
+* [x] Eliminar Lista de compras
+* [x] Actualizar Lista de compras
+* [x] Adicionar items na lista de Compras
+* [x] Remover items na lista de Compras
+* [x] Actualiar items na lista de Compras
 
-* OnBoarding
-* Autenticação
-* Light e Dark Mode
-* Criar Lista de compras
-* Eliminar Lista de compras
-* Actualizar Lista de compras
-* Adicionar items na lista de Compras
-* Remover items na lista de Compras
-* Actualiar items na lista de Compras
 
-## Rodando localmente
+## Stack utilizada
+
+* Flutter
+* Firebase
+
+## Arquitectura de Desenvolvimento
+
+A aplicação foi construído usando uma arquitetura baseado em Model-View-ViewModel (MVVM).
+Este padrão de desenho ajuda na separação dos dados,
+UI e lógica de negócio, permitindo uma base de código mais modular e
+testável. O mesmo é aprimorada com a biblioteca GetX para gerenciamento de estado de forma reactiva.
+
+## Executando localmente
 
 Clone o projeto
 
