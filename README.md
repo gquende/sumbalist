@@ -7,8 +7,63 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 
 ![GitHub Cards Preview](https://github.com/gquende/sumbalist/blob/develop/images/banner.png)
 
-# Funcionalidades ✨
-* Criar Lista de compras
-* Adicionar items na lista de Compras.
 
-  <br/>
+
+## Demonstração
+
+
+<img src="https://github.com/gquende/sumbalist/blob/develop/images/1.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/2.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/3.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/4.png" height="300em" />
+
+
+## Funcionalidades ✨
+
+* [x] OnBoarding
+* [x] Autenticação
+* [x] Light e Dark Mode
+* [x] Criar Lista de compras
+* [x] Eliminar Lista de compras
+* [x] Actualizar Lista de compras
+* [x] Adicionar items na lista de compras
+* [x] Remover items na lista de compras
+* [x] Actualiar items na lista de compras
+
+
+## Stack utilizada
+
+* Flutter
+* Firebase
+
+## Arquitectura de Desenvolvimento
+
+A aplicação foi construída usando uma arquitetura baseado em Model-View-ViewModel (MVVM).
+Este padrão de desenho ajuda na separação dos dados,
+UI e lógica de negócio, permitindo uma base de código mais modular e
+testável. A mesma é aprimorada com a biblioteca GetX para gerenciamento de estado de forma reactiva.
+
+## Executando localmente
+
+Clone o projecto
+
+```bash
+  git clone https://github.com/gquende/sumbalist
+```
+
+Entre no diretório do projecto
+
+```bash
+  cd sumbalist
+```
+
+Instale as dependências
+
+```bash
+  flutter pub get
+```
+
+Confirme que tenha um telemóvel ou emulador rodando e execute:
+
+```bash
+  flutter run
+```
+
+

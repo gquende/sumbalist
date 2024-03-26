@@ -2,6 +2,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sumbalist/controllers/login_controller.dart';
+import 'package:sumbalist/utils/theme/theme.dart';
 import 'package:sumbalist/utils/utils.dart';
 
 import '../controllers/shopping_list_controller.dart';
@@ -19,7 +20,7 @@ Future<void> initConfig() async {
   var shoplistController = ShoppingListController(
       shoppingListRepository, shoppingListItemRepository);
 
-  await shoplistController.getAllShoppingList();
+  await AppTheme.loadThemeMode();
   locator.registerSingleton(shoplistController);
   Get.put(shoplistController);
 

@@ -26,15 +26,15 @@ class App extends StatelessWidget {
   //
   @override
   Widget build(BuildContext context) {
-    return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
-      theme: isDarkMode ? AppTheme.darkMode : AppTheme.light,
-      darkTheme: AppTheme.darkMode,
-      home: Utils.isFirstTimeRun
-          ? OnBoarding()
-          : User.logged != null
-              ? Home()
-              : Login(),
-    );
+    return Obx(() => GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          theme: AppTheme.isDarkMode.value ? AppTheme.darkMode : AppTheme.light,
+          darkTheme: AppTheme.darkMode,
+          home: Utils.isFirstTimeRun
+              ? OnBoarding()
+              : User.logged != null
+                  ? Home()
+                  : Login(),
+        ));
   }
 }

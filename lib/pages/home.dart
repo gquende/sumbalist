@@ -1,6 +1,9 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:sumbalist/pages/shoppinglist/components/create_list.dart';
 import 'package:sumbalist/pages/shoppinglist/shopping_list_view.dart';
+import 'package:sumbalist/utils/theme/theme.dart';
 
 import '../models/users.dart';
 import '../utils/constants/app_colors.dart';
@@ -46,6 +49,23 @@ class _HomeState extends State<Home> {
             ],
           ),
         ),
+        centerTitle: false,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: GestureDetector(onTap: () {
+              //Change theme Mode
+              AppTheme.setDarkMode(!AppTheme.isDarkMode.value);
+            }, child: Obx(() {
+              return AppTheme.isDarkMode.value
+                  ? Icon(CupertinoIcons.lightbulb)
+                  : Icon(
+                      CupertinoIcons.lightbulb_fill,
+                      color: Theme.of(context).primaryColor,
+                    );
+            })),
+          )
+        ],
         elevation: 3,
       ),
       body: SingleChildScrollView(
