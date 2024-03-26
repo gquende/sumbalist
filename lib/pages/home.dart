@@ -57,9 +57,12 @@ class _HomeState extends State<Home> {
               //Change theme Mode
               AppTheme.setDarkMode(!AppTheme.isDarkMode.value);
             }, child: Obx(() {
-              return Icon(AppTheme.isDarkMode.value
-                  ? CupertinoIcons.lightbulb
-                  : CupertinoIcons.lightbulb_fill);
+              return AppTheme.isDarkMode.value
+                  ? Icon(CupertinoIcons.lightbulb)
+                  : Icon(
+                      CupertinoIcons.lightbulb_fill,
+                      color: Theme.of(context).primaryColor,
+                    );
             })),
           )
         ],

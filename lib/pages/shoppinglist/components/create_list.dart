@@ -39,7 +39,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
             child: SingleChildScrollView(child: Obx(() {
               return Container(
                   width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.35,
+                  height: MediaQuery.of(context).size.height * 0.4,
                   decoration: BoxDecoration(
                       color: Theme.of(context).colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(30)),
@@ -47,6 +47,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                       padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const SizedBox(
                             height: 10,
@@ -88,8 +89,9 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                 controller: shoplistNameController,
                                 decoration: InputDecoration(
                                     hintText: "Nome da lista",
+                                    hintStyle:
+                                        Theme.of(context).textTheme.labelMedium,
                                     contentPadding: EdgeInsets.only(bottom: 10),
-                                    focusColor: Color(0xff000000),
                                     filled: true,
                                     prefixIcon: Icon(
                                       CupertinoIcons.square_list,
