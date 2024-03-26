@@ -42,13 +42,13 @@ testável. O mesmo é aprimorada com a biblioteca GetX para gerenciamento de est
 
 ## Executando localmente
 
-Clone o projeto
+Clone o projecto
 
 ```bash
   git clone https://github.com/gquende/sumbalist
 ```
 
-Entre no diretório do projeto
+Entre no diretório do projecto
 
 ```bash
   cd sumbalist
