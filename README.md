@@ -12,7 +12,7 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 ## Demonstração
 
 
-<img src="https://github.com/gquende/sumbalist/blob/develop/images/1.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/2.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/3.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/4.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/5.png" height="300em"/>
+<img src="https://github.com/gquende/sumbalist/blob/develop/images/1.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/2.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/3.png" height="300em" /> <img src="https://github.com/gquende/sumbalist/blob/develop/images/4.png" height="300em" />
 
 
 ## Funcionalidades ✨
