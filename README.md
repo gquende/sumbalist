@@ -23,9 +23,9 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 * [x] Criar Lista de compras
 * [x] Eliminar Lista de compras
 * [x] Actualizar Lista de compras
-* [x] Adicionar items na lista de Compras
-* [x] Remover items na lista de Compras
-* [x] Actualiar items na lista de Compras
+* [x] Adicionar items na lista de compras
+* [x] Remover items na lista de compras
+* [x] Actualiar items na lista de compras
 
 
 ## Stack utilizada
@@ -35,10 +35,10 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 
 ## Arquitectura de Desenvolvimento
 
-A aplicação foi construído usando uma arquitetura baseado em Model-View-ViewModel (MVVM).
+A aplicação foi construída usando uma arquitetura baseado em Model-View-ViewModel (MVVM).
 Este padrão de desenho ajuda na separação dos dados,
 UI e lógica de negócio, permitindo uma base de código mais modular e
-testável. O mesmo é aprimorada com a biblioteca GetX para gerenciamento de estado de forma reactiva.
+testável. A mesma é aprimorada com a biblioteca GetX para gerenciamento de estado de forma reactiva.
 
 ## Executando localmente
 
