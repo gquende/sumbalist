@@ -1,3 +1,4 @@
+import 'package:currency_formatter/currency_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -90,6 +91,11 @@ class _HomeState extends State<Home> {
   }
 
   void floatButtonAction() {
+    CurrencyFormatter.majorsList.forEach((element) {
+      print(element.symbol + "- ${element.code}");
+      print(element.symbol);
+    });
+
     switch (_currentIndex) {
       case 0:
         {
