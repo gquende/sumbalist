@@ -144,4 +144,123 @@ class FirebaseService {
 
     return user;
   }
+
+  static Future<bool> saveShoppingList(Map<String, dynamic> list) async {
+    try {
+      database.ref("shoppinglists").child(list["uuid"]).set(list).then((value) {
+        database
+            .ref("user-lists")
+            .child(list["userUUID"])
+            .child(list["uuid"])
+            .set(list["uuid"]);
+      }).onError((error, stackTrace) {
+        debugPrint(error.toString());
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  static Future<List<DataSnapshot>> getShoppingList(String userUUID) async {
+    List<DataSnapshot> list = [];
+
+    try {
+      var data = await database.ref("user-lists").child(userUUID).get();
+
+      print(data);
+
+      return list;
+    } catch (error) {
+      return list;
+    }
+  }
+
+  static Future<bool> updateShoppingList(Map<String, dynamic> list) async {
+    try {
+      database
+          .ref("shoppinglists")
+          .child(list["uuid"])
+          .update(list)
+          .then((value) {});
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  static Future<bool> deleteShoppingList(Map<String, dynamic> list) async {
+    try {
+      database.ref("shoppinglists").child(list["uuid"]).remove().then((value) {
+        database
+            .ref("user-lists")
+            .child(list["userUUID"])
+            .child(list["uuid"])
+            .remove();
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  static Future<bool> addItemShoppingList(Map<String, dynamic> item) async {
+    try {
+      database
+          .ref("shoppinglists")
+          .child(item["listUUID"])
+          .child("items")
+          .child(item["uuid"])
+          .set(item)
+          .then((value) {})
+          .onError((error, stackTrace) {
+        debugPrint(error.toString());
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  static Future<bool> updateItemShoppingList(Map<String, dynamic> item) async {
+    try {
+      database
+          .ref("shoppinglists")
+          .child(item["listUUID"])
+          .child("items")
+          .child(item["uuid"])
+          .update(item)
+          .then((value) {})
+          .onError((error, stackTrace) {
+        debugPrint(error.toString());
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
+
+  static Future<bool> deleteItemShoppingList(Map<String, dynamic> item) async {
+    try {
+      database
+          .ref("shoppinglists")
+          .child(item["listUUID"])
+          .child("items")
+          .child(item["uuid"])
+          .remove()
+          .then((value) {})
+          .onError((error, stackTrace) {
+        debugPrint(error.toString());
+      });
+
+      return true;
+    } catch (error) {
+      return false;
+    }
+  }
 }
