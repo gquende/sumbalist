@@ -75,10 +75,8 @@ class SignupController extends GetxController {
       }
     } catch (error) {
       debugPrint(error.toString());
-
       isLoading.value = false;
     }
-
     isLoading.value = false;
     return null;
   }

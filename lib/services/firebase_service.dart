@@ -1,10 +1,8 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+//import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-import '../utils/utils.dart';
+//import '../utils/utils.dart';
 
 class FirebaseService {
   static final FirebaseDatabase database = FirebaseDatabase.instance;
@@ -22,21 +20,21 @@ class FirebaseService {
 
       String node = credentials.user!.email!
           .substring(0, credentials.user!.email!.indexOf('@'));
-      var snap = await database.ref('users').child(node).get();
+      var snap = await database
+          .ref('users')
+          .child(credentials.user?.uid ?? node)
+          .get();
 
       userData = {
         "uuid": credentials.user?.uid ?? '',
         "username": node,
-        "name": (snap!.value as Map)["name"],
-        "surname": (snap!.value as Map)["surname"],
-        "email": (snap!.value as Map)["email"],
-        "phoneNumber": (snap!.value as Map)["phone"],
+        "name": (snap.value as Map)["name"],
+        "surname": (snap.value as Map)["surname"],
+        "email": (snap.value as Map)["email"],
+        "phoneNumber": (snap.value as Map)["phone"],
       };
-    } catch (e) {
-      //Erro genérico
-      debugPrint(e.toString());
-    }
-    debugPrint(userData.toString());
+    } catch (e) {}
+
     return userData;
   }
 
@@ -48,9 +46,8 @@ class FirebaseService {
 
     database
         .ref("users")
-        .child(node)
+        .child(credentials.user?.uid ?? node)
         .set({
-          "uuid": credentials.user?.uid ?? '',
           "username": node,
           "name": map["name"],
           "surname": map["surname"],
@@ -58,13 +55,12 @@ class FirebaseService {
           "phone": map["phone"]
         })
         .then((value) => null)
-        .onError((error, stackTrace) {
-          debugPrint(error.toString());
-        });
+        .onError((error, stackTrace) {});
 
     return credentials;
   }
 
+  /*
   static Future<User?> loginWithGoogle() async {
     User? user;
     try {
@@ -86,29 +82,29 @@ class FirebaseService {
               'name': value.user!.displayName,
               'email': value.user!.email,
             }).then((val) {
-              Utils.showSnackBar(
+              /* Utils.showSnackBar(
                   'Login',
                   'Successfully Login',
                   const Icon(
                     FontAwesomeIcons.triangleExclamation,
                     color: Colors.red,
                   ),
-                  Colors.green);
+                  Colors.green);*/
 
               user = value.user;
             }).onError((error, stackTrace) {
-              Utils.showSnackBar(
+              /*Utils.showSnackBar(
                   'Erro',
                   error.toString(),
                   const Icon(
                     FontAwesomeIcons.triangleExclamation,
                     color: Colors.red,
                   ),
-                  Colors.red);
+                  Colors.red);*/
               return;
             });
           }).onError((error, stackTrace) {
-            debugPrint(error.toString());
+            /* debugPrint(error.toString());
             Utils.showSnackBar(
                 'Erro',
                 error.toString(),
@@ -116,11 +112,11 @@ class FirebaseService {
                   FontAwesomeIcons.triangleExclamation,
                   color: Colors.red,
                 ),
-                Colors.red);
+                Colors.red);*/
           });
         }
       }).onError((error, stackTrace) {
-        debugPrint(error.toString());
+        /*debugPrint(error.toString());
         Utils.showSnackBar(
             'Erro',
             error.toString(),
@@ -128,10 +124,10 @@ class FirebaseService {
               FontAwesomeIcons.triangleExclamation,
               color: Colors.red,
             ),
-            Colors.red);
+            Colors.red);*/
       });
     } catch (error) {
-      debugPrint(error.toString());
+      /*  debugPrint(error.toString());
       Utils.showSnackBar(
           'Erro',
           error.toString(),
@@ -139,12 +135,14 @@ class FirebaseService {
             FontAwesomeIcons.triangleExclamation,
             color: Colors.red,
           ),
-          Colors.red);
+          Colors.red);*/
     }
 
     return user;
   }
 
+
+  */
   static Future<bool> saveShoppingList(Map<String, dynamic> list) async {
     try {
       database.ref("shoppinglists").child(list["uuid"]).set(list).then((value) {
@@ -154,7 +152,7 @@ class FirebaseService {
             .child(list["uuid"])
             .set(list["uuid"]);
       }).onError((error, stackTrace) {
-        debugPrint(error.toString());
+        /* debugPrint(error.toString());*/
       });
 
       return true;
@@ -163,16 +161,26 @@ class FirebaseService {
     }
   }
 
-  static Future<List<DataSnapshot>> getShoppingList(String userUUID) async {
-    List<DataSnapshot> list = [];
-
+  static Future<List<Map>> getShoppingList(String userUUID) async {
+    List<Map> list = [];
     try {
       var data = await database.ref("user-lists").child(userUUID).get();
+      var keys = (data.value as Map).keys.toList();
 
-      print(data);
+      print(keys);
+      for (int i = 0; i < keys.length; i++) {
+        var shoppinglist =
+            await database.ref("shoppinglists").child(keys[i]).get();
+
+        list.add(shoppinglist.value as Map);
+      }
+      print("Lista");
+      print(list);
 
       return list;
     } catch (error) {
+      print(error);
+
       return list;
     }
   }
@@ -217,7 +225,7 @@ class FirebaseService {
           .set(item)
           .then((value) {})
           .onError((error, stackTrace) {
-        debugPrint(error.toString());
+        /*debugPrint(error.toString());*/
       });
 
       return true;
@@ -236,7 +244,7 @@ class FirebaseService {
           .update(item)
           .then((value) {})
           .onError((error, stackTrace) {
-        debugPrint(error.toString());
+        /*debugPrint(error.toString());*/
       });
 
       return true;
@@ -255,7 +263,7 @@ class FirebaseService {
           .remove()
           .then((value) {})
           .onError((error, stackTrace) {
-        debugPrint(error.toString());
+        /*debugPrint(error.toString());*/
       });
 
       return true;

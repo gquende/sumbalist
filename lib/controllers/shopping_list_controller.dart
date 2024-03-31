@@ -54,6 +54,28 @@ class ShoppingListController extends BaseController {
     return null;
   }
 
+  //Load Data from Firebase
+  Future<void> loadShoppingList(String userUUID) async {
+    try {
+      var list = await FirebaseService.getShoppingList(userUUID);
+
+      list.forEach((element) {
+        createShoppinglist(ShoppingList.fromMap(element));
+
+        //Todo Refactor
+        var itemsMap = (element["items"] ?? {}) as Map;
+        var itemsList = itemsMap.values.toList();
+
+        //Save Item of Shoppinglist
+        for (var i = 0; i < itemsList.length; i++) {
+          addItem(ShoppinglistItem.fromMap(itemsList[i]));
+        }
+      });
+    } catch (error) {
+      debugPrint("${error}");
+    }
+  }
+
   Future<bool> createShoppinglist(ShoppingList shoppingList) async {
     try {
       var item = await repository.create(shoppingList);

@@ -42,7 +42,7 @@ class ShoppinglistItem extends BaseModel {
     };
   }
 
-  factory ShoppinglistItem.fromMap(Map<String, dynamic> map) {
+  factory ShoppinglistItem.fromMap(Map map) {
     return ShoppinglistItem(
         uuid: map["uuid"],
         isDone: map["isDone"] == 1,

@@ -2,7 +2,9 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sumbalist/controllers/shopping_list_controller.dart';
 import 'package:sumbalist/models/users.dart';
 import 'package:sumbalist/services/firebase_service.dart';
 import 'package:sumbalist/utils/utils.dart';
@@ -30,13 +32,25 @@ class LoginController extends GetxController {
             passwordFieldController.value.text);
 
         if (data != null) {
+          //         print("object");
           var user = User.fromMap(data);
           var shared = await SharedPreferences.getInstance();
           shared.setString("user", jsonEncode(user.toMap()));
           debugPrint(jsonEncode(user.toMap()));
-          setLoading(false);
+
           await shared.setBool("isFirstTimeRun", false);
+
+          var shopingListController =
+              GetIt.instance.get<ShoppingListController>();
+
+          await shopingListController.loadShoppingList(user.uuid);
+
+          setLoading(false);
           return user;
+        } else {
+          setLoading(false);
+          Utils.showSnackBar("Erro", "Utilizador não encontrado",
+              Icon(Icons.info), Colors.red);
         }
 
         return null;
@@ -53,6 +67,7 @@ class LoginController extends GetxController {
     return null;
   }
 
+  /*
   Future<User?> loginWithGoogle() async {
     setLoading(true);
     var credentials = await FirebaseService.loginWithGoogle();
@@ -74,6 +89,8 @@ class LoginController extends GetxController {
 
     setLoading(false);
   }
+
+  */
 
   static Future<User?> checkUserAuthenticated() async {
     try {
