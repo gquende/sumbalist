@@ -1,3 +1,4 @@
+import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -24,7 +25,7 @@ class ShoplistDetails extends StatefulWidget {
 
 class _ShoplistDetailsState extends State<ShoplistDetails> {
   var controller = GetIt.instance.get<ShoppingListController>();
-
+  final CurrencyTextInputFormatter _formatter = CurrencyTextInputFormatter();
   @override
   void initState() {
     controller.shoppingList.value = widget.shoppingList;
@@ -194,7 +195,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                                       // style: Text(),
                                     ),
                                     Text(
-                                      "${appCurrencyFormat(controller.shoppingList.value.calculateTotalBuyed())} (${controller.shoppingList.value.calculateTotalItemBuyed()})",
+                                      "${AppCurrencyFormat.format(controller.shoppingList.value.calculateTotalBuyed())} (${controller.shoppingList.value.calculateTotalItemBuyed()})",
                                       style: TextStyle(
                                         fontFamily: 'Poppins-Medium',
                                         fontSize: 18,
@@ -216,7 +217,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                                       // style: Text(),
                                     ),
                                     Text(
-                                      "    ${appCurrencyFormat(controller.shoppingList.value.calculateTotal() - controller.shoppingList.value.calculateTotalBuyed())} (${controller.shoppingList.value.calculateTotalItemPending()})",
+                                      "    ${AppCurrencyFormat.format(controller.shoppingList.value.calculateTotal() - controller.shoppingList.value.calculateTotalBuyed())} (${controller.shoppingList.value.calculateTotalItemPending()})",
                                       style: TextStyle(
                                           fontFamily: 'Poppins-Medium',
                                           fontSize: 18,
@@ -344,7 +345,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Text(
-                                  appCurrencyFormat(item.price * item.qty),
+                                  AppCurrencyFormat.format(
+                                      item.price * item.qty),
                                   style:
                                       Theme.of(context).textTheme.labelMedium,
                                 ),
@@ -480,6 +482,9 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
     var priority = 1.obs;
     var categoryIdSelected = 1.obs;
 
+    final CurrencyTextInputFormatter inputCurrencyFormat =
+        CurrencyTextInputFormatter(symbol: AppCurrencyFormat.formater.symbol);
+
     if (item != null) {
       controller.nameFieldController.text = item!.itemName;
       controller.descriptionController.text = item!.description;
@@ -578,6 +583,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                                   .secondaryContainer,
                               labelStyle: TextStyle(color: Color(0xff000000)),
                               border: OutlineInputBorder()),
+                          inputFormatters: [inputCurrencyFormat],
                         ),
                       ),
                     ),
@@ -690,7 +696,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                           itemName: controller.nameFieldController.text,
                           description: controller.descriptionController.text,
                           qty: int.parse(controller.qtyController.text),
-                          price: double.parse(controller.priceController.text),
+                          price: double.parse(
+                              "${inputCurrencyFormat.getUnformattedValue()}"),
                           priority: controller.priority);
 
                       var value = await controller.addItem(item);
@@ -705,13 +712,12 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                             .updateShoppinglist(controller.shoppingList.value);
                       }
                     } else {
-                      item!.itemName = controller.nameFieldController.text;
-                      item!.description = controller.descriptionController.text;
-                      item!.qty = int.parse(controller.qtyController.text);
-                      item!.price =
-                          double.parse(controller.priceController.text);
-                      item!.priority = controller.priority;
-
+                      item.itemName = controller.nameFieldController.text;
+                      item.description = controller.descriptionController.text;
+                      item.qty = int.parse(controller.qtyController.text);
+                      item.price = double.parse(
+                          "${inputCurrencyFormat.getUnformattedValue()}");
+                      item.priority = controller.priority;
                       controller.updateItem(item as ShoppinglistItem);
                     }
 

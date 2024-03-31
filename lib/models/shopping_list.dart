@@ -24,7 +24,7 @@ class ShoppingList extends BaseModel {
       String? updated_at})
       : super(uuid, id, created_at, updated_at);
 
-  factory ShoppingList.fromMap(Map<String, dynamic> map) {
+  factory ShoppingList.fromMap(Map map) {
     return ShoppingList(
         uuid: map["uuid"],
         userUUID: map["userUUID"],
@@ -32,7 +32,7 @@ class ShoppingList extends BaseModel {
         categoryUUID: map["categoryUUID"],
         statusUUID: map["statusUUID"],
         items: [],
-        total: map["total"] ?? 0);
+        total: double.parse("${map["total"] ?? 0}"));
   }
 
   Map<String, dynamic> toMap() {

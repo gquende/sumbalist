@@ -1,7 +1,6 @@
 import 'base_model.dart';
 
 class ShoppinglistItem extends BaseModel {
-  
   String listUUID;
   String itemName;
   int qty = 1;
@@ -30,7 +29,6 @@ class ShoppinglistItem extends BaseModel {
 
   Map<String, Object?> toMap() {
     return {
-
       "listUUID": this.listUUID,
       "uuid": this.uuid,
       "itemName": this.itemName,
@@ -40,14 +38,12 @@ class ShoppinglistItem extends BaseModel {
       "priority": this.priority,
       "created_at": this.created_at,
       "updated_at": this.updated_at,
-      "isDone": this.isDone == true ? 1:0
-  
+      "isDone": this.isDone == true ? 1 : 0
     };
   }
 
-  factory ShoppinglistItem.fromMap(Map<String, dynamic> map) {
+  factory ShoppinglistItem.fromMap(Map map) {
     return ShoppinglistItem(
-        
         uuid: map["uuid"],
         isDone: map["isDone"] == 1,
         listUUID: map["listUUID"],
@@ -58,18 +54,12 @@ class ShoppinglistItem extends BaseModel {
         priority: map["priority"],
         id: map["id"],
         created_at: map["created_at"],
-        updated_at: map["updated_at"]
-        
-        );
+        updated_at: map["updated_at"]);
   }
 
-  
   @override
   String toString() {
     // TODO: implement toString
     return "(Id:${this.id}, ItemName:${this.itemName}, isDone: ${this.isDone})";
   }
-
-
-
 }

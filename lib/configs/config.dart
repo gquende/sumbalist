@@ -2,9 +2,9 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sumbalist/controllers/login_controller.dart';
+import 'package:sumbalist/utils/currency.dart';
 import 'package:sumbalist/utils/theme/theme.dart';
 import 'package:sumbalist/utils/utils.dart';
-
 import '../controllers/shopping_list_controller.dart';
 import '../core/database.dart';
 import '../firebase_options.dart';
@@ -21,6 +21,8 @@ Future<void> initConfig() async {
       shoppingListRepository, shoppingListItemRepository);
 
   await AppTheme.loadThemeMode();
+
+  await AppCurrencyFormat.init();
   locator.registerSingleton(shoplistController);
   Get.put(shoplistController);
 
