@@ -19,7 +19,7 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 
 * [x] OnBoarding
 * [x] Autenticação
-* [x] Light e Dark Mode
+* [x] Modo claro e escuro
 * [x] Criar Lista de compras
 * [x] Eliminar Lista de compras
 * [x] Actualizar Lista de compras
