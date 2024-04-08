@@ -10,6 +10,7 @@ import 'package:sumbalist/pages/widgets/common_button.dart';
 import 'package:sumbalist/utils/constants/app_colors.dart';
 
 import '../../models/users.dart';
+import '../policy_and_terms.dart';
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -120,6 +121,37 @@ class _SignupState extends State<Signup> {
                       active: true)),
                   SizedBox(
                     height: 30,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => PolicyAndTerms()));
+                    },
+                    child: RichText(
+                      text: TextSpan(
+                          style: Theme.of(context).textTheme.bodyMedium,
+                          children: [
+                            TextSpan(
+                              text:
+                                  'Ao se registar voçê concorda com as nossas ',
+                            ),
+                            TextSpan(
+                                text: 'Políticas de privacidade',
+                                style: TextStyle(
+                                  color: PRIMARYCOLOR,
+                                )),
+                            TextSpan(text: ' e ', style: TextStyle()),
+                            TextSpan(
+                                text: 'Termos de uso',
+                                style: TextStyle(
+                                  color: PRIMARYCOLOR,
+                                ))
+                          ]),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 20,
                   ),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
