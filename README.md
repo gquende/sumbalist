@@ -25,7 +25,7 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 * [x] Actualizar Lista de compras
 * [x] Adicionar items na lista de compras
 * [x] Remover items na lista de compras
-* [x] Actualiar items na lista de compras
+* [x] Actualizar items na lista de compras
 
 
 ## Stack utilizada
