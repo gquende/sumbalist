@@ -64,6 +64,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
                             );
                           }
 
+                          //Verifica se a lista está vazia
                           if (controller.allShoppingList.value.isEmpty) {
                             return Container(
                               width: size.width,
