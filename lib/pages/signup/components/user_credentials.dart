@@ -26,22 +26,24 @@ Widget UserCredentials(BuildContext context) {
             child: TextFormField(
               controller: controller.emailController.value,
               decoration: InputDecoration(
-                  hintText: "Email",
-                  contentPadding: EdgeInsets.only(bottom: 10),
-                  focusColor: Color(0xff000000),
-                  filled: true,
-                  prefixIcon: Icon(
-                    CupertinoIcons.mail,
-                  ),
-                  enabledBorder: const OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  focusedBorder: const OutlineInputBorder(
-                      borderSide: BorderSide.none,
-                      borderRadius: BorderRadius.all(Radius.circular(8))),
-                  fillColor: Theme.of(context).colorScheme.secondaryContainer,
-                  labelStyle: TextStyle(color: Color(0xff000000)),
-                  border: OutlineInputBorder()),
+                hintText: "Email",
+                contentPadding: EdgeInsets.only(bottom: 10),
+                focusColor: Color(0xff000000),
+                filled: true,
+                prefixIcon: Icon(
+                  CupertinoIcons.mail,
+                ),
+                enabledBorder: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                focusedBorder: const OutlineInputBorder(
+                    borderSide: BorderSide.none,
+                    borderRadius: BorderRadius.all(Radius.circular(8))),
+                fillColor: Theme.of(context).colorScheme.secondaryContainer,
+                labelStyle: TextStyle(color: Color(0xff000000)),
+                border: OutlineInputBorder(),
+              ),
+              keyboardType: TextInputType.emailAddress,
             ),
           ),
         ),
