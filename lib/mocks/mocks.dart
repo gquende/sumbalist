@@ -11,7 +11,7 @@ var shoplistItemsMock = [
       isDone: false,
       listUUID: "",
       itemName: "Maracujá",
-      description: "Comprar para matabicho",
+      description: "Comprar Pão",
       qty: 2,
       price: 1000.0,
       priority: 1),
@@ -46,7 +46,7 @@ ShoppingList shoplistMock2 = ShoppingList(
 
 User userMock = User(
     uuid: uuidGenerator.v4(),
-    username: "926884947",
+    username: "+233",
     name: "Geraldo",
     surname: "Quende",
     phoneNumber: "926884947",

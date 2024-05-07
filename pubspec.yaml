@@ -40,6 +40,8 @@ dependencies:
   permission_handler: ^11.0.1
   email_validator: ^2.1.17
   currency_text_input_formatter: ^2.1.10
+  country_picker:
+  dio:
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"
@@ -73,6 +75,7 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
     - assets/svg/
+    - assets/data/
     - assets/animations/
   #   - images/a_dot_ham.jpeg
 

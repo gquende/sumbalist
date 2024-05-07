@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sumbalist/controllers/signup_controller.dart';
-import 'package:sumbalist/pages/home.dart';
 import 'package:sumbalist/pages/login.dart';
 import 'package:sumbalist/pages/signup/components/user_credentials.dart';
 import 'package:sumbalist/pages/signup/components/user_info.dart';
@@ -9,7 +8,6 @@ import 'package:sumbalist/pages/signup/components/user_phone.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
 import 'package:sumbalist/utils/constants/app_colors.dart';
 
-import '../../models/users.dart';
 import '../policy_and_terms.dart';
 
 class Signup extends StatefulWidget {
@@ -20,10 +18,16 @@ class Signup extends StatefulWidget {
 }
 
 class _SignupState extends State<Signup> {
-  PageController pageController = PageController();
   var controller = Get.put(SignupController());
 
-  int currentPage = 0;
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    controller.cleanData();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,14 +47,14 @@ class _SignupState extends State<Signup> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        currentPage--;
+                        controller.currentPage--;
 
                         setState(() {});
-                        pageController.previousPage(
+                        controller.pageController.previousPage(
                             duration: Duration(milliseconds: 500),
                             curve: Curves.ease);
                       },
-                      child: currentPage >= 1
+                      child: controller.currentPage >= 1
                           ? CircleAvatar(
                               backgroundColor: Theme.of(context)
                                   .colorScheme
@@ -75,12 +79,12 @@ class _SignupState extends State<Signup> {
                     height: size.height / 2,
                     width: size.width,
                     child: PageView(
-                      controller: pageController,
+                      controller: controller.pageController,
                       physics: NeverScrollableScrollPhysics(),
                       children: [
                         UserInfo(context),
                         UserCredentials(context),
-                        UserPhone(context)
+                        UserPhone()
                       ],
                     ),
                   ),
@@ -98,23 +102,13 @@ class _SignupState extends State<Signup> {
                               ),
                             )
                           : Text(
-                              currentPage == 2 ? "Concluir" : "Avançar",
+                              controller.currentPage == 2
+                                  ? "Concluir"
+                                  : "Avançar",
                               style: TextStyle(color: SECONDARYCOLOR),
                             ),
                       action: () async {
-                        if (currentPage < 2) {
-                          currentPage++;
-                          pageController.nextPage(
-                              duration: Duration(milliseconds: 500),
-                              curve: Curves.ease);
-                        } else if (currentPage >= 2) {
-                          await controller.createAccount();
-
-                          if (User.logged != null) {
-                            Navigator.of(context).pushReplacement(
-                                MaterialPageRoute(builder: (ctx) => Home()));
-                          }
-                        }
+                        controller.nextStep(context);
 
                         setState(() {});
                       },
@@ -133,7 +127,7 @@ class _SignupState extends State<Signup> {
                           children: [
                             TextSpan(
                               text:
-                                  'Ao se registar voçê concorda com as nossas ',
+                                  'Ao se registar você concorda com as nossas ',
                             ),
                             TextSpan(
                                 text: 'Políticas de privacidade',

@@ -42,20 +42,22 @@ class FirebaseService {
     var credentials = await auth.createUserWithEmailAndPassword(
         email: map["email"], password: map["password"]);
     var email = map["email"] as String;
-    var node = email.substring(0, email.indexOf('@'));
 
-    database
-        .ref("users")
-        .child(credentials.user?.uid ?? node)
-        .set({
-          "username": node,
-          "name": map["name"],
-          "surname": map["surname"],
-          "email": map["email"],
-          "phone": map["phone"]
-        })
-        .then((value) => null)
-        .onError((error, stackTrace) {});
+    database.ref("users").child(credentials.user?.uid ?? email).set({
+      "username": email,
+      "name": map["name"],
+      "surname": map["surname"],
+      "email": map["email"],
+      "phone": map["phone"]
+    }).then((value) {
+      database
+          .ref("phones")
+          .child(map["phone"])
+          .set({"uuid": credentials.user?.uid ?? "undefined"})
+          .then((value) {})
+          .onError((error, stackTrace) {});
+      ;
+    }).onError((error, stackTrace) {});
 
     return credentials;
   }
