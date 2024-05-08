@@ -22,7 +22,7 @@ class PolicyAndTerms extends StatelessWidget {
                     context),
                 textWithTitle(
                     "1. Coleta de Informações",
-                    "A Sumbalist coleta algumas informações pessoais no intuito de melhorar a experiência do usuário, de igual modo garantimos a segurança dos mesmos A aplicação coleta as seguintes informações: Informações de Registro: Ao se registrar na aplicação, solicitamos seu nome, senha, emaill e número de telefone. Informações de Compra: Quando você adiciona itens à sua lista de compras, coletamos informações sobre os itens e suas preferências de compra. Informações de Uso: Podemos coletar informações sobre como você usa nossa aplicação, incluindo interações com os recursos e o tempo gasto em determinadas páginas",
+                    "A SumbaList coleta algumas informações pessoais no intuito de melhorar a experiência do usuário, de igual modo garantimos a segurança dos mesmos A aplicação coleta as seguintes informações: Informações de Registro: Ao se registrar na aplicação, solicitamos seu nome, senha, emaill e número de telefone. Informações de Compra: Quando você adiciona itens à sua lista de compras, coletamos informações sobre os itens e suas preferências de compra. Informações de Uso: Podemos coletar informações sobre como você usa nossa aplicação, incluindo interações com os recursos e o tempo gasto em determinadas páginas",
                     context),
                 textWithTitle(
                     "2. Uso das Informações",
