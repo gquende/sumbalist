@@ -144,4 +144,8 @@ class SignupController extends GetxController {
     currentPage = 0;
     userLocation.value = UserLocation();
   }
+
+
+
+
 }

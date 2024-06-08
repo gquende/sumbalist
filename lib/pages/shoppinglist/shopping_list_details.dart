@@ -469,8 +469,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                   });
                 });
               },
-              activeColor: PRIMARYCOLOR,
-              focusColor: Colors.blue,
+              fillColor: MaterialStateProperty.all(
+                  item.isDone ? PRIMARYCOLOR : Colors.grey),
             ))
       ],
     );
