@@ -192,7 +192,7 @@ class ShoppingListCard extends StatelessWidget {
                         onTap: () {
                           shoplistForm(context, shoppinglist);
                         },
-                        child: Row(
+                        child: const Row(
                           children: [
                             Icon(Icons.edit),
                             SizedBox(
@@ -202,7 +202,7 @@ class ShoppingListCard extends StatelessWidget {
                           ],
                         )),
                     PopupMenuItem(
-                      child: Row(
+                      child: const Row(
                         children: [
                           Icon(Icons.delete),
                           SizedBox(

@@ -145,6 +145,7 @@ class FirebaseService {
 
 
   */
+
   static Future<bool> saveShoppingList(Map<String, dynamic> list) async {
     try {
       database.ref("shoppinglists").child(list["uuid"]).set(list).then((value) {
