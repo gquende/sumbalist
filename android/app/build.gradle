@@ -27,6 +27,8 @@ if (flutterVersionName == null) {
     flutterVersionName = "1.0"
 }
 
+
+
 android {
     namespace = "com.gquende.sumbalist"
     compileSdk = flutter.compileSdkVersion
@@ -52,25 +54,31 @@ android {
         release {
             // TODO: Add your own signing config for the release build.
             // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
+            //signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
         }
     }
+
 
 //    flavorDimensions "default"
 //    productFlavors {
 //        dev {
 //            applicationIdSuffix ".dev"
-//            resValue "string", "app_name", "Meu Kumbu Dev"
+//            resValue "string", "app_name", "SumbaList Dev"
 //        }
 //        prod {
 //
-//            resValue "string", "app_name", "Meu Kumbu"
+//            resValue "string", "app_name", "SumbaList"
 //        }
 //    }
 
 
 }
 
+
+
 flutter {
-    source = "../.."
+    source '../..'
 }
+
+
