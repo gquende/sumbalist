@@ -62,8 +62,7 @@ class FirebaseService {
     return credentials;
   }
 
-  /*
-  static Future<User?> loginWithGoogle() async {
+  /* static Future<User?> loginWithGoogle() async {
     User? user;
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
