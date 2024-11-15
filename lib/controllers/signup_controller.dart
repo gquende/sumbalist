@@ -125,8 +125,8 @@ class SignupController extends GetxController {
         {
           await createAccount();
           if (User.logged != null) {
-            Navigator.of(context)
-                .pushReplacement(MaterialPageRoute(builder: (ctx) => Home()));
+            Navigator.pushAndRemoveUntil(context,
+                MaterialPageRoute(builder: (ctx) => Home()), (route) => false);
           }
         }
 
@@ -144,4 +144,8 @@ class SignupController extends GetxController {
     currentPage = 0;
     userLocation.value = UserLocation();
   }
+
+
+
+
 }

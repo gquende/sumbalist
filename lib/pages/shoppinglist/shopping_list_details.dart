@@ -25,7 +25,7 @@ class ShoplistDetails extends StatefulWidget {
 
 class _ShoplistDetailsState extends State<ShoplistDetails> {
   var controller = GetIt.instance.get<ShoppingListController>();
-  final CurrencyTextInputFormatter _formatter = CurrencyTextInputFormatter();
+
   @override
   void initState() {
     controller.shoppingList.value = widget.shoppingList;
@@ -469,8 +469,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                   });
                 });
               },
-              activeColor: PRIMARYCOLOR,
-              focusColor: Colors.blue,
+              fillColor: MaterialStateProperty.all(
+                  item.isDone ? PRIMARYCOLOR : Colors.grey),
             ))
       ],
     );
@@ -483,7 +483,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
     var categoryIdSelected = 1.obs;
 
     final CurrencyTextInputFormatter inputCurrencyFormat =
-        CurrencyTextInputFormatter(symbol: AppCurrencyFormat.formater.symbol);
+        CurrencyTextInputFormatter.currency(
+            symbol: AppCurrencyFormat.formater.symbol);
 
     if (item != null) {
       controller.nameFieldController.text = item!.itemName;

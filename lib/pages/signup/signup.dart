@@ -47,12 +47,16 @@ class _SignupState extends State<Signup> {
                 children: [
                   GestureDetector(
                       onTap: () {
-                        controller.currentPage--;
+                        if (controller.currentPage > 0) {
+                          setState(() {
+                            controller.currentPage--;
+                            controller.pageController.previousPage(
+                                duration: Duration(milliseconds: 500),
+                                curve: Curves.ease);
+                          });
 
-                        setState(() {});
-                        controller.pageController.previousPage(
-                            duration: Duration(milliseconds: 500),
-                            curve: Curves.ease);
+                          //  controller.pageController.jumpToPage(controller.currentPage);
+                        }
                       },
                       child: controller.currentPage >= 1
                           ? CircleAvatar(

@@ -36,7 +36,7 @@ dependencies:
   firebase_database: ^10.4.0
   google_sign_in: ^6.1.6
   font_awesome_flutter: ^10.7.0
-  contacts_service: ^0.6.3
+  #contacts_service: ^0.6.3
   permission_handler: ^11.0.1
   email_validator: ^2.1.17
   currency_text_input_formatter: ^2.1.10

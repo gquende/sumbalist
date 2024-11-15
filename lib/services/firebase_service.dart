@@ -62,8 +62,7 @@ class FirebaseService {
     return credentials;
   }
 
-  /*
-  static Future<User?> loginWithGoogle() async {
+  /* static Future<User?> loginWithGoogle() async {
     User? user;
     try {
       final GoogleSignIn googleSignIn = GoogleSignIn();
@@ -145,6 +144,7 @@ class FirebaseService {
 
 
   */
+
   static Future<bool> saveShoppingList(Map<String, dynamic> list) async {
     try {
       database.ref("shoppinglists").child(list["uuid"]).set(list).then((value) {

@@ -31,7 +31,7 @@ class ShoppingListCard extends StatelessWidget {
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: Theme.of(context).colorScheme.primaryContainer,
-            boxShadow: [
+            boxShadow: const [
               BoxShadow(
                   color: Color.fromRGBO(0, 0, 0, 0.08),
                   blurRadius: 11,
@@ -192,7 +192,7 @@ class ShoppingListCard extends StatelessWidget {
                         onTap: () {
                           shoplistForm(context, shoppinglist);
                         },
-                        child: Row(
+                        child: const Row(
                           children: [
                             Icon(Icons.edit),
                             SizedBox(
@@ -202,7 +202,7 @@ class ShoppingListCard extends StatelessWidget {
                           ],
                         )),
                     PopupMenuItem(
-                      child: Row(
+                      child: const Row(
                         children: [
                           Icon(Icons.delete),
                           SizedBox(
@@ -237,7 +237,7 @@ class ShoppingListCard extends StatelessWidget {
                       radius: 3,
                       backgroundColor: Colors.grey[300],
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 5,
                     )
                   ],

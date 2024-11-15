@@ -3,7 +3,7 @@
 
 # SumbaList
 
-SumbaList é uma aplicação móvel projetada para facilitar a organização e gestão de compras do dia a dia. Esta aplicação visa simplificar o processo de criar e gerenciar listas de compras, tornando a experiência de compras mais eficiente e conveniente para os utilizadores.
+SumbaList é uma aplicação móvel projetada para facilitar a organização e gestão de compras do dia a dia. Esta aplicação visa simplificar o processo de criar e gerenciar listas de compras, tornando a experiência de compras mais eficiente e conveniente para os utilizadores..
 
 ![GitHub Cards Preview](https://github.com/gquende/sumbalist/blob/develop/images/banner.png)
 
@@ -19,7 +19,7 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 
 * [x] OnBoarding
 * [x] Autenticação
-* [x] Light e Dark Mode
+* [x] Modo claro e escuro
 * [x] Criar Lista de compras
 * [x] Eliminar Lista de compras
 * [x] Actualizar Lista de compras
@@ -38,7 +38,7 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 A aplicação foi construída usando uma arquitetura baseado em Model-View-ViewModel (MVVM).
 Este padrão de desenho ajuda na separação dos dados,
 UI e lógica de negócio, permitindo uma base de código mais modular e
-testável. A mesma é aprimorada com a biblioteca GetX para gerenciamento de estado de forma reactiva.
+testável. A mesma é aprimorada com a biblioteca GetX para gerenciamento de estado de forma reactiva
 
 ## Executando localmente
 
