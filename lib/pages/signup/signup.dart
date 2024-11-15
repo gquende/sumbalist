@@ -88,16 +88,16 @@ class _SignupState extends State<Signup> {
                       children: [
                         UserInfo(context),
                         UserCredentials(context),
-                        UserPhone()
+                        const UserPhone()
                       ],
                     ),
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 10,
                   ),
                   Obx(() => CommonButton(
                       title: controller.isLoading.value
-                          ? Container(
+                          ? const SizedBox(
                               width: 30,
                               height: 30,
                               child: CircularProgressIndicator(
@@ -117,13 +117,13 @@ class _SignupState extends State<Signup> {
                         setState(() {});
                       },
                       active: true)),
-                  SizedBox(
+                  const SizedBox(
                     height: 30,
                   ),
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => PolicyAndTerms()));
+                          builder: (context) => const PolicyAndTerms()));
                     },
                     child: RichText(
                       text: TextSpan(
