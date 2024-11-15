@@ -67,13 +67,15 @@ class Welcome extends StatelessWidget {
               width: size.width,
               height: 55,
               decoration: BoxDecoration(
-                  color: Colors.white, borderRadius: BorderRadius.circular(8)),
+                  color: THIRDCOLOR, borderRadius: BorderRadius.circular(8)),
               child: TextButton(
                 onPressed: () async {
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => Signup()),
+                      MaterialPageRoute(builder: (_) => const Signup()),
                       (route) => false);
                 },
+                style: TextButton.styleFrom(
+                    backgroundColor: THIRDCOLOR, fixedSize: Size(100, 55)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
@@ -83,10 +85,9 @@ class Welcome extends StatelessWidget {
                     )
                   ],
                 ),
-                style: TextButton.styleFrom(backgroundColor: THIRDCOLOR),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Container(
@@ -98,10 +99,10 @@ class Welcome extends StatelessWidget {
               child: TextButton(
                 onPressed: () {
                   Navigator.of(context).pushAndRemoveUntil(
-                      MaterialPageRoute(builder: (_) => Login()),
+                      MaterialPageRoute(builder: (_) => const Login()),
                       (route) => false);
                 },
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
@@ -112,10 +113,10 @@ class Welcome extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             )
           ],

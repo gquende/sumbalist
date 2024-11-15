@@ -62,6 +62,15 @@ class FirebaseService {
     return credentials;
   }
 
+  static Future<Map?> saveTempUser(Map<String, dynamic> map) async {
+    database
+        .ref("users")
+        .child(map["user"])
+        .set(map)
+        .then((value) {})
+        .onError((error, stackTrace) {});
+  }
+
   /* static Future<User?> loginWithGoogle() async {
     User? user;
     try {
@@ -138,11 +147,8 @@ class FirebaseService {
           ),
           Colors.red);*/
     }
-
     return user;
   }
-
-
   */
 
   static Future<bool> saveShoppingList(Map<String, dynamic> list) async {
