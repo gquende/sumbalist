@@ -26,7 +26,14 @@ Future<void> initConfig() async {
   locator.registerSingleton(shoplistController);
   Get.put(shoplistController);
 
-  await LoginController.checkUserAuthenticated();
   await Utils.checkIsFirstTimeRun();
+
+  //Create Temp User if the App Run first Time
+  if (Utils.isFirstTimeRun) {
+    await LoginController.createTempUser();
+  } else {
+    await LoginController.checkUserAuthenticated();
+  }
+
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }

@@ -31,10 +31,10 @@ class App extends StatelessWidget {
           theme: AppTheme.isDarkMode.value ? AppTheme.darkMode : AppTheme.light,
           darkTheme: AppTheme.darkMode,
           home: Utils.isFirstTimeRun
-              ? OnBoarding()
+              ? const OnBoarding()
               : User.logged != null
                   ? Home()
-                  : Login(),
+                  : const Login(),
         ));
   }
 }

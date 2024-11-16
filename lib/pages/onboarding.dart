@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:sumbalist/pages/welcome.dart';
+import 'package:sumbalist/pages/home.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
 
 import '../utils/constants/files.dart';
@@ -163,7 +163,7 @@ class _OnBoardingState extends State<OnBoarding> {
                 active: read >= 2,
                 action: () {
                   Navigator.of(context).pushReplacement(
-                      MaterialPageRoute(builder: (context) => Welcome()));
+                      MaterialPageRoute(builder: (context) => Home()));
                 }),
           )
         ],

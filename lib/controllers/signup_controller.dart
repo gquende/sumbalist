@@ -53,7 +53,8 @@ class SignupController extends GetxController {
             username: emailController.value.text,
             name: nameController.value.text,
             surname: surnameController.value.text,
-            phoneNumber: phoneNumberController.value.text);
+            phoneNumber: phoneNumberController.value.text,
+            status: "registered");
 
         shared.setString("USER", jsonEncode(User.logged?.toMap()));
 
@@ -144,8 +145,4 @@ class SignupController extends GetxController {
     currentPage = 0;
     userLocation.value = UserLocation();
   }
-
-
-
-
 }

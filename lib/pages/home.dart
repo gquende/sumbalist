@@ -23,30 +23,42 @@ class _HomeState extends State<Home> {
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Padding(
           padding: const EdgeInsets.only(top: 8.0, bottom: 8),
-          child: Row(
-            children: [
-              CircleAvatar(
-                backgroundColor:
-                    Theme.of(context).colorScheme.secondaryContainer,
-                child: Icon(Icons.person),
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    "Olá,",
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                  Text(
-                    "${User.logged?.name} ${User.logged?.surname}",
-                    style: Theme.of(context).textTheme.titleMedium,
-                  )
-                ],
-              )
-            ],
+          child: GestureDetector(
+            onTap: () {
+              if (User.logged?.status != null) {
+                if (User.logged!.status == "unregistered") {
+                  ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    content: const Text("Utilizador não registado😥"),
+                    backgroundColor: Theme.of(context).primaryColor,
+                  ));
+                }
+              }
+            },
+            child: Row(
+              children: [
+                CircleAvatar(
+                  backgroundColor:
+                      Theme.of(context).colorScheme.secondaryContainer,
+                  child: Icon(Icons.person),
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      "👋Olá,",
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                    Text(
+                      "${User.logged?.name} ${User.logged?.surname}",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    )
+                  ],
+                )
+              ],
+            ),
           ),
         ),
         centerTitle: false,
@@ -76,7 +88,7 @@ class _HomeState extends State<Home> {
         onPressed: () {
           floatButtonAction();
         },
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
@@ -85,7 +97,7 @@ class _HomeState extends State<Home> {
   Widget setPage(int page) {
     switch (page) {
       default:
-        return ShoppingListView();
+        return const ShoppingListView();
     }
   }
 
