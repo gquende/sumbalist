@@ -125,10 +125,10 @@ packages:
     dependency: "direct main"
     description:
       name: currency_formatter
-      sha256: "8d4e1762e226289e4abe902075d167029617553c913309b34a227c52c61dd063"
+      sha256: "73df6323b25bfe7ecfc45eb7d73ca4c47b54c29677b5e93ea091cca7c1c37fef"
       url: "https://pub.dev"
     source: hosted
-    version: "2.2.1"
+    version: "2.2.0"
   currency_text_input_formatter:
     dependency: "direct main"
     description:
@@ -420,10 +420,10 @@ packages:
     dependency: transitive
     description:
       name: intl
-      sha256: d6f56758b7d3014a48af9701c085700aac781a92a87a62b1333b46d8879661cf
+      sha256: "3bc132a9dbce73a7e4a21a17d06e1878839ffbf975568bc875c60537824b0c4d"
       url: "https://pub.dev"
     source: hosted
-    version: "0.19.0"
+    version: "0.18.1"
   js:
     dependency: transitive
     description:
@@ -472,6 +472,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.1"
+  lite_rolling_switch:
+    dependency: "direct main"
+    description:
+      name: lite_rolling_switch
+      sha256: f5685911d249534ac6ac9862622f18846d31799c90fa4600b475d902d132b090
+      url: "https://pub.dev"
+    source: hosted
+    version: "1.0.1"
   lottie:
     dependency: "direct main"
     description:

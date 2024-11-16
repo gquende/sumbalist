@@ -8,7 +8,7 @@ import 'package:sumbalist/models/userLocation.dart';
 import 'package:sumbalist/services/location_service.dart';
 
 import '../models/users.dart';
-import '../pages/home.dart';
+import '../pages/home/home.dart';
 import '../services/firebase_service.dart';
 import '../utils/utils.dart';
 

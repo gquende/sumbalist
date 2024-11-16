@@ -1,12 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+
+import 'package:sumbalist/pages/home/components/drawer_widget.dart';
 import 'package:sumbalist/pages/shoppinglist/components/create_list.dart';
 import 'package:sumbalist/pages/shoppinglist/shopping_list_view.dart';
-import 'package:sumbalist/utils/theme/theme.dart';
 
-import '../models/users.dart';
-import '../utils/constants/app_colors.dart';
+import '../../models/users.dart';
+import '../../utils/constants/app_colors.dart';
+//import 'components/drawer_widget.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -19,6 +20,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      drawer: DrawerWidget(),
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Padding(
@@ -35,20 +37,14 @@ class _HomeState extends State<Home> {
               }
             },
             child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                CircleAvatar(
-                  backgroundColor:
-                      Theme.of(context).colorScheme.secondaryContainer,
-                  child: Icon(Icons.person),
-                ),
-                const SizedBox(
-                  width: 10,
-                ),
                 Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      "👋Olá,",
+                      "👋Olá      ",
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                     Text(
@@ -61,22 +57,25 @@ class _HomeState extends State<Home> {
             ),
           ),
         ),
-        centerTitle: false,
+        centerTitle: true,
         actions: [
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
-            child: GestureDetector(onTap: () {
-              //Change theme Mode
-              AppTheme.setDarkMode(!AppTheme.isDarkMode.value);
-            }, child: Obx(() {
-              return AppTheme.isDarkMode.value
-                  ? Icon(CupertinoIcons.lightbulb)
-                  : Icon(
-                      CupertinoIcons.lightbulb_fill,
-                      color: Theme.of(context).primaryColor,
-                    );
-            })),
-          )
+            // child: GestureDetector(onTap: () {
+            //   //Change theme Mode
+            //   AppTheme.setDarkMode(!AppTheme.isDarkMode.value);
+            // }, child: Obx(() {
+            //   return AppTheme.isDarkMode.value
+            //       ? Icon(CupertinoIcons.lightbulb)
+            //       : Icon(
+            //           CupertinoIcons.lightbulb_fill,
+            //           color: Theme.of(context).primaryColor,
+            //         );
+            // })
+            child: SizedBox(
+              width: 20,
+            ),
+          ),
         ],
         elevation: 3,
       ),

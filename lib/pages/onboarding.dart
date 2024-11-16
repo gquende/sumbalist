@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
-import 'package:sumbalist/pages/home.dart';
+import 'package:sumbalist/pages/home/home.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
 
 import '../utils/constants/files.dart';

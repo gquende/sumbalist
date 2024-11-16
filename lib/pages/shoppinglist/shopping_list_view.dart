@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 
 import '../../controllers/shopping_list_controller.dart';
+import 'components/shoppinglist_card.dart';
 import '../../utils/constants/files.dart';
 import 'components/shoppinglist_card.dart';
 
@@ -18,6 +19,8 @@ class _ShoppingListViewState extends State<ShoppingListView> {
   TextEditingController search = TextEditingController();
   ShoppingListController controller =
       GetIt.instance.get<ShoppingListController>();
+
+  int pageIndex = 0;
 
   @override
   void initState() {
@@ -113,38 +116,38 @@ class _ShoppingListViewState extends State<ShoppingListView> {
                   }
 
                   /*  else if (controller.isLoading.value == false &&
-                      controller.allShoppingList.value.isEmpty) {
-                    return Container(
-                      width: size.width,
-                      height: size.height / 1.5,
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Center(
-                            child: SvgPicture.asset(
-                              AppAssets.NO_DATA_IMAGE,
-                              width: size.width / 1.7,
+                        controller.allShoppingList.value.isEmpty) {
+                      return Container(
+                        width: size.width,
+                        height: size.height / 1.5,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Center(
+                              child: SvgPicture.asset(
+                                AppAssets.NO_DATA_IMAGE,
+                                width: size.width / 1.7,
+                              ),
                             ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          Text(
-                            "O que você precisa comprar hoje?",
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                          SizedBox(
-                            height: 5,
-                          ),
-                          Text(
-                            "Crie uma lista e rastreie",
-                            style: Theme.of(context).textTheme.titleSmall,
-                          )
-                        ],
-                      ),
-                    );
+                            SizedBox(
+                              height: 10,
+                            ),
+                            Text(
+                              "O que você precisa comprar hoje?",
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Text(
+                              "Crie uma lista e rastreie",
+                              style: Theme.of(context).textTheme.titleSmall,
+                            )
+                          ],
+                        ),
+                      );
 
-                  }*/
+                    }*/
 
                   return Column(
                     children: List.generate(
