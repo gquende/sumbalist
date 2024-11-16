@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:sumbalist/core/error/errorLog.dart';
 import 'package:sumbalist/repository/shopping_list_item_repository.dart';
 import '../core/database.dart';
 import '../models/shopping_list.dart';
@@ -71,15 +72,17 @@ class ShoppingListRepository {
   //Update a Shoppinglist
   Future<bool> update(ShoppingList item) async {
     try {
-      var result = await this._appDatabase.db?.update(_table, item.toMap(),
-          where: "uuid=?", whereArgs: [item.uuid]);
+      var query =
+          "UPDATE $_table SET  name = '${item.name}', categoryUUID ='${item.categoryUUID}' , statusUUID =' ${item.statusUUID}', total = ${item.total}, updated_at = '${item.updated_at}' WHERE uuid='${item.uuid}'";
+
+      var result = await this._appDatabase.db?.rawQuery(query);
 
       if (result != null) {
         return result == 1;
       }
-    } catch (error) {
-      debugPrint(
-          "${this.runtimeType.toString()}::updateItem:: Error ${error.toString()} ");
+    } catch (error, stackTrace) {
+      print("Error");
+      errorLog(error, stackTrace);
     }
 
     return false;
