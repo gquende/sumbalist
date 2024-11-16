@@ -319,7 +319,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                           color: SECONDARYCOLOR,
                         ),
                       ),
-                      SizedBox(
+                      const SizedBox(
                         width: 10,
                       ),
                       Column(
@@ -370,6 +370,9 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
               width: 100,
               padding: EdgeInsets.only(left: 0, right: 0, bottom: 0),
               alignment: Alignment.center,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(5),
+                  border: Border.all(color: Colors.grey)),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 crossAxisAlignment: CrossAxisAlignment.center,
@@ -389,7 +392,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                       width: 30,
                       height: 25,
                       alignment: Alignment.center,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                           color: Colors.grey,
                           borderRadius: BorderRadius.only(
                             topLeft: Radius.circular(5),
@@ -420,7 +423,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                       alignment: Alignment.center,
                       decoration: BoxDecoration(
                           color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.only(
+                          borderRadius: const BorderRadius.only(
                             topRight: Radius.circular(5),
                             bottomRight: Radius.circular(5),
                           )),
@@ -433,44 +436,48 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                   )
                 ],
               ),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(color: Colors.grey)),
             )),
         Positioned(
             left: size.width / 1.16,
             top: -3,
-            child: Checkbox(
-              value: item.isDone,
-              onChanged: (value) {
-                item.isDone = value!;
+            child: Theme(
+              data: Theme.of(context).copyWith(
+                unselectedWidgetColor: Colors.red,
+              ),
+              child: Checkbox(
+                value: item.isDone,
+                onChanged: (value) {
+                  item.isDone = value!;
 
-                controller.updateItem(item).then((value) {
-                  setState(() {
-                    _reorderItem(index);
-                    controller.shoppingList.refresh();
+                  controller.updateItem(item).then((value) {
+                    setState(() {
+                      _reorderItem(index);
+                      controller.shoppingList.refresh();
 
-                    if (controller.shoppingList.value.getPercentBuyedByItem() ==
-                        100.0) {
-                      controller.shoppingList.value.statusUUID = "done";
-                      controller
-                          .updateShoppinglist(controller.shoppingList.value)
-                          .then((value) {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text("Lista concluída"),
-                          backgroundColor: Colors.green,
-                        ));
-                      });
-                    } else {
-                      controller.shoppingList.value.statusUUID = "open";
-                      controller
-                          .updateShoppinglist(controller.shoppingList.value);
-                    }
+                      if (controller.shoppingList.value
+                              .getPercentBuyedByItem() ==
+                          100.0) {
+                        controller.shoppingList.value.statusUUID = "done";
+                        controller
+                            .updateShoppinglist(controller.shoppingList.value)
+                            .then((value) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Lista concluída"),
+                            backgroundColor: Colors.green,
+                          ));
+                        });
+                      } else {
+                        controller.shoppingList.value.statusUUID = "open";
+                        controller
+                            .updateShoppinglist(controller.shoppingList.value);
+                      }
+                    });
                   });
-                });
-              },
-              fillColor: MaterialStateProperty.all(
-                  item.isDone ? PRIMARYCOLOR : Colors.grey),
+                },
+                side: BorderSide(
+                    color: Theme.of(context).scaffoldBackgroundColor, width: 2),
+              ),
             ))
       ],
     );

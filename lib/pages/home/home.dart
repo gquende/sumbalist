@@ -20,7 +20,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: DrawerWidget(),
+      drawer: const DrawerWidget(),
       appBar: AppBar(
         backgroundColor: Theme.of(context).scaffoldBackgroundColor,
         title: Padding(
@@ -30,7 +30,7 @@ class _HomeState extends State<Home> {
               if (User.logged?.status != null) {
                 if (User.logged!.status == "unregistered") {
                   ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                    content: const Text("Utilizador não registado😥"),
+                    content: const Text("Ainda não se registou😥"),
                     backgroundColor: Theme.of(context).primaryColor,
                   ));
                 }
@@ -58,20 +58,9 @@ class _HomeState extends State<Home> {
           ),
         ),
         centerTitle: true,
-        actions: [
+        actions: const [
           Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            // child: GestureDetector(onTap: () {
-            //   //Change theme Mode
-            //   AppTheme.setDarkMode(!AppTheme.isDarkMode.value);
-            // }, child: Obx(() {
-            //   return AppTheme.isDarkMode.value
-            //       ? Icon(CupertinoIcons.lightbulb)
-            //       : Icon(
-            //           CupertinoIcons.lightbulb_fill,
-            //           color: Theme.of(context).primaryColor,
-            //         );
-            // })
+            padding: EdgeInsets.only(right: 12.0),
             child: SizedBox(
               width: 20,
             ),

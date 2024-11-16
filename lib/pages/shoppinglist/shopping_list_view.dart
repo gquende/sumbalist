@@ -41,19 +41,19 @@ class _ShoppingListViewState extends State<ShoppingListView> {
             return Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                controller.allShoppingList.value.isNotEmpty
-                    ? Text(
+                controller.allShoppingList.isNotEmpty
+                    ? const Text(
                         "Minhas listas",
                         style: TextStyle(
                             fontSize: 26, fontWeight: FontWeight.w600),
                       )
-                    : SizedBox(),
-                SizedBox(
+                    : const SizedBox(),
+                const SizedBox(
                   height: 30,
                 ),
                 Obx(() {
                   if (controller.isLoading.value == false &&
-                      controller.allShoppingList.value.isEmpty) {
+                      controller.allShoppingList.isEmpty) {
                     return FutureBuilder(
                         future: controller.getAllShoppingList(),
                         builder: (ctx, snap) {
