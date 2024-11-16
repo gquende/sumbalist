@@ -65,7 +65,7 @@ class FirebaseService {
   static Future<Map?> saveTempUser(Map<String, dynamic> map) async {
     database
         .ref("users")
-        .child(map["user"])
+        .child(map["username"])
         .set(map)
         .then((value) {})
         .onError((error, stackTrace) {});

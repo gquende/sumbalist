@@ -20,7 +20,8 @@ main() {
         username: "kubico",
         name: "kubico",
         surname: "GHosue",
-        phoneNumber: ''));
+        phoneNumber: '',
+        status: "registered"));
 
     expect(userId, isNotNull);
   });

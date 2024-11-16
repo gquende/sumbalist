@@ -8,7 +8,7 @@ import 'package:sumbalist/models/userLocation.dart';
 import 'package:sumbalist/services/location_service.dart';
 
 import '../models/users.dart';
-import '../pages/home.dart';
+import '../pages/home/home.dart';
 import '../services/firebase_service.dart';
 import '../utils/utils.dart';
 
@@ -53,7 +53,8 @@ class SignupController extends GetxController {
             username: emailController.value.text,
             name: nameController.value.text,
             surname: surnameController.value.text,
-            phoneNumber: phoneNumberController.value.text);
+            phoneNumber: phoneNumberController.value.text,
+            status: "registered");
 
         shared.setString("USER", jsonEncode(User.logged?.toMap()));
 
@@ -144,8 +145,4 @@ class SignupController extends GetxController {
     currentPage = 0;
     userLocation.value = UserLocation();
   }
-
-
-
-
 }

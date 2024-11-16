@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sumbalist/services/firebase_service.dart';
 
+import '../core/error/errorLog.dart';
 import '../models/shopping_list.dart';
 import '../models/shopping_list_item.dart';
 import '../models/users.dart';
@@ -71,9 +72,11 @@ class ShoppingListController extends BaseController {
           addItem(ShoppinglistItem.fromMap(itemsList[i]));
         }
       });
-    } catch (error) {
-      debugPrint("${error}");
+    } catch (error, stackTrace) {
+
+      errorLog(error, stackTrace);
     }
+
   }
 
   Future<bool> createShoppinglist(ShoppingList shoppingList) async {
@@ -116,9 +119,9 @@ class ShoppingListController extends BaseController {
       var value = await itemRepository.getAllItemList(listUuid);
       isLoading.value = false;
       return value;
-    } catch (error) {
-      isLoading.value = false;
-      errorLog("GetItemsOfShoppingList", error);
+    } catch (error, stackTrace) {
+isLoading.value=false;
+      errorLog(error, stackTrace);
     }
 
     isLoading.value = false;
@@ -137,9 +140,9 @@ class ShoppingListController extends BaseController {
       }
 
       return value;
-    } catch (error) {
-      errorLog("getShoppingList", "teste");
-      isLoading.value = false;
+    }catch (error, stackTrace) {
+      isLoading.value=false;
+      errorLog(error, stackTrace);
     }
 
     isLoading.value = false;
@@ -159,9 +162,10 @@ class ShoppingListController extends BaseController {
       isLoading.value = false;
 
       return value;
-    } catch (error) {
-      errorLog("getShoppingList", "teste");
-      isLoading.value = false;
+    } catch (error, stackTrace) {
+
+      isLoading.value=false;
+      errorLog(error, stackTrace);
     }
 
     isLoading.value = false;
@@ -187,9 +191,10 @@ class ShoppingListController extends BaseController {
       resetData();
       isLoading.value = false;
       return value;
-    } catch (error) {
-      isLoading.value = false;
-      errorLog("updateItem", error);
+    } catch (error, stackTrace) {
+
+      isLoading.value=false;
+      errorLog(error, stackTrace);
     }
 
     isLoading.value = false;

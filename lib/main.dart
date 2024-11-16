@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:sumbalist/pages/home.dart';
+import 'package:sumbalist/pages/home/home.dart';
 import 'package:sumbalist/pages/login.dart';
 import 'package:sumbalist/pages/onboarding.dart';
 import 'package:sumbalist/utils/utils.dart';
@@ -31,10 +31,10 @@ class App extends StatelessWidget {
           theme: AppTheme.isDarkMode.value ? AppTheme.darkMode : AppTheme.light,
           darkTheme: AppTheme.darkMode,
           home: Utils.isFirstTimeRun
-              ? OnBoarding()
+              ? const OnBoarding()
               : User.logged != null
                   ? Home()
-                  : Login(),
+                  : const Login(),
         ));
   }
 }
