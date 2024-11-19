@@ -14,11 +14,24 @@ class ShoppingListRepository {
   }
 
   //Get all ShoppingList
-  Future<List<ShoppingList>> getAllList() async {
+  Future<List<ShoppingList>> getAllList({required String statusUUID}) async {
     try {
       var list = <ShoppingList>[];
-      var result =
-          await this._appDatabase.db?.rawQuery("SELECT * from ${_table}");
+      var result;
+
+      print("ESTADO:: $statusUUID::");
+      if (statusUUID.isEmpty) {
+        result =
+            await this._appDatabase.db?.rawQuery("SELECT * from ${_table}");
+      } else {
+        result = await this._appDatabase.db?.rawQuery(
+            "SELECT * from ${_table} WHERE statusUUID='${statusUUID}'");
+
+        // result =
+        //     await this._appDatabase.db?.rawQuery("SELECT * from ${_table}");
+
+        print("TODOS OSD DADOS:: $result");
+      }
 
       if (result != null) {
         for (var i = 0; i < result.length; i++) {
@@ -76,6 +89,7 @@ class ShoppingListRepository {
       var query =
           "UPDATE $_table SET  name = '${item.name}', categoryUUID ='${item.categoryUUID}' , statusUUID =' ${item.statusUUID}', total = ${item.total}, updated_at = '${item.updated_at}' WHERE uuid='${item.uuid}'";
 
+      print("STATTUS itme:: ${item.statusUUID}");
       var result = await this._appDatabase.db?.rawQuery(query);
 
       if (result != null) {

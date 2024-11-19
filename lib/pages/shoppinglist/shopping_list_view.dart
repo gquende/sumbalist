@@ -24,8 +24,7 @@ class _ShoppingListViewState extends State<ShoppingListView> {
 
   @override
   void initState() {
-    // TODO: implement initState
-    // controller.getAllShoppingList().then((value) => null);
+    super.initState();
   }
 
   @override

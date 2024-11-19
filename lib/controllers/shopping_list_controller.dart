@@ -27,7 +27,7 @@ class ShoppingListController extends ChangeNotifier {
   ShoppingListController(this.repository, this.itemRepository) {
     priceController.text = "0";
     qtyController.text = "1";
-    getAllShoppingList();
+    getAllShoppingListNotCompleted(status: "not completed");
   }
 
   Future<ShoppingList?> getShoppingList(String uuid) async {
@@ -75,7 +75,9 @@ class ShoppingListController extends ChangeNotifier {
       var item = await repository.create(shoppingList);
 
       if (item != null && item != 0) {
-        allShoppingList.add(shoppingList);
+        //allShoppingList.add(shoppingList);
+
+        await getAllShoppingListNotCompleted(status: "not completed");
         notifyListeners();
         FirebaseService.saveShoppingList(shoppingList.toMap());
       }
@@ -87,10 +89,11 @@ class ShoppingListController extends ChangeNotifier {
     return false;
   }
 
-  Future<List<ShoppingList>> getAllShoppingList() async {
+  Future<List<ShoppingList>> getAllShoppingListNotCompleted(
+      {String status = "not completed"}) async {
     try {
       isLoading.value = true;
-      allShoppingList.value = await repository.getAllList();
+      allShoppingList.value = await repository.getAllList(statusUUID: status);
       print("DATA:: ${allShoppingList.value}");
       isLoading.value = false;
     } catch (error) {
@@ -102,6 +105,25 @@ class ShoppingListController extends ChangeNotifier {
 
     isLoading.value = false;
     return allShoppingList.value;
+  }
+
+  Future<List<ShoppingList>> getAllShoppingList(
+      {required String status}) async {
+    try {
+      isLoading.value = true;
+      var data = await repository.getAllList(statusUUID: status);
+      print("Get by satus");
+      isLoading.value = false;
+
+      return data;
+    } catch (error) {
+      isLoading.value = false;
+      debugPrint(
+          "ShoppinglistController:: getShoppingList::ERROR : ${error.toString()}");
+    }
+
+    isLoading.value = false;
+    return [];
   }
 
   Future<List<ShoppinglistItem>> getItemsOfShoppingList(String listUuid) async {
@@ -126,6 +148,7 @@ class ShoppingListController extends ChangeNotifier {
       resetData();
 
       if (value != null && value != 0) {
+        await getAllShoppingListNotCompleted(status: "not completed");
         notifyListeners();
         FirebaseService.addItemShoppingList(item.toMap());
       }
@@ -150,6 +173,9 @@ class ShoppingListController extends ChangeNotifier {
       }
 
       shoppingList.value.items!.remove(item);
+
+      //Todo Remove this
+      await getAllShoppingListNotCompleted(status: "not completed");
       notifyListeners();
       isLoading.value = false;
 
@@ -176,7 +202,7 @@ class ShoppingListController extends ChangeNotifier {
           shoppingList.value.items?[i] = item;
         }
       }
-
+      await getAllShoppingListNotCompleted(status: "not completed");
       //Update shoppinglist
       notifyListeners();
       resetData();
@@ -214,6 +240,7 @@ class ShoppingListController extends ChangeNotifier {
   Future<bool?> updateShoppinglist(ShoppingList list) async {
     try {
       var value = await repository.update(list);
+      await getAllShoppingListNotCompleted(status: "not completed");
       notifyListeners();
       FirebaseService.updateShoppingList(list.toMap());
       return value;

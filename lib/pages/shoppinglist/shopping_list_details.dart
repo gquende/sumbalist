@@ -398,7 +398,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                             topLeft: Radius.circular(5),
                             bottomLeft: Radius.circular(5),
                           )),
-                      child: Text(
+                      child: const Text(
                         "-",
                         style: TextStyle(
                             fontWeight: FontWeight.w600, fontSize: 20),
@@ -457,7 +457,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                       if (controller.shoppingList.value
                               .getPercentBuyedByItem() ==
                           100.0) {
-                        controller.shoppingList.value.statusUUID = "done";
+                        controller.shoppingList.value.statusUUID = "completed";
                         controller
                             .updateShoppinglist(controller.shoppingList.value)
                             .then((value) {
@@ -468,7 +468,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                           ));
                         });
                       } else {
-                        controller.shoppingList.value.statusUUID = "open";
+                        controller.shoppingList.value.statusUUID =
+                            "not completed";
                         controller
                             .updateShoppinglist(controller.shoppingList.value);
                       }
@@ -715,7 +716,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                         controller.shoppingList.value.items?.add(item);
 
                         //Actualiza o estado lista
-                        controller.shoppingList.value.statusUUID = "open";
+                        controller.shoppingList.value.statusUUID =
+                            "not completed";
                         controller
                             .updateShoppinglist(controller.shoppingList.value);
                       }

@@ -41,7 +41,7 @@ main() {
   test("Get All list", () async {
     for (var i = 0; i < mockShoppingList.length; i++)
       var result = await repository!.create(mockShoppingList[i]);
-    var list = await repository!.getAllList();
+    var list = await repository!.getAllList(statusUUID: "");
 
     expect(list.length > 0, true);
   });

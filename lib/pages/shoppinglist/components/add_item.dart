@@ -109,15 +109,15 @@ class _AddItemBodyState extends State<AddItemBody> {
                 child: TextField(
                   controller: controller.priceController,
                   keyboardType: TextInputType.number,
-                  decoration: InputDecoration(
+                  decoration: const InputDecoration(
                       hintText: "",
                       contentPadding: EdgeInsets.only(bottom: 10),
                       focusColor: Color(0xff000000),
                       filled: true,
-                      enabledBorder: const OutlineInputBorder(
+                      enabledBorder: OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(11))),
-                      focusedBorder: const OutlineInputBorder(
+                      focusedBorder: OutlineInputBorder(
                           borderSide: BorderSide.none,
                           borderRadius: BorderRadius.all(Radius.circular(11))),
                       fillColor: Color(0xffe5e5e5),
@@ -257,10 +257,8 @@ class _AddItemBodyState extends State<AddItemBody> {
                 title: Text(widget.item == null ? "Adicionar" : "Actualizar"),
                 action: () async {
                   if (widget.item == null) {
-                    var uuid = Uuid();
-
                     ShoppinglistItem item = ShoppinglistItem(
-                        uuid: uuid.v4(),
+                        uuid: Uuid().v4(),
                         isDone: false,
                         listUUID: widget.list.uuid,
                         itemName: controller.nameFieldController.text,
@@ -271,8 +269,9 @@ class _AddItemBodyState extends State<AddItemBody> {
 
                     var value = await controller.addItem(item);
 
-                    if (value != 0)
+                    if (value != 0) {
                       controller.shoppingList.value.items?.add(item);
+                    }
                   } else {
                     widget.item!.itemName = controller.nameFieldController.text;
                     widget.item!.description =
