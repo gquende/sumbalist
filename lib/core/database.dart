@@ -9,13 +9,13 @@ class AppDatabase {
   final String _shoppingListItemTable = "shopping_list_items";
   final String _listCategoryTable = "list_categories";
 
-  String urlDatabase;
+  //String urlDatabase;
 
   Database? db;
 
-  AppDatabase({required this.urlDatabase}) {
-    open(urlDatabase);
-  }
+  // AppDatabase({required this.urlDatabase}) {
+  //  // open(urlDatabase);
+  // }
 
   Future<Database?> open(String path) async {
     if (Platform.isWindows || Platform.isLinux) {

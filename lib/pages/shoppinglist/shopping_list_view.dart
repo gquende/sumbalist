@@ -51,73 +51,8 @@ class _ShoppingListViewState extends State<ShoppingListView> {
                 const SizedBox(
                   height: 30,
                 ),
-                Obx(() {
-                  if (controller.isLoading.value == false &&
-                      controller.allShoppingList.isEmpty) {
-                    return FutureBuilder(
-                        future: controller.getAllShoppingList(),
-                        builder: (ctx, snap) {
-                          if (!snap.hasData &&
-                              controller.isLoading.value == true) {
-                            return Container(
-                              height: size.height / 4,
-                              child: Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            );
-                          }
-
-                          //Verifica se a lista está vazia
-                          if (controller.allShoppingList.value.isEmpty) {
-                            return Container(
-                              width: size.width,
-                              height: size.height / 1.5,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Center(
-                                    child: SvgPicture.asset(
-                                      AppAssets.NO_DATA_IMAGE,
-                                      width: size.width / 1.7,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    "O que vai comprar hoje?",
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    "Crie uma lista e acompanhe",
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  )
-                                ],
-                              ),
-                            );
-                          }
-
-                          return Column(
-                            children: List.generate(
-                                controller.allShoppingList.value.length,
-                                (index) => Padding(
-                                      padding:
-                                          const EdgeInsets.only(bottom: 16.0),
-                                      child: ShoppingListCard(controller
-                                          .allShoppingList.value[index]),
-                                    )),
-                          );
-                        });
-                  }
-
-                  /*  else if (controller.isLoading.value == false &&
-                        controller.allShoppingList.value.isEmpty) {
-                      return Container(
+                controller.allShoppingList.isEmpty
+                    ? SizedBox(
                         width: size.width,
                         height: size.height / 1.5,
                         child: Column(
@@ -129,36 +64,140 @@ class _ShoppingListViewState extends State<ShoppingListView> {
                                 width: size.width / 1.7,
                               ),
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 10,
                             ),
                             Text(
-                              "O que você precisa comprar hoje?",
+                              "O que vai comprar hoje?",
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
-                            SizedBox(
+                            const SizedBox(
                               height: 5,
                             ),
                             Text(
-                              "Crie uma lista e rastreie",
-                              style: Theme.of(context).textTheme.titleSmall,
+                              "Crie uma lista e acompanhe",
+                              style: Theme.of(context).textTheme.bodyMedium,
                             )
                           ],
                         ),
-                      );
-
-                    }*/
-
-                  return Column(
-                    children: List.generate(
-                        controller.allShoppingList.value.length,
-                        (index) => Padding(
-                              padding: const EdgeInsets.only(bottom: 16.0),
-                              child: ShoppingListCard(
-                                  controller.allShoppingList.value[index]),
-                            )),
-                  );
-                })
+                      )
+                    : Column(
+                        children: List.generate(
+                            controller.allShoppingList.value.length,
+                            (index) => Padding(
+                                  padding: const EdgeInsets.only(bottom: 16.0),
+                                  child: ShoppingListCard(
+                                      controller.allShoppingList.value[index]),
+                                )),
+                      ),
+                // Obx(() {
+                //   if (controller.isLoading.value == false &&
+                //       controller.allShoppingList.isEmpty) {
+                //     return FutureBuilder(
+                //         future: controller.getAllShoppingList(),
+                //         builder: (ctx, snap) {
+                //           if (!snap.hasData &&
+                //               controller.isLoading.value == true) {
+                //             return Container(
+                //               height: size.height / 4,
+                //               child: Center(
+                //                 child: CircularProgressIndicator(),
+                //               ),
+                //             );
+                //           }
+                //
+                //           //Verifica se a lista está vazia
+                //           if (controller.allShoppingList.value.isEmpty) {
+                //             return Container(
+                //               width: size.width,
+                //               height: size.height / 1.5,
+                //               child: Column(
+                //                 mainAxisAlignment: MainAxisAlignment.center,
+                //                 children: [
+                //                   Center(
+                //                     child: SvgPicture.asset(
+                //                       AppAssets.NO_DATA_IMAGE,
+                //                       width: size.width / 1.7,
+                //                     ),
+                //                   ),
+                //                   SizedBox(
+                //                     height: 10,
+                //                   ),
+                //                   Text(
+                //                     "O que vai comprar hoje?",
+                //                     style:
+                //                         Theme.of(context).textTheme.titleMedium,
+                //                   ),
+                //                   SizedBox(
+                //                     height: 5,
+                //                   ),
+                //                   Text(
+                //                     "Crie uma lista e acompanhe",
+                //                     style:
+                //                         Theme.of(context).textTheme.bodyMedium,
+                //                   )
+                //                 ],
+                //               ),
+                //             );
+                //           }
+                //
+                //           return Column(
+                //             children: List.generate(
+                //                 controller.allShoppingList.value.length,
+                //                 (index) => Padding(
+                //                       padding:
+                //                           const EdgeInsets.only(bottom: 16.0),
+                //                       child: ShoppingListCard(controller
+                //                           .allShoppingList.value[index]),
+                //                     )),
+                //           );
+                //         });
+                //   }
+                //
+                //   /*  else if (controller.isLoading.value == false &&
+                //         controller.allShoppingList.value.isEmpty) {
+                //       return Container(
+                //         width: size.width,
+                //         height: size.height / 1.5,
+                //         child: Column(
+                //           mainAxisAlignment: MainAxisAlignment.center,
+                //           children: [
+                //             Center(
+                //               child: SvgPicture.asset(
+                //                 AppAssets.NO_DATA_IMAGE,
+                //                 width: size.width / 1.7,
+                //               ),
+                //             ),
+                //             SizedBox(
+                //               height: 10,
+                //             ),
+                //             Text(
+                //               "O que você precisa comprar hoje?",
+                //               style: Theme.of(context).textTheme.titleMedium,
+                //             ),
+                //             SizedBox(
+                //               height: 5,
+                //             ),
+                //             Text(
+                //               "Crie uma lista e rastreie",
+                //               style: Theme.of(context).textTheme.titleSmall,
+                //             )
+                //           ],
+                //         ),
+                //       );
+                //
+                //     }*/
+                //
+                //   return Column(
+                //     children: List.generate(
+                //         controller.allShoppingList.value.length,
+                //         (index) => Padding(
+                //               padding: const EdgeInsets.only(bottom: 16.0),
+                //               child: ShoppingListCard(
+                //                   controller.allShoppingList.value[index]),
+                //             )),
+                //   );
+                // })
               ],
             );
           }),

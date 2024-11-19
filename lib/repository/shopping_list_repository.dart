@@ -17,13 +17,14 @@ class ShoppingListRepository {
   Future<List<ShoppingList>> getAllList() async {
     try {
       var list = <ShoppingList>[];
-      var result = await this._appDatabase.db?.rawQuery(
-        "SELECT * from ${_table}",
-        [],
-      );
+      var result =
+          await this._appDatabase.db?.rawQuery("SELECT * from ${_table}");
+
       if (result != null) {
         for (var i = 0; i < result.length; i++) {
           var shopingList = ShoppingList.fromMap(result[i]);
+
+          print("LIST SHOP :: ${shopingList.name}");
           shopingList.items =
               await itemRepository?.getAllItemList(shopingList.uuid);
 
