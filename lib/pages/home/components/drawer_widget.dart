@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import '../../../utils/theme/theme.dart';
+import '../../shoppinglist/completed_list.dart';
 
 class DrawerWidget extends StatelessWidget {
   const DrawerWidget({super.key});
@@ -38,25 +39,31 @@ class DrawerWidget extends StatelessWidget {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
-            Container(
-              width: size.width,
-              height: 55,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(10),
-                  color: Theme.of(context).colorScheme.secondaryContainer),
-              child: const Padding(
-                padding: EdgeInsets.all(8.0),
-                child: Row(
-                  children: [
-                    Icon(Icons.checklist),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    Text("Listas concluídas")
-                  ],
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                    builder: (context) => const CompletedShoppingList()));
+              },
+              child: Container(
+                width: size.width,
+                height: 55,
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    color: Theme.of(context).colorScheme.secondaryContainer),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Row(
+                    children: [
+                      Icon(Icons.checklist),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Text("Listas concluídas")
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -74,7 +81,7 @@ class DrawerWidget extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Row(
+                    const Row(
                       children: [
                         Icon(Icons.color_lens),
                         SizedBox(

@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:sumbalist/controllers/shopping_list_controller.dart';
 
 import 'package:sumbalist/pages/home/components/drawer_widget.dart';
 import 'package:sumbalist/pages/shoppinglist/components/create_list.dart';
@@ -19,6 +21,8 @@ class _HomeState extends State<Home> {
 
   @override
   Widget build(BuildContext context) {
+    context.watch<ShoppingListController>();
+
     return Scaffold(
       drawer: const DrawerWidget(),
       appBar: AppBar(
