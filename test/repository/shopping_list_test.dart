@@ -24,7 +24,7 @@ main() {
   ShoppingListRepository? repository;
 
   setUp(() async {
-    AppDatabase database = AppDatabase(urlDatabase: "ghouse_db.db");
+    AppDatabase database = AppDatabase();
     await database.open("app.db");
     repository = ShoppingListRepository(database);
   });

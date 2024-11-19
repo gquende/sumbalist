@@ -35,6 +35,16 @@ class ShoppingList extends BaseModel {
         total: double.parse("${map["total"] ?? 0}"));
   }
 
+  factory ShoppingList.empty() {
+    return ShoppingList(
+        uuid: '',
+        userUUID: '',
+        categoryUUID: '',
+        statusUUID: '',
+        name: '',
+        total: 0);
+  }
+
   Map<String, dynamic> toMap() {
     return {
       "uuid": this.uuid,

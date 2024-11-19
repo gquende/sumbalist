@@ -8,7 +8,7 @@ main() {
   UserRepository? repository;
 
   setUp(() async {
-    AppDatabase appDatabase = await AppDatabase(urlDatabase: "app.db");
+    AppDatabase appDatabase = await AppDatabase();
     await appDatabase.open("app.db");
 
     repository = UserRepository(appDatabase: appDatabase);

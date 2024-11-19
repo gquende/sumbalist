@@ -8,21 +8,13 @@ import '../models/shopping_list_item.dart';
 import '../models/users.dart';
 import '../repository/shopping_list_item_repository.dart';
 import '../repository/shopping_list_repository.dart';
-import 'base_controller.dart';
 
-class ShoppingListController extends BaseController {
+class ShoppingListController extends ChangeNotifier {
   TextEditingController nameFieldController = TextEditingController();
   TextEditingController qtyController = TextEditingController();
   TextEditingController priceController = TextEditingController();
   TextEditingController descriptionController = TextEditingController();
-  Rx<ShoppingList> shoppingList = ShoppingList(
-          uuid: '',
-          userUUID: '',
-          categoryUUID: '',
-          statusUUID: '',
-          name: '',
-          total: 0)
-      .obs;
+  Rx<ShoppingList> shoppingList = ShoppingList.empty().obs;
 
   int priority = 1;
   var isLoading = false.obs;
@@ -35,6 +27,7 @@ class ShoppingListController extends BaseController {
   ShoppingListController(this.repository, this.itemRepository) {
     priceController.text = "0";
     qtyController.text = "1";
+    getAllShoppingList();
   }
 
   Future<ShoppingList?> getShoppingList(String uuid) async {
@@ -73,10 +66,8 @@ class ShoppingListController extends BaseController {
         }
       });
     } catch (error, stackTrace) {
-
       errorLog(error, stackTrace);
     }
-
   }
 
   Future<bool> createShoppinglist(ShoppingList shoppingList) async {
@@ -84,11 +75,10 @@ class ShoppingListController extends BaseController {
       var item = await repository.create(shoppingList);
 
       if (item != null && item != 0) {
+        allShoppingList.add(shoppingList);
+        notifyListeners();
         FirebaseService.saveShoppingList(shoppingList.toMap());
       }
-
-      await getAllShoppingList();
-
       return true;
     } catch (error) {
       debugPrint(error.toString());
@@ -101,7 +91,7 @@ class ShoppingListController extends BaseController {
     try {
       isLoading.value = true;
       allShoppingList.value = await repository.getAllList();
-
+      print("DATA:: ${allShoppingList.value}");
       isLoading.value = false;
     } catch (error) {
       isLoading.value = false;
@@ -120,7 +110,7 @@ class ShoppingListController extends BaseController {
       isLoading.value = false;
       return value;
     } catch (error, stackTrace) {
-isLoading.value=false;
+      isLoading.value = false;
       errorLog(error, stackTrace);
     }
 
@@ -136,12 +126,13 @@ isLoading.value=false;
       resetData();
 
       if (value != null && value != 0) {
+        notifyListeners();
         FirebaseService.addItemShoppingList(item.toMap());
       }
 
       return value;
-    }catch (error, stackTrace) {
-      isLoading.value=false;
+    } catch (error, stackTrace) {
+      isLoading.value = false;
       errorLog(error, stackTrace);
     }
 
@@ -159,12 +150,12 @@ isLoading.value=false;
       }
 
       shoppingList.value.items!.remove(item);
+      notifyListeners();
       isLoading.value = false;
 
       return value;
     } catch (error, stackTrace) {
-
-      isLoading.value=false;
+      isLoading.value = false;
       errorLog(error, stackTrace);
     }
 
@@ -187,13 +178,12 @@ isLoading.value=false;
       }
 
       //Update shoppinglist
-
+      notifyListeners();
       resetData();
       isLoading.value = false;
       return value;
     } catch (error, stackTrace) {
-
-      isLoading.value=false;
+      isLoading.value = false;
       errorLog(error, stackTrace);
     }
 
@@ -205,11 +195,14 @@ isLoading.value=false;
     try {
       var value = await repository.delete(list);
 
+      allShoppingList.value = allShoppingList.value
+          .where((test) => test.uuid != list.uuid)
+          .toList();
+
+      notifyListeners();
       if (User.logged?.uuid == list.userUUID) {
         FirebaseService.deleteShoppingList(list.toMap());
       }
-
-      getAllShoppingList();
 
       return value;
     } catch (error) {
@@ -221,8 +214,8 @@ isLoading.value=false;
   Future<bool?> updateShoppinglist(ShoppingList list) async {
     try {
       var value = await repository.update(list);
+      notifyListeners();
       FirebaseService.updateShoppingList(list.toMap());
-
       return value;
     } catch (error) {
       debugPrint("${error.toString()}");
@@ -242,7 +235,7 @@ isLoading.value=false;
     if (nameFieldController.text.isEmpty ||
         qtyController.text.isEmpty ||
         priceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Preencha todos os campos"),
         backgroundColor: Colors.red,
       ));
