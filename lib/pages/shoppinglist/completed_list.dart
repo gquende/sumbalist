@@ -11,6 +11,7 @@ class CompletedShoppingList extends StatefulWidget {
 
   @override
   State<CompletedShoppingList> createState() => _CompletedShoppingListState();
+
 }
 
 class _CompletedShoppingListState extends State<CompletedShoppingList> {
@@ -24,7 +25,7 @@ class _CompletedShoppingListState extends State<CompletedShoppingList> {
     return Scaffold(
         appBar: AppBar(
           backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          title: Text("Listas concluídas"),
+          title: const Text("Listas concluídas"),
           centerTitle: true,
         ),
         body: Container(

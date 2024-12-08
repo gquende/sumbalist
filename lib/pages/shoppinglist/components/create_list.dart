@@ -125,7 +125,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                       userUUID:
                                           User.logged?.uuid ?? 'not defined',
                                       categoryUUID: "$index",
-                                      statusUUID: "not completed",
+                                      statusUUID: 'not completed',
                                       name: shoplistNameController.text,
                                       total: 0,
                                       items: []);

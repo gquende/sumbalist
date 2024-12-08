@@ -469,7 +469,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                         });
                       } else {
                         controller.shoppingList.value.statusUUID =
-                            "not completed";
+                            'not completed';
                         controller
                             .updateShoppinglist(controller.shoppingList.value);
                       }
@@ -717,7 +717,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
 
                         //Actualiza o estado lista
                         controller.shoppingList.value.statusUUID =
-                            "not completed";
+                            'not completed';
                         controller
                             .updateShoppinglist(controller.shoppingList.value);
                       }
