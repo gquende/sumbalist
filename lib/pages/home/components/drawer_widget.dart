@@ -6,14 +6,20 @@ import 'package:get/get.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
 
 import 'package:sumbalist/utils/assets_utils.dart';
+import 'package:sumbalist/utils/currency.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../utils/theme/theme.dart';
 import '../../shoppinglist/completed_list.dart';
 
-class DrawerWidget extends StatelessWidget {
+class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
 
+  @override
+  State<DrawerWidget> createState() => _DrawerWidgetState();
+}
+
+class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -51,9 +57,13 @@ class DrawerWidget extends StatelessWidget {
                         showSearchField: true,
                         showCurrencyName: true,
                         showCurrencyCode: true,
-                        favorite: ['usd'],
+                        favorite: [
+                          AppCurrencyFormat.currency!.code.toLowerCase()
+                        ],
                         onSelect: (Currency currency) {
-                          print('Select currency: ${currency.name}');
+                          AppCurrencyFormat.updateCurrency(currency);
+
+                          setState(() {});
                         },
                         searchHint: "Procurar");
 
@@ -110,7 +120,7 @@ class DrawerWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(

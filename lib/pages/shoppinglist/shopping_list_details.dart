@@ -492,7 +492,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
 
     final CurrencyTextInputFormatter inputCurrencyFormat =
         CurrencyTextInputFormatter.currency(
-            symbol: AppCurrencyFormat.formater.symbol);
+            symbol: AppCurrencyFormat.formater.value.symbol);
 
     if (item != null) {
       controller.nameFieldController.text = item!.itemName;
