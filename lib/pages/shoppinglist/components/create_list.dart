@@ -12,7 +12,6 @@ import '../../../models/shopping_list_categories.dart';
 import '../../../utils/constants/app_colors.dart';
 import '../shopping_list_details.dart';
 
-
 Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
   var controller = await GetIt.instance.get<ShoppingListController>();
 
@@ -108,9 +107,9 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                     fillColor: Theme.of(context)
                                         .colorScheme
                                         .secondaryContainer,
-                                    labelStyle:
-                                        TextStyle(color: Color(0xff000000)),
-                                    border: OutlineInputBorder()),
+                                    labelStyle: const TextStyle(
+                                        color: Color(0xff000000)),
+                                    border: const OutlineInputBorder()),
                               ),
                             ),
                           ),
@@ -121,13 +120,12 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                             onTap: () async {
                               if (shoplistNameController.text.isNotEmpty) {
                                 if (item == null) {
-                                  var uuid = const Uuid();
                                   var shoplist = ShoppingList(
-                                      uuid: uuid.v4(),
+                                      uuid: Uuid().v4(),
                                       userUUID:
                                           User.logged?.uuid ?? 'not defined',
                                       categoryUUID: "$index",
-                                      statusUUID: "Open",
+                                      statusUUID: 'not completed',
                                       name: shoplistNameController.text,
                                       total: 0,
                                       items: []);

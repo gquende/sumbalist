@@ -5,9 +5,11 @@ import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sumbalist/controllers/shopping_list_controller.dart';
+import 'package:sumbalist/core/error/errorLog.dart';
 import 'package:sumbalist/models/users.dart';
 import 'package:sumbalist/services/firebase_service.dart';
 import 'package:sumbalist/utils/utils.dart';
+import 'package:uuid/uuid.dart';
 
 class LoginController extends GetxController {
   RxBool showPassword = true.obs;
@@ -36,8 +38,6 @@ class LoginController extends GetxController {
           var user = User.fromMap(data);
           var shared = await SharedPreferences.getInstance();
           shared.setString("user", jsonEncode(user.toMap()));
-          debugPrint(jsonEncode(user.toMap()));
-
           await shared.setBool("isFirstTimeRun", false);
 
           var shopingListController =
@@ -67,6 +67,35 @@ class LoginController extends GetxController {
     return null;
   }
 
+  static Future<User?> createTempUser() async {
+    try {
+      var uuid = Uuid().v4();
+      var user = User(
+          uuid: uuid,
+          username: uuid + "@sumbalist.com",
+          name: "Sumbalister",
+          surname: "",
+          phoneNumber: "",
+          status: "unregistered");
+      var shared = await SharedPreferences.getInstance();
+      shared.setString("user", jsonEncode(user.toMap()));
+      User.logged = user;
+
+      FirebaseService.saveTempUser(user.toMap());
+      await shared.setBool("isFirstTimeRun", false);
+
+      var shopingListController = GetIt.instance.get<ShoppingListController>();
+
+      await shopingListController.loadShoppingList(user.uuid);
+
+      return user;
+    } catch (error, stackTrace) {
+      errorLog(error, stackTrace);
+    }
+
+    return null;
+  }
+
   /*
   Future<User?> loginWithGoogle() async {
     setLoading(true);
@@ -86,7 +115,6 @@ class LoginController extends GetxController {
       await shared.setBool("isFirstTimeRun", false);
       return User.logged;
     }
-
     setLoading(false);
   }
 

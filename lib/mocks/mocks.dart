@@ -50,4 +50,5 @@ User userMock = User(
     name: "Geraldo",
     surname: "Quende",
     phoneNumber: "926884947",
-    password: "123456");
+    password: "123456",
+    status: "unregistered");

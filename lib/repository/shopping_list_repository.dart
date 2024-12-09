@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:sumbalist/core/error/errorLog.dart';
 import 'package:sumbalist/repository/shopping_list_item_repository.dart';
 import '../core/database.dart';
 import '../models/shopping_list.dart';
@@ -13,16 +14,30 @@ class ShoppingListRepository {
   }
 
   //Get all ShoppingList
-  Future<List<ShoppingList>> getAllList() async {
+  Future<List<ShoppingList>> getAllList({required String statusUUID}) async {
     try {
       var list = <ShoppingList>[];
-      var result = await this._appDatabase.db?.rawQuery(
-        "SELECT * from ${_table}",
-        [],
-      );
+      var result;
+
+      print("ESTADO:: $statusUUID::");
+      if (statusUUID.isEmpty) {
+        result =
+            await this._appDatabase.db?.rawQuery("SELECT * from ${_table}");
+      } else {
+        result = await this._appDatabase.db?.rawQuery(
+            "SELECT * from ${_table} WHERE statusUUID='${statusUUID}'");
+
+        // result =
+        //     await this._appDatabase.db?.rawQuery("SELECT * from ${_table}");
+
+        print("TODOS OSD DADOS:: $result");
+      }
+
       if (result != null) {
         for (var i = 0; i < result.length; i++) {
           var shopingList = ShoppingList.fromMap(result[i]);
+
+          print("LIST SHOP :: ${shopingList.name}");
           shopingList.items =
               await itemRepository?.getAllItemList(shopingList.uuid);
 
@@ -71,15 +86,18 @@ class ShoppingListRepository {
   //Update a Shoppinglist
   Future<bool> update(ShoppingList item) async {
     try {
-      var result = await this._appDatabase.db?.update(_table, item.toMap(),
-          where: "uuid=?", whereArgs: [item.uuid]);
+      var query =
+          "UPDATE $_table SET  name = '${item.name}', categoryUUID ='${item.categoryUUID}' , statusUUID =' ${item.statusUUID}', total = ${item.total}, updated_at = '${item.updated_at}' WHERE uuid='${item.uuid}'";
+
+      print("STATTUS itme:: ${item.statusUUID}");
+      var result = await this._appDatabase.db?.rawQuery(query);
 
       if (result != null) {
         return result == 1;
       }
-    } catch (error) {
-      debugPrint(
-          "${this.runtimeType.toString()}::updateItem:: Error ${error.toString()} ");
+    } catch (error, stackTrace) {
+      print("Error");
+      errorLog(error, stackTrace);
     }
 
     return false;

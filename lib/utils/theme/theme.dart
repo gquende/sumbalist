@@ -74,7 +74,6 @@ class AppTheme {
     var shared = await SharedPreferences.getInstance();
     isDarkMode.value = shared.getBool("themeMode") ?? false;
 
- return isDarkMode.value;
-
+    return isDarkMode.value;
   }
 }

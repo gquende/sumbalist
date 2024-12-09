@@ -6,7 +6,7 @@ import 'package:sumbalist/pages/signup/signup.dart';
 
 import '../models/users.dart';
 import '../utils/constants/app_colors.dart';
-import 'home.dart';
+import 'home/home.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});

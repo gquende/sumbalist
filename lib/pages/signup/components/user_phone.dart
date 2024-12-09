@@ -112,7 +112,7 @@ class _UserPhoneState extends State<UserPhone> {
                       setState(() {
                         currency.value = value!;
                       });
-                      AppCurrencyFormat.setConfig(value!);
+                      // AppCurrencyFormat.setConfig(value!);
                     },
                     items: AppCurrencyFormat.currencies.keys
                         .map((e) => DropdownMenuItem(

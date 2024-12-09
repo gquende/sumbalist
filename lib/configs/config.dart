@@ -13,12 +13,19 @@ import '../repository/shopping_list_repository.dart';
 
 Future<void> initConfig() async {
   var locator = GetIt.instance;
-  AppDatabase database = AppDatabase(urlDatabase: "sumbalist.db");
+  AppDatabase database = AppDatabase();
+  await database.open("sumbalist.db");
+
+  locator.registerSingleton(database);
 
   var shoppingListRepository = ShoppingListRepository(database);
   var shoppingListItemRepository = ShoppingListItemRepository(database);
   var shoplistController = ShoppingListController(
       shoppingListRepository, shoppingListItemRepository);
+
+  // await shoplistController.getAllShoppingList();
+  locator.registerSingleton(shoppingListRepository);
+  locator.registerSingleton(shoppingListItemRepository);
 
   await AppTheme.loadThemeMode();
 
@@ -26,7 +33,14 @@ Future<void> initConfig() async {
   locator.registerSingleton(shoplistController);
   Get.put(shoplistController);
 
-  await LoginController.checkUserAuthenticated();
   await Utils.checkIsFirstTimeRun();
+
+  //Create Temp User if the App Run first Time
+  if (Utils.isFirstTimeRun) {
+    await LoginController.createTempUser();
+  } else {
+    await LoginController.checkUserAuthenticated();
+  }
+
   Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 }
