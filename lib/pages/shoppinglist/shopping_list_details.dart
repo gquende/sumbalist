@@ -448,7 +448,6 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                 value: item.isDone,
                 onChanged: (value) {
                   item.isDone = value!;
-
                   controller.updateItem(item).then((value) {
                     setState(() {
                       _reorderItem(index);
@@ -492,7 +491,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
 
     final CurrencyTextInputFormatter inputCurrencyFormat =
         CurrencyTextInputFormatter.currency(
-            symbol: AppCurrencyFormat.formater.symbol);
+            symbol: AppCurrencyFormat.formater.value.symbol);
 
     if (item != null) {
       controller.nameFieldController.text = item!.itemName;

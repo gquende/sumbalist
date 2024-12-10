@@ -131,5 +131,6 @@ class LoginController extends GetxController {
     } catch (error) {
       debugPrint(error.toString());
     }
+    return null;
   }
 }

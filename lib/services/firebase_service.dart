@@ -1,5 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+
+import '../core/error/errorLog.dart';
 //import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 //import '../utils/utils.dart';
@@ -175,19 +177,19 @@ class FirebaseService {
       var data = await database.ref("user-lists").child(userUUID).get();
       var keys = (data.value as Map).keys.toList();
 
-      print(keys);
+      devLog(keys);
       for (int i = 0; i < keys.length; i++) {
         var shoppinglist =
             await database.ref("shoppinglists").child(keys[i]).get();
 
         list.add(shoppinglist.value as Map);
       }
-      print("Lista");
-      print(list);
+      devLog("Lista");
+      devLog(list);
 
       return list;
     } catch (error) {
-      print(error);
+      devLog(error);
 
       return list;
     }

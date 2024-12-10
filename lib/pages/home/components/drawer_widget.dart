@@ -1,18 +1,34 @@
 import 'dart:developer';
-
 import 'package:currency_picker/currency_picker.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:lite_rolling_switch/lite_rolling_switch.dart';
-
+import 'package:provider/provider.dart';
+import 'package:sumbalist/controllers/currency_controller.dart';
 import 'package:sumbalist/utils/assets_utils.dart';
+import 'package:sumbalist/utils/currency.dart';
 import 'package:url_launcher/url_launcher.dart';
-
 import '../../../utils/theme/theme.dart';
 import '../../shoppinglist/completed_list.dart';
 
-class DrawerWidget extends StatelessWidget {
+class DrawerWidget extends StatefulWidget {
   const DrawerWidget({super.key});
+
+  @override
+  State<DrawerWidget> createState() => _DrawerWidgetState();
+}
+
+class _DrawerWidgetState extends State<DrawerWidget> {
+  late CurrencyController currencyController;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+
+    currencyController = context.read<CurrencyController>();
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +57,15 @@ class DrawerWidget extends StatelessWidget {
                   }),
                 ),
                 const SizedBox(
-                  height: 100,
+                  height: 60,
+                ),
+                Divider(
+                  height: 10,
+                  thickness: 1,
+                  color: Theme.of(context).colorScheme.secondaryContainer,
+                ),
+                const SizedBox(
+                  height: 40,
                 ),
                 GestureDetector(
                   onTap: () {
@@ -51,14 +75,13 @@ class DrawerWidget extends StatelessWidget {
                         showSearchField: true,
                         showCurrencyName: true,
                         showCurrencyCode: true,
-                        favorite: ['usd'],
+                        favorite: [
+                          AppCurrencyFormat.currency!.code.toLowerCase()
+                        ],
                         onSelect: (Currency currency) {
-                          print('Select currency: ${currency.name}');
+                          currencyController.updateCurrency(currency);
                         },
                         searchHint: "Procurar");
-
-                    // Navigator.of(context).push(MaterialPageRoute(
-                    //     builder: (builder) => const CurrencyPage()));
                   },
                   child: Container(
                     width: size.width,
@@ -110,7 +133,7 @@ class DrawerWidget extends StatelessWidget {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(
@@ -146,7 +169,9 @@ class DrawerWidget extends StatelessWidget {
                             textSize: 10.0,
                             onChanged: (bool state) {
                               //Use it to manage the different states
-                              print('Current State of SWITCH IS: $state');
+                              if (kDebugMode) {
+                                print('Current State of SWITCH IS: $state');
+                              }
                             },
                             onTap: () {
                               AppTheme.setDarkMode(!AppTheme.isDarkMode.value);

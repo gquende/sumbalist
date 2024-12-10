@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:sumbalist/services/firebase_service.dart';
@@ -94,7 +95,7 @@ class ShoppingListController extends ChangeNotifier {
     try {
       isLoading.value = true;
       allShoppingList.value = await repository.getAllList(statusUUID: status);
-      print("DATA:: ${allShoppingList.value}");
+
       isLoading.value = false;
     } catch (error) {
       isLoading.value = false;
@@ -112,14 +113,17 @@ class ShoppingListController extends ChangeNotifier {
     try {
       isLoading.value = true;
       var data = await repository.getAllList(statusUUID: status);
-      print("Get by satus");
+
+      if (kDebugMode) {
+        print("Get by satus");
+      }
       isLoading.value = false;
 
       return data;
     } catch (error) {
       isLoading.value = false;
       debugPrint(
-          "ShoppinglistController:: getShoppingList::ERROR : ${error.toString()}");
+          "ShoppinglistController:: getShoppingList::ERROR: ${error.toString()}");
     }
 
     isLoading.value = false;
@@ -144,10 +148,12 @@ class ShoppingListController extends ChangeNotifier {
     try {
       isLoading.value = true;
       var value = await itemRepository.insertItem(item);
+
       isLoading.value = false;
       resetData();
 
       if (value != null && value != 0) {
+        devLog("Entreiii");
         await getAllShoppingListNotCompleted(status: "not completed");
         notifyListeners();
         FirebaseService.addItemShoppingList(item.toMap());
@@ -242,6 +248,7 @@ class ShoppingListController extends ChangeNotifier {
       var value = await repository.update(list);
       await getAllShoppingListNotCompleted(status: "not completed");
       notifyListeners();
+
       FirebaseService.updateShoppingList(list.toMap());
       return value;
     } catch (error) {

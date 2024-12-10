@@ -11,7 +11,6 @@ class CompletedShoppingList extends StatefulWidget {
 
   @override
   State<CompletedShoppingList> createState() => _CompletedShoppingListState();
-
 }
 
 class _CompletedShoppingListState extends State<CompletedShoppingList> {
@@ -24,15 +23,21 @@ class _CompletedShoppingListState extends State<CompletedShoppingList> {
     var size = MediaQuery.of(context).size;
     return Scaffold(
         appBar: AppBar(
-          backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-          title: const Text("Listas concluídas"),
+          backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+          title: const Text(
+            "Listas concluídas",
+            style: TextStyle(fontSize: 16),
+          ),
           centerTitle: true,
+          elevation: 2,
+          surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+          shadowColor: Colors.black,
         ),
         body: Container(
             width: size.width,
             height: size.height,
             child: FutureBuilder(
-                future: controller.getAllShoppingList(status: ' completed'),
+                future: controller.getAllShoppingList(status: 'completed'),
                 builder: (ctx, snap) {
                   if (!snap.hasData && controller.isLoading.value == true) {
                     return SizedBox(
@@ -74,7 +79,8 @@ class _CompletedShoppingListState extends State<CompletedShoppingList> {
                       children: List.generate(
                           data.length,
                           (index) => Padding(
-                                padding: const EdgeInsets.only(bottom: 16.0),
+                                padding: const EdgeInsets.only(
+                                    top: 16.0, left: 8, right: 8),
                                 child: ShoppingListCard(data[index]),
                               )),
                     ),
