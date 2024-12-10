@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
+import 'package:sumbalist/controllers/currency_controller.dart';
 import 'package:sumbalist/pages/home/home.dart';
 import 'package:sumbalist/pages/login.dart';
 import 'package:sumbalist/pages/onboarding.dart';
@@ -37,6 +38,7 @@ class App extends StatelessWidget {
             create: (_) => ShoppingListController(
                 GetIt.instance.get<ShoppingListRepository>(),
                 GetIt.instance.get<ShoppingListItemRepository>())),
+        ChangeNotifierProvider(create: (_) => CurrencyController())
       ],
       child: Obx(() => GetMaterialApp(
             debugShowCheckedModeBanner: false,

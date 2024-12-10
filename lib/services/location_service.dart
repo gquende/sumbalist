@@ -4,6 +4,8 @@ import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
 import 'package:sumbalist/models/userLocation.dart';
 
+import '../core/error/errorLog.dart';
+
 class LocationService {
   String ipApi = "http://ip-api.com/json";
   String countriesApi = "https://restcountries.com/v3.1";
@@ -40,14 +42,14 @@ class LocationService {
     } catch (error) {
       if (error is DioException) {
         if (error.response != null) {
-          print('Código de status do erro: ${error.response!.statusCode}');
-          print(
+          devLog('Código de status do erro: ${error.response!.statusCode}');
+          devLog(
               'Mensagem de erro do servidor: ${error.response!.statusMessage}');
-          print('Corpo da resposta do servidor: ${error.response!.data}');
+          devLog('Corpo da resposta do servidor: ${error.response!.data}');
           return error.response!.data;
         }
       } else {
-        print("${error.toString()}");
+        devLog("${error.toString()}");
       }
     }
   }
@@ -70,13 +72,13 @@ class LocationService {
           );
 
           locations.add(location);
-          print(element);
+          devLog(element);
         });
 
         return locations;
       }
     } catch (error) {
-      print(error);
+      devLog(error);
     }
 
     return [];

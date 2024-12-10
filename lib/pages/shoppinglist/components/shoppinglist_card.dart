@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
+import 'package:provider/provider.dart';
 import 'package:sumbalist/mocks/shopping_list_category_mock.dart';
 
+import '../../../controllers/currency_controller.dart';
 import '../../../controllers/shopping_list_controller.dart';
 import '../../../models/shopping_list.dart';
 import '../../../utils/constants/app_colors.dart';
@@ -19,6 +21,7 @@ class ShoppingListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
 
+    context.watch<CurrencyController>();
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(MaterialPageRoute(
