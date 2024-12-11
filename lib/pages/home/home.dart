@@ -71,6 +71,8 @@ class _HomeState extends State<Home> {
           ),
         ],
         elevation: 3,
+        surfaceTintColor: Theme.of(context).scaffoldBackgroundColor,
+        shadowColor: Colors.black,
       ),
       body: SingleChildScrollView(
         child: setPage(_currentIndex),

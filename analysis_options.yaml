@@ -14,7 +14,7 @@ analyzer:
   exclude:
     - "**/*.g.dart"
   errors:
-
+    avoid_print: error
     unused_import: error
 
 

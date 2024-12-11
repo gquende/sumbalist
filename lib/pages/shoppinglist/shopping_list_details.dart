@@ -448,7 +448,6 @@ class _ShoplistDetailsState extends State<ShoplistDetails> {
                 value: item.isDone,
                 onChanged: (value) {
                   item.isDone = value!;
-
                   controller.updateItem(item).then((value) {
                     setState(() {
                       _reorderItem(index);

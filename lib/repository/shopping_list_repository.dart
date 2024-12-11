@@ -19,7 +19,7 @@ class ShoppingListRepository {
       var list = <ShoppingList>[];
       var result;
 
-      print("ESTADO:: $statusUUID::");
+      devLog("ESTADO:: $statusUUID::");
       if (statusUUID.isEmpty) {
         result =
             await this._appDatabase.db?.rawQuery("SELECT * from ${_table}");
@@ -30,14 +30,14 @@ class ShoppingListRepository {
         // result =
         //     await this._appDatabase.db?.rawQuery("SELECT * from ${_table}");
 
-        print("TODOS OSD DADOS:: $result");
+        devLog("TODOS OSD DADOS:: $result");
       }
 
       if (result != null) {
         for (var i = 0; i < result.length; i++) {
           var shopingList = ShoppingList.fromMap(result[i]);
 
-          print("LIST SHOP :: ${shopingList.name}");
+          devLog("LIST SHOP :: ${shopingList.name}");
           shopingList.items =
               await itemRepository?.getAllItemList(shopingList.uuid);
 
@@ -87,16 +87,16 @@ class ShoppingListRepository {
   Future<bool> update(ShoppingList item) async {
     try {
       var query =
-          "UPDATE $_table SET  name = '${item.name}', categoryUUID ='${item.categoryUUID}' , statusUUID =' ${item.statusUUID}', total = ${item.total}, updated_at = '${item.updated_at}' WHERE uuid='${item.uuid}'";
+          "UPDATE $_table SET  name = '${item.name}', categoryUUID ='${item.categoryUUID}' , statusUUID ='${item.statusUUID}', total = ${item.total}, updated_at = '${item.updated_at}' WHERE uuid='${item.uuid}'";
 
-      print("STATTUS itme:: ${item.statusUUID}");
+      devLog("STATTUS itme:: ${item.statusUUID}");
       var result = await this._appDatabase.db?.rawQuery(query);
 
       if (result != null) {
         return result == 1;
       }
     } catch (error, stackTrace) {
-      print("Error");
+      devLog("Error");
       errorLog(error, stackTrace);
     }
 

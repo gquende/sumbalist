@@ -270,7 +270,7 @@ class _AddItemBodyState extends State<AddItemBody> {
                     var value = await controller.addItem(item);
 
                     if (value != 0) {
-                      controller.shoppingList.value.items?.add(item);
+                      // controller.shoppingList.value.items?.add(item);
                     }
                   } else {
                     widget.item!.itemName = controller.nameFieldController.text;
@@ -281,11 +281,11 @@ class _AddItemBodyState extends State<AddItemBody> {
                         double.parse(controller.priceController.text);
                     widget.item!.priority = controller.priority;
 
-                    var value = await controller
-                        .updateItem(widget.item as ShoppinglistItem);
+                    // var value = await controller
+                    //     .updateItem(widget.item as ShoppinglistItem);
                   }
 
-                  Navigator.of(context).pop();
+                  //  Navigator.of(context).pop();
                 })
           ],
         ));
