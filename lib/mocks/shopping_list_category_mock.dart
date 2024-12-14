@@ -9,6 +9,13 @@ var shoppingListCategoriesMock = <ShoppingListCategory>[
   ShoppingListCategory(uuid: "3", name: "Escola", icon: Icons.school)
 ];
 
+var shoppingListCategoriesMockEnglish = <ShoppingListCategory>[
+  ShoppingListCategory(uuid: "0", name: "General", icon: Icons.category),
+  ShoppingListCategory(uuid: "1", name: "House", icon: Icons.home),
+  ShoppingListCategory(uuid: "2", name: "Party", icon: Icons.celebration),
+  ShoppingListCategory(uuid: "3", name: "School", icon: Icons.school)
+];
+
 Map<String, IconData> iconCategory = {
   "0": Icons.category,
   "1": Icons.home,

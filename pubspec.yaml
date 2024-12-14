@@ -17,7 +17,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  flutter_localizations:
+    sdk: flutter
   firebase_core: ^2.24.2
   sqflite: ^2.3.0
   shared_preferences: ^2.2.2
@@ -36,17 +37,22 @@ dependencies:
   firebase_database: ^10.4.0
   google_sign_in: ^6.1.6
   font_awesome_flutter: ^10.7.0
-  #contacts_service: ^0.6.3
   permission_handler: ^11.0.1
   email_validator: ^2.1.17
   currency_text_input_formatter: ^2.1.10
-  country_picker:
-  dio:
   contained_tab_bar_view: ^0.8.0
-  lite_rolling_switch: ^1.0.1
+  #lite_rolling_switch: ^1.0.1
   provider: ^6.1.2
   url_launcher: ^6.3.1
   currency_picker: ^2.0.21
+
+  dio: ^5.7.0
+  intl: ^0.19.0
+  animated_toggle_switch: ^0.8.3
+
+  country_picker: ^2.0.27
+  intl_utils: ^2.8.7
+  diacritic: ^0.1.6
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"
@@ -60,11 +66,11 @@ dev_dependencies:
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
 
-flutter_launcher_icons:
-  android: "launcher_icon"
-  ios: true
-  image_path: "assets/slogo.png"
-  min_sdk_android: 21 # android min sdk min:16, default 21
+#flutter_launcher_icons:
+#  android: "launcher_icon"
+#  ios: true
+#  image_path: "assets/slogo.png"
+#  min_sdk_android: 21 # android min sdk min:16, default 21
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
@@ -75,6 +81,7 @@ flutter:
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.
+  generate: true
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:

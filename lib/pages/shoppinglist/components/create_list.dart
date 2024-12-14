@@ -2,6 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+import 'package:sumbalist/core/configs/app_locale.dart';
+import 'package:sumbalist/core/di/dependecy_injection.dart';
 import 'package:sumbalist/models/users.dart';
 import 'package:uuid/uuid.dart';
 
@@ -14,6 +16,7 @@ import '../shopping_list_details.dart';
 
 Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
   var controller = await GetIt.instance.get<ShoppingListController>();
+  var appLocale = DI.get<AppLocale>();
 
   var size = MediaQuery.of(context).size;
   TextEditingController shoplistNameController = TextEditingController();
@@ -52,7 +55,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                           const SizedBox(
                             height: 10,
                           ),
-                          const Text("Categoria"),
+                          Text(appLocale.strings.category),
                           const SizedBox(
                             height: 5,
                           ),
@@ -64,8 +67,14 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                   onTap: () {
                                     index.value = i; //Set category by index
                                   },
-                                  child: categoryIcon(index == i,
-                                      shoppingListCategoriesMock[i], context),
+                                  child: categoryIcon(
+                                      index == i,
+                                      appLocale.locale.value.languageCode ==
+                                              "pt"
+                                          ? shoppingListCategoriesMock[i]
+                                          : shoppingListCategoriesMockEnglish[
+                                              i],
+                                      context),
                                 );
                               })),
                           const SizedBox(
@@ -88,7 +97,7 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                               child: TextFormField(
                                 controller: shoplistNameController,
                                 decoration: InputDecoration(
-                                    hintText: "Nome da lista",
+                                    hintText: appLocale.strings.listName,
                                     hintStyle:
                                         Theme.of(context).textTheme.labelMedium,
                                     contentPadding: EdgeInsets.only(bottom: 10),
@@ -165,12 +174,12 @@ Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
                                     borderRadius: BorderRadius.circular(5)),
                                 child: Center(
                                   child: item == null
-                                      ? const Text(
-                                          "Adicionar",
+                                      ? Text(
+                                          appLocale.strings.add,
                                           style: TextStyle(color: Colors.black),
                                         )
-                                      : const Text(
-                                          "Actualizar",
+                                      : Text(
+                                          appLocale.strings.update,
                                           style: TextStyle(color: Colors.black),
                                         ),
                                 )),
