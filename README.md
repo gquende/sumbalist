@@ -26,6 +26,8 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 * [x] Adicionar items na lista de compras
 * [x] Remover items na lista de compras
 * [x] Actualizar items na lista de compras
+* [x] Seleccionar o moeda para preços
+* [x] Visualizar listas concluídas
 
 
 ## Stack utilizada
@@ -59,6 +61,12 @@ Instale as dependências
 ```bash
   flutter pub get
 ```
+
+```bash
+ flutter gen-l10n --template-arb-file=intl_en.arb
+ flutter pub run intl_utils:generate
+```
+
 
 Confirme que tenha um telemóvel ou emulador rodando e execute:
 
