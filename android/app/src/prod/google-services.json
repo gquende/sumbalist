@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "454364344608",
+    "project_id": "sumbalist",
+    "storage_bucket": "sumbalist.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454364344608:android:bca650cd7893e712c4e745",
+        "android_client_info": {
+          "package_name": "com.gquende.sumbalist"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCn0wBwwmx15rkfvyhp6_AB3zmt77bePEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

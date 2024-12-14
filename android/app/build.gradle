@@ -72,17 +72,17 @@ android {
     }
 
 
-//    flavorDimensions "default"
-//    productFlavors {
-//        dev {
-//            applicationIdSuffix ".dev"
-//            resValue "string", "app_name", "SumbaList Dev"
-//        }
-//        prod {
-//
-//            resValue "string", "app_name", "SumbaList"
-//        }
-//    }
+    flavorDimensions "default"
+    productFlavors {
+        dev {
+            applicationIdSuffix ".dev"
+            resValue "string", "app_name", "SumbaList Dev"
+        }
+        prod {
+
+            resValue "string", "app_name", "SumbaList"
+        }
+    }
 
 
 }

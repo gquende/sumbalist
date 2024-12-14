@@ -7,6 +7,7 @@ import 'package:sumbalist/pages/signup/signup.dart';
 import '../models/users.dart';
 import '../utils/constants/app_colors.dart';
 import 'home/home.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -20,6 +21,8 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
+    var labels = AppLocalizations.of(context)!;
+
     var size = MediaQuery.of(context).size;
 
     return GestureDetector(
