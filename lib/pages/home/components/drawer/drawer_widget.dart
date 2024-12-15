@@ -45,6 +45,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
     const green = Color(0xFF45CC0D);
     var size = MediaQuery.of(context).size;
     // final isDarkTheme = theme.brightness == Brightness.dark;
+
     return ListenableBuilder(
         listenable: Listenable.merge([localization]),
         builder: (_, __) {
@@ -279,6 +280,7 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
                                         setState(() {});
                                       },
+
                                       iconBuilder: (value) => value
                                           ? const Icon(
                                               Icons.power_settings_new_rounded,

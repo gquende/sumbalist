@@ -58,6 +58,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                 children: [
                   Positioned(
                     top: size.height * 0.13,
+
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Obx(() {
@@ -108,6 +109,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                                 )
                                               ],
                                             ),
+
                                           ),
                                         )
                                       : Column(
@@ -131,6 +133,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                                         });
                                                       } else {
                                                         setState(() {});
+
                                                       }
                                                     },
                                                     background: Container(
@@ -164,6 +167,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                                           bottom: 8.0,
                                                           right: size.width *
                                                               0.036),
+
                                                       child:
                                                           _shoppinglistItemWidget(
                                                               item: controller
@@ -191,6 +195,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                       Container(
                           width: MediaQuery.of(context).size.width,
                           height: MediaQuery.of(context).size.height / 7.8,
+
                           decoration: BoxDecoration(
                               color: Theme.of(context)
                                   .colorScheme
@@ -257,12 +262,14 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                   ),
                                   SizedBox(
                                     height: 10,
+
                                   ),
                                   Stack(
                                     children: [
                                       Container(
                                         width: (size.width - 20),
                                         height: 20,
+
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(50),
@@ -275,6 +282,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                                 .getPercentBuyedByItem() /
                                             100,
                                         height: 20,
+
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(50),

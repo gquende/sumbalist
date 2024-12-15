@@ -85,6 +85,7 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                         iconCategory[
                                             "${widget.shoppinglist.categoryUUID}"],
                                         size: 30,
+
                                         color: Theme.of(context).primaryColor,
                                       ),
                                     ),
@@ -126,6 +127,7 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                           children: [
                             SizedBox(
                               height: 2,
+
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -193,6 +195,7 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                           .getPercentBuyedByItem() /
                                       100,
                                   height: 20,
+
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
                                       color: PRIMARYCOLOR),
