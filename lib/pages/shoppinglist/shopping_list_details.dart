@@ -57,7 +57,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
               child: Stack(
                 children: [
                   Positioned(
-                    top: size.height * 0.12,
+                    top: size.height * 0.13,
                     child: Padding(
                         padding: const EdgeInsets.all(8.0),
                         child: Obx(() {
@@ -71,39 +71,43 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                     height: 10,
                                   ),
                                   controller.shoppingList.value.items!.isEmpty
-                                      ? Container(
-                                          width: size.width,
-                                          height: size.height / 1.5,
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            children: [
-                                              Center(
-                                                child: SvgPicture.asset(
-                                                  AppAssets.ADD_NOTE_IMAGE,
-                                                  width: size.width / 2,
+                                      ? Padding(
+                                          padding: const EdgeInsets.only(
+                                              left: 20.0, right: 20),
+                                          child: SizedBox(
+                                            width: size.width,
+                                            height: size.height / 1.5,
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Center(
+                                                  child: SvgPicture.asset(
+                                                    AppAssets.ADD_NOTE_IMAGE,
+                                                    width: size.width / 2,
+                                                  ),
                                                 ),
-                                              ),
-                                              const SizedBox(
-                                                height: 10,
-                                              ),
-                                              Text(
-                                                strings.noItemListToBuy,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .titleMedium,
-                                              ),
-                                              const SizedBox(
-                                                height: 5,
-                                              ),
-                                              Text(
-                                                strings.addItemAndBuy,
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodySmall,
-                                                textAlign: TextAlign.center,
-                                              )
-                                            ],
+                                                const SizedBox(
+                                                  height: 10,
+                                                ),
+                                                Text(
+                                                  strings.noItemListToBuy,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .titleMedium,
+                                                ),
+                                                const SizedBox(
+                                                  height: 5,
+                                                ),
+                                                Text(
+                                                  strings.addItemAndBuy,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall,
+                                                  textAlign: TextAlign.center,
+                                                )
+                                              ],
+                                            ),
                                           ),
                                         )
                                       : Column(
@@ -125,6 +129,8 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                                             .then((value) {
                                                           setState(() {});
                                                         });
+                                                      } else {
+                                                        setState(() {});
                                                       }
                                                     },
                                                     background: Container(
@@ -154,10 +160,10 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                                       ),
                                                     ),
                                                     child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.only(
-                                                              bottom: 8.0,
-                                                              right: 16.0),
+                                                      padding: EdgeInsets.only(
+                                                          bottom: 8.0,
+                                                          right: size.width *
+                                                              0.036),
                                                       child:
                                                           _shoppinglistItemWidget(
                                                               item: controller
@@ -184,7 +190,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                     children: [
                       Container(
                           width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 8,
+                          height: MediaQuery.of(context).size.height / 7.8,
                           decoration: BoxDecoration(
                               color: Theme.of(context)
                                   .colorScheme
@@ -250,13 +256,13 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                     ],
                                   ),
                                   SizedBox(
-                                    height: 20,
+                                    height: 10,
                                   ),
                                   Stack(
                                     children: [
                                       Container(
                                         width: (size.width - 20),
-                                        height: 15,
+                                        height: 20,
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(50),
@@ -268,7 +274,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                             controller.shoppingList.value
                                                 .getPercentBuyedByItem() /
                                             100,
-                                        height: 15,
+                                        height: 20,
                                         decoration: BoxDecoration(
                                             borderRadius:
                                                 BorderRadius.circular(50),
@@ -312,7 +318,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
       children: [
         Container(
           width: size.width,
-          height: 80,
+          height: size.height * 0.093,
           decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.secondaryContainer,
               borderRadius: BorderRadius.circular(5)),
@@ -356,16 +362,16 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                             item.itemName,
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
-                          SizedBox(
-                            height: size.height * 0.006,
-                          ),
+                          // SizedBox(
+                          //   height: size.height * 0.002,
+                          // ),
                           Text(
                             item.description,
                             style: Theme.of(context).textTheme.labelMedium,
                           ),
-                          SizedBox(
-                            height: size.height * 0.006,
-                          ),
+                          // SizedBox(
+                          //   height: size.height * 0.006,
+                          // ),
                           Container(
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -390,10 +396,10 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
         ),
         Positioned(
             left: size.width / 1.42,
-            top: 43,
+            top: size.width * 0.11,
             child: Container(
-              height: 25,
-              width: 100,
+              height: size.height * 0.03,
+              width: size.width * 0.245,
               padding: EdgeInsets.only(left: 0, right: 0, bottom: 0),
               alignment: Alignment.center,
               decoration: BoxDecoration(
@@ -433,7 +439,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                   ),
                   Text(
                     "${item.qty}",
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 20),
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
                   ),
                   GestureDetector(
                     onTap: () {
@@ -501,7 +507,10 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                   });
                 },
                 side: BorderSide(
-                    color: Theme.of(context).scaffoldBackgroundColor, width: 2),
+                    color: Theme.of(context)
+                        .scaffoldBackgroundColor
+                        .withOpacity(0.8),
+                    width: 2),
               ),
             ))
       ],

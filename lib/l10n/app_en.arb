@@ -14,7 +14,7 @@
   "update": "Update",
   "add": "Add",
   "noCompletedList": "No completed list",
-  "noItemListToBuy": "No items to purchase??",
+  "noItemListToBuy": "No items to purchase?",
   "addItemAndBuy": "Add items according to your priority and flag the purchased ones",
   "hello": "Hello",
   "price": "Price",
@@ -36,5 +36,12 @@
   "createAListAndFollowUp": "Create a list and follow up",
   "youhaveNotRegisteredYet": "You have not registered yet\uD83D\uDE25",
   "category": "Category",
+  "planYourShoppingList": "Plan your shopping list",
+  "theSecretToEfficient": "The secret to efficient shopping is planning your shopping list. Save time by planning your shopping list",
+  "efficientShoppingList": "Efficient shopping list",
+  "makeYourGroceryShoppingAnEfficient": "Make your grocery shopping an efficient, hassle-free experience",
+  "beHappy":"Be happy",
+  "beHappyWithSumbalist":"Be happy with your purchases using Sumbalist",
+  "toContinue":"Continue",
   "listName": "List name"
 }

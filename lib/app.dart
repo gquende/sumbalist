@@ -39,7 +39,6 @@ class App extends StatelessWidget {
               theme: AppTheme.isDarkMode.value
                   ? AppTheme.darkMode
                   : AppTheme.light,
-              darkTheme: AppTheme.light,
               home: Utils.isFirstTimeRun
                   ? const OnBoarding()
                   : User.logged != null

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sumbalist/mocks/shopping_list_category_mock.dart';
+import 'package:sumbalist/utils/theme/theme.dart';
 
 import '../../../controllers/currency_controller.dart';
 import '../../../controllers/shopping_list_controller.dart';
@@ -47,9 +48,14 @@ class _ShoppingListCardState extends State<ShoppingListCard>
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(8),
                   color: Theme.of(context).colorScheme.primaryContainer,
-                  boxShadow: const [
+                  boxShadow: [
                     BoxShadow(
-                        color: Color.fromRGBO(0, 0, 0, 0.08),
+                        color: AppTheme.isDarkMode.value
+                            ? Colors.transparent
+                            : Theme.of(context)
+                                .colorScheme
+                                .secondaryContainer
+                                .withOpacity(0.6),
                         blurRadius: 11,
                         spreadRadius: 2)
                   ]),
@@ -68,8 +74,8 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                 Row(
                                   children: [
                                     Container(
-                                      width: 55,
-                                      height: 55,
+                                      width: size.width * 0.12,
+                                      height: size.width * 0.12,
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(5),
                                         color:
@@ -78,7 +84,7 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                       child: Icon(
                                         iconCategory[
                                             "${widget.shoppinglist.categoryUUID}"],
-                                        size: 35,
+                                        size: 30,
                                         color: Theme.of(context).primaryColor,
                                       ),
                                     ),
@@ -94,7 +100,7 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                           child: Text(
                                             "${widget.shoppinglist.name}",
                                             style: TextStyle(
-                                                fontSize: 24,
+                                                fontSize: 20,
                                                 fontWeight: FontWeight.w500),
                                             overflow: TextOverflow.ellipsis,
                                           ),
@@ -104,7 +110,7 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                               .shoppinglist
                                               .calculateTotal()),
                                           style: TextStyle(
-                                              fontSize: 20,
+                                              fontSize: 16,
                                               fontWeight: FontWeight.w400,
                                               color: Colors.grey),
                                         ),
@@ -114,15 +120,12 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                 ),
                               ],
                             ),
-                            SizedBox(
-                              height: 8,
-                            ),
                           ],
                         ),
                         Column(
                           children: [
                             SizedBox(
-                              height: 8,
+                              height: 2,
                             ),
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -178,7 +181,7 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                               children: [
                                 Container(
                                   width: (size.width - 40),
-                                  height: 14,
+                                  height: 20,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
                                       color:
@@ -189,7 +192,7 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                       widget.shoppinglist
                                           .getPercentBuyedByItem() /
                                       100,
-                                  height: 14,
+                                  height: 20,
                                   decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(50),
                                       color: PRIMARYCOLOR),
