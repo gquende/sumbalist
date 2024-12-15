@@ -30,7 +30,7 @@ class _CompletedShoppingListState extends State<CompletedShoppingList>
             appBar: AppBar(
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               title: Text(
-                strings.doneLists,
+                strings.completedLists,
                 style: TextStyle(fontSize: 16),
               ),
               centerTitle: true,

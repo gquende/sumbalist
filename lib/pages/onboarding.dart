@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lottie/lottie.dart';
+import 'package:sumbalist/mixins/localization_mixin.dart';
 import 'package:sumbalist/pages/home/home.dart';
 import 'package:sumbalist/pages/widgets/common_button.dart';
 
@@ -12,7 +13,7 @@ class OnBoarding extends StatefulWidget {
   State<OnBoarding> createState() => _OnBoardingState();
 }
 
-class _OnBoardingState extends State<OnBoarding> {
+class _OnBoardingState extends State<OnBoarding> with LocalizationMixin {
   PageController pageController = PageController();
 
   int currentIndex = 0;
@@ -50,7 +51,7 @@ class _OnBoardingState extends State<OnBoarding> {
                           child: Column(
                             children: [
                               Text(
-                                "Planeie sua lista compra",
+                                strings.planYourShoppingList,
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.center,
@@ -59,7 +60,7 @@ class _OnBoardingState extends State<OnBoarding> {
                                 height: 14,
                               ),
                               Text(
-                                "O segredo para uma compra eficiente está no planeamento da sua lista de compra. Economize tempo planeando a sua lista de compras",
+                                strings.theSecretToEfficient,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center,
                               ),
@@ -81,11 +82,11 @@ class _OnBoardingState extends State<OnBoarding> {
                         height: 10,
                       ),
                       Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: EdgeInsets.all(8.0),
                           child: Column(
                             children: [
                               Text(
-                                "Lista de compras eficiente",
+                                strings.efficientShoppingList,
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.center,
@@ -94,7 +95,7 @@ class _OnBoardingState extends State<OnBoarding> {
                                 height: 14,
                               ),
                               Text(
-                                "Transforme suas idas ao mercado em uma experiência eficiente e sem complicações",
+                                strings.makeYourGroceryShoppingAnEfficient,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center,
                               ),
@@ -120,7 +121,7 @@ class _OnBoardingState extends State<OnBoarding> {
                           child: Column(
                             children: [
                               Text(
-                                "Seja feliz",
+                                strings.beHappy,
                                 style:
                                     Theme.of(context).textTheme.headlineMedium,
                                 textAlign: TextAlign.center,
@@ -129,7 +130,7 @@ class _OnBoardingState extends State<OnBoarding> {
                                 height: 14,
                               ),
                               Text(
-                                "Seja feliz com suas compras usando Sumbalist",
+                                strings.beHappyWithSumbalist,
                                 style: Theme.of(context).textTheme.bodyMedium,
                                 textAlign: TextAlign.center,
                               ),
@@ -159,7 +160,7 @@ class _OnBoardingState extends State<OnBoarding> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: CommonButton(
-                title: Text("Continuar"),
+                title: Text(strings.toContinue),
                 active: read >= 2,
                 action: () {
                   Navigator.of(context).pushReplacement(
