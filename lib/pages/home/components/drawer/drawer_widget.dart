@@ -42,11 +42,9 @@ class _DrawerWidgetState extends State<DrawerWidget> {
   @override
   Widget build(BuildContext context) {
     var localization = DI.get<AppLocale>();
-
     const green = Color(0xFF45CC0D);
-
     var size = MediaQuery.of(context).size;
-
+    // final isDarkTheme = theme.brightness == Brightness.dark;
     return ListenableBuilder(
         listenable: Listenable.merge([localization]),
         builder: (_, __) {
@@ -276,8 +274,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                           CupertinoActivityIndicator(
                                               color: Color.lerp(Colors.red[800],
                                                   green, global.position)),
-                                      onChanged: (b) => setState(
-                                          () => AppTheme.isDarkMode.value = b),
+                                      onChanged: (b) async {
+                                        await AppTheme.setDarkMode(b);
+
+                                        setState(() {});
+                                      },
                                       iconBuilder: (value) => value
                                           ? const Icon(
                                               Icons.power_settings_new_rounded,

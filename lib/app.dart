@@ -24,33 +24,27 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(
-            create: (_) => ShoppingListController(
-                GetIt.instance.get<ShoppingListRepository>(),
-                GetIt.instance.get<ShoppingListItemRepository>())),
-        ChangeNotifierProvider(create: (_) => CurrencyController()),
-      ],
-      child: ListenableBuilder(
-          listenable: Listenable.merge([DI.get<AppLocale>()]),
-          builder: (_, __) {
-            return Obx(() => GetMaterialApp(
-                  localizationsDelegates:
-                      AppLocalizations.localizationsDelegates,
-                  supportedLocales: AppLocalizations.supportedLocales,
-                  debugShowCheckedModeBanner: false,
-                  locale: DI.get<AppLocale>().locale.value,
-                  theme: AppTheme.isDarkMode.value
-                      ? AppTheme.darkMode
-                      : AppTheme.light,
-                  darkTheme: AppTheme.darkMode,
-                  home: Utils.isFirstTimeRun
-                      ? const OnBoarding()
-                      : User.logged != null
-                          ? Home()
-                          : const Login(),
-                ));
-          }),
-    );
+        providers: [
+          ChangeNotifierProvider(
+              create: (_) => ShoppingListController(
+                  GetIt.instance.get<ShoppingListRepository>(),
+                  GetIt.instance.get<ShoppingListItemRepository>())),
+          ChangeNotifierProvider(create: (_) => CurrencyController()),
+        ],
+        child: Obx(() => GetMaterialApp(
+              localizationsDelegates: AppLocalizations.localizationsDelegates,
+              supportedLocales: AppLocalizations.supportedLocales,
+              debugShowCheckedModeBanner: false,
+              locale: DI.get<AppLocale>().locale.value,
+              theme: AppTheme.isDarkMode.value
+                  ? AppTheme.darkMode
+                  : AppTheme.light,
+              darkTheme: AppTheme.light,
+              home: Utils.isFirstTimeRun
+                  ? const OnBoarding()
+                  : User.logged != null
+                      ? Home()
+                      : const Login(),
+            )));
   }
 }
