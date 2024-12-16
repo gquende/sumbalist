@@ -294,29 +294,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                     ),
                                   ),
                                 ),
-
-                                // child: LiteRollingSwitch(
-                                //   //initial value
-                                //   value: AppTheme.isDarkMode.value,
-                                //   textOn: 'On',
-                                //   textOff: 'Off',
-                                //   colorOn: Colors.green,
-                                //   colorOff: Colors.redAccent,
-                                //   iconOn: Icons.done,
-                                //   iconOff: Icons.remove_circle_outline,
-                                //   textSize: 10.0,
-                                //   onChanged: (bool state) {
-                                //     //Use it to manage the different states
-                                //     if (kDebugMode) {
-                                //       print('Current State of SWITCH IS: $state');
-                                //     }
-                                //   },
-                                //   onTap: () {
-                                //     AppTheme.setDarkMode(!AppTheme.isDarkMode.value);
-                                //   },
-                                //   onDoubleTap: () {},
-                                //   onSwipe: () {}, width: 80,
-                                // ),
                               ),
                             ],
                           ),
@@ -326,13 +303,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                   Column(
                     children: [
-                      const Text("from"),
+                      const Text("by"),
                       const SizedBox(
                         height: 5,
                       ),
                       InkWell(
                         onTap: () async {
-                          final Uri url = Uri.parse('https://gquende.com');
+                          final Uri url =
+                              Uri.parse('https://www.linkedin.com/in/gquende/');
                           if (!await launchUrl(url)) {
                             throw Exception('Could not launch $url');
                           }
