@@ -40,6 +40,17 @@ class FirebaseService {
     return userData;
   }
 
+  static Future<Object?> getAppVersion() async {
+    try {
+      var snap = await database.ref('app_version').child("last_version").get();
+      return snap.value;
+    } catch (e) {
+      devLog(e);
+    }
+
+    return null;
+  }
+
   static Future<UserCredential> createAccount(Map<String, dynamic> map) async {
     var credentials = await auth.createUserWithEmailAndPassword(
         email: map["email"], password: map["password"]);
