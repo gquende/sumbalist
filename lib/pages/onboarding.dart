@@ -160,7 +160,10 @@ class _OnBoardingState extends State<OnBoarding> with LocalizationMixin {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: CommonButton(
-                title: Text(strings.toContinue),
+                title: Text(
+                  strings.toContinue,
+                  style: const TextStyle(color: Colors.black),
+                ),
                 active: read >= 2,
                 action: () {
                   Navigator.of(context).pushReplacement(

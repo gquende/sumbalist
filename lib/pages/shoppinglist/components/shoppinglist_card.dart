@@ -226,7 +226,11 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                   SizedBox(
                                     width: 5,
                                   ),
-                                  Text(strings.edit)
+                                  Text(
+                                    strings.edit,
+                                    style:
+                                        Theme.of(context).textTheme.titleMedium,
+                                  )
                                 ],
                               )),
                           PopupMenuItem(
@@ -236,7 +240,11 @@ class _ShoppingListCardState extends State<ShoppingListCard>
                                 SizedBox(
                                   width: 5,
                                 ),
-                                Text(strings.delete)
+                                Text(
+                                  strings.delete,
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                )
                               ],
                             ),
                             onTap: () {

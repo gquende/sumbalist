@@ -3,7 +3,7 @@ description: SumbaList é uma aplicação móvel projetada para facilitar a orga
 
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
-version: 1.0.1+2
+version: 1.5.1+2
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
@@ -53,6 +53,7 @@ dependencies:
   country_picker: ^2.0.27
   intl_utils: ^2.8.7
   diacritic: ^0.1.6
+  package_info_plus: ^8.1.2
 
 dev_dependencies:
   flutter_launcher_icons: "^0.13.1"

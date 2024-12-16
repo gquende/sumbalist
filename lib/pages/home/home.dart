@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:sumbalist/controllers/shopping_list_controller.dart';
+import 'package:sumbalist/core/configs/config.dart';
 import 'package:sumbalist/mixins/localization_mixin.dart';
 
 import 'package:sumbalist/pages/home/components/drawer/drawer_widget.dart';
@@ -23,6 +24,16 @@ class _HomeState extends State<Home> with LocalizationMixin {
   int _currentIndex = 0;
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    AppConfig.checkVersion(
+        context: context,
+        label: strings.newVersionTitle,
+        message: strings.versionMessage);
+  }
+
+  @override
   Widget build(BuildContext context) {
     context.watch<ShoppingListController>();
 
@@ -37,14 +48,14 @@ class _HomeState extends State<Home> with LocalizationMixin {
                 padding: const EdgeInsets.only(top: 8.0, bottom: 8),
                 child: GestureDetector(
                   onTap: () {
-                    if (User.logged?.status != null) {
-                      if (User.logged!.status == "unregistered") {
-                        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                          content: Text(strings.youhaveNotRegisteredYet),
-                          backgroundColor: Theme.of(context).primaryColor,
-                        ));
-                      }
-                    }
+                    // if (User.logged?.status != null) {
+                    //   if (User.logged!.status == "unregistered") {
+                    //     ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                    //       content: Text(strings.youhaveNotRegisteredYet),
+                    //       backgroundColor: Theme.of(context).primaryColor,
+                    //     ));
+                    //   }
+                    // }
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,

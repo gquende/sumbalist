@@ -220,11 +220,11 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                 ],
                               ),
                               Container(
-                                width: 78,
+                                width: 70,
                                 child: DefaultTextStyle.merge(
                                   style: const TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12.0,
+                                      fontSize: 10.0,
                                       fontWeight: FontWeight.bold),
                                   child: IconTheme.merge(
                                     data: const IconThemeData(
@@ -253,24 +253,24 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                           stops: [
                                             global.position -
                                                 (1 -
-                                                        2 *
+                                                        1 *
                                                             max(
                                                                 0,
                                                                 global.position -
-                                                                    0.5)) *
-                                                    0.7,
+                                                                    0.1)) *
+                                                    0.2,
                                             global.position +
                                                 max(
                                                         0,
-                                                        2 *
+                                                        1 *
                                                             (global.position -
-                                                                0.5)) *
-                                                    0.7,
+                                                                0.1)) *
+                                                    0.2,
                                           ],
                                         ));
                                       },
                                       borderWidth: 4.0,
-                                      height: 65.0,
+                                      height: 35.0,
                                       loadingIconBuilder: (context, global) =>
                                           CupertinoActivityIndicator(
                                               color: Color.lerp(Colors.red[800],
@@ -285,40 +285,17 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                                           ? const Icon(
                                               Icons.power_settings_new_rounded,
                                               color: green,
-                                              size: 32.0)
+                                              size: 18.0)
                                           : Icon(
                                               Icons.power_settings_new_rounded,
                                               color: Colors.red[800],
-                                              size: 32.0),
+                                              size: 18.0),
                                       textBuilder: (value) => value
                                           ? const Center(child: Text('On'))
                                           : const Center(child: Text('Off')),
                                     ),
                                   ),
                                 ),
-
-                                // child: LiteRollingSwitch(
-                                //   //initial value
-                                //   value: AppTheme.isDarkMode.value,
-                                //   textOn: 'On',
-                                //   textOff: 'Off',
-                                //   colorOn: Colors.green,
-                                //   colorOff: Colors.redAccent,
-                                //   iconOn: Icons.done,
-                                //   iconOff: Icons.remove_circle_outline,
-                                //   textSize: 10.0,
-                                //   onChanged: (bool state) {
-                                //     //Use it to manage the different states
-                                //     if (kDebugMode) {
-                                //       print('Current State of SWITCH IS: $state');
-                                //     }
-                                //   },
-                                //   onTap: () {
-                                //     AppTheme.setDarkMode(!AppTheme.isDarkMode.value);
-                                //   },
-                                //   onDoubleTap: () {},
-                                //   onSwipe: () {}, width: 80,
-                                // ),
                               ),
                             ],
                           ),
@@ -328,13 +305,14 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                   ),
                   Column(
                     children: [
-                      const Text("from"),
+                      const Text("by"),
                       const SizedBox(
                         height: 5,
                       ),
                       InkWell(
                         onTap: () async {
-                          final Uri url = Uri.parse('https://gquende.com');
+                          final Uri url =
+                              Uri.parse('https://www.linkedin.com/in/gquende/');
                           if (!await launchUrl(url)) {
                             throw Exception('Could not launch $url');
                           }
