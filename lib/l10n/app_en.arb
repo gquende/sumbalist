@@ -45,5 +45,7 @@
   "newVersionTitle":"New version",
   "versionMessage":"Your version is out of date, download new version from store app",
   "toContinue":"Continue",
+  "getStarted":"Get started",
+  "search":"Search",
   "listName": "List name"
 }

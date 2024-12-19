@@ -118,18 +118,19 @@ class _DrawerWidgetState extends State<DrawerWidget> {
                       GestureDetector(
                         onTap: () {
                           showCurrencyPicker(
-                              context: context,
-                              showFlag: true,
-                              showSearchField: true,
-                              showCurrencyName: true,
-                              showCurrencyCode: true,
-                              favorite: [
-                                AppCurrencyFormat.currency!.code.toLowerCase()
-                              ],
-                              onSelect: (Currency currency) {
-                                currencyController.updateCurrency(currency);
-                              },
-                              searchHint: "Procurar");
+                            context: context,
+                            showFlag: true,
+                            showSearchField: true,
+                            showCurrencyName: true,
+                            showCurrencyCode: true,
+                            favorite: [
+                              AppCurrencyFormat.currency!.code.toLowerCase()
+                            ],
+                            onSelect: (Currency currency) {
+                              currencyController.updateCurrency(currency);
+                            },
+                            searchHint: localization.strings.search,
+                          );
                         },
                         child: Container(
                           width: size.width,

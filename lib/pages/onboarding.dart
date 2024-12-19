@@ -161,7 +161,7 @@ class _OnBoardingState extends State<OnBoarding> with LocalizationMixin {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: CommonButton(
                 title: Text(
-                  strings.toContinue,
+                  strings.getStarted,
                   style: const TextStyle(color: Colors.black),
                 ),
                 active: read >= 2,

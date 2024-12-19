@@ -334,7 +334,9 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                       backgroundColor:
                           Theme.of(context).colorScheme.primaryContainer,
                     ).then((value) {
-                      setState(() {});
+                      setState(() {
+                        controller.resetData();
+                      });
                     });
                   },
                   child: Row(

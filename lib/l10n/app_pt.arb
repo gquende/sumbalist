@@ -14,8 +14,8 @@
   "update": "Actualizar",
   "add": "Adicionar",
   "noCompletedList": "Sem lista concluída",
-  "noItemListToBuy": "Sem items por comprar?",
-  "addItemAndBuy": "Adicione items conforme a sua prioridade e sinalize os comprados",
+  "noItemListToBuy": "Sem itens por comprar?",
+  "addItemAndBuy": "Adicione itens conforme a sua prioridade e sinalize os comprados",
   "hello": "Olá",
   "price": "Preço",
   "description": "Descrição",
@@ -44,6 +44,8 @@
   "beHappyWithSumbalist":"Seja feliz com suas compras usando Sumbalist",
   "toContinue":"Continuar",
   "newVersionTitle":"Nova versão",
+  "getStarted":"Começar",
+  "search":"Procurar",
   "versionMessage":"A sua versão está desactualizada, baixe nova versão na loja de aplicativos",
   "listName": "Nome da lista"
 

@@ -48,6 +48,12 @@ class _AddItemBodyState extends State<AddItemBody> {
   }
 
   @override
+  void dispose() {
+    controller.resetData();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     var size = MediaQuery.sizeOf(context);
 
