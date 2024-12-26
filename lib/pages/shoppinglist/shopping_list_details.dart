@@ -117,18 +117,84 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                                                   0,
                                               (index) => Dismissible(
                                                     key: UniqueKey(),
-                                                    onDismissed: (direction) {
+                                                    onDismissed:
+                                                        (direction) async {
                                                       if (direction ==
                                                           DismissDirection
                                                               .endToStart) {
-                                                        controller
-                                                            .removeItem(controller
-                                                                .shoppingList
-                                                                .value
-                                                                .items![index])
-                                                            .then((value) {
-                                                          setState(() {});
-                                                        });
+                                                        await showDialog(
+                                                            context: context,
+                                                            builder: (_) {
+                                                              return AlertDialog(
+                                                                backgroundColor: Theme.of(
+                                                                        context)
+                                                                    .colorScheme
+                                                                    .secondaryContainer,
+                                                                title: Text(strings
+                                                                    .areYouSureYouWantToRemoveThisItem),
+                                                                icon: Icon(
+                                                                  Icons.info,
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                                content:
+                                                                    Container(
+                                                                  decoration:
+                                                                      BoxDecoration(),
+                                                                  child: Text(
+                                                                    strings
+                                                                        .onceYouRemoveItYouWillNoLongerBeAbleToRecoverIt,
+                                                                    textAlign:
+                                                                        TextAlign
+                                                                            .center,
+                                                                  ),
+                                                                ),
+                                                                actions: [
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        controller
+                                                                            .removeItem(controller.shoppingList.value.items![index])
+                                                                            .then((value) {
+                                                                          setState(
+                                                                              () {
+                                                                            Navigator.of(context).pop();
+                                                                          });
+                                                                        });
+                                                                      },
+                                                                      style: TextButton.styleFrom(
+                                                                          backgroundColor:
+                                                                              Colors.red),
+                                                                      child: Row(
+                                                                        children: [
+                                                                          Text(strings
+                                                                              .remove),
+                                                                        ],
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.center,
+                                                                      )),
+                                                                  TextButton(
+                                                                      onPressed:
+                                                                          () {
+                                                                        Navigator.of(context)
+                                                                            .pop();
+                                                                      },
+                                                                      style: TextButton.styleFrom(
+                                                                          backgroundColor:
+                                                                              Colors.grey),
+                                                                      child: Row(
+                                                                        mainAxisAlignment:
+                                                                            MainAxisAlignment.center,
+                                                                        children: [
+                                                                          Text(strings
+                                                                              .cancel),
+                                                                        ],
+                                                                      )),
+                                                                ],
+                                                              );
+                                                            });
+
+                                                        setState(() {});
                                                       } else {
                                                         setState(() {});
                                                       }

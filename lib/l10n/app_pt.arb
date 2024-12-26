@@ -46,7 +46,13 @@
   "newVersionTitle":"Nova versão",
   "getStarted":"Começar",
   "search":"Procurar",
-  "versionMessage":"A sua versão está desactualizada, baixe nova versão na loja de aplicativos",
-  "listName": "Nome da lista"
+  "versionMessage":"A sua versão está desactualizada, baixe nova versão na loja de aplicativos.",
+  "listName": "Nome da lista",
+  "yes": "Sim",
+  "no": "Não",
+  "cancel": "Cancelar",
+  "remove": "Remover",
+  "areYouSureYouWantToRemoveThisItem": "Tem certeza de que deseja remover este item?",
+  "onceYouRemoveItYouWillNoLongerBeAbleToRecoverIt": "Ao remover já não vai conseguir recuperar este item."
 
 }

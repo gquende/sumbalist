@@ -47,5 +47,12 @@
   "toContinue":"Continue",
   "getStarted":"Get started",
   "search":"Search",
-  "listName": "List name"
+  "listName": "List name",
+  "areYouSureYouWantToRemoveThisItem": "Are you sure you want to remove this item?",
+  "yes": "Yes",
+  "no": "No",
+  "cancel": "Cancel",
+  "remove": "Remove",
+  "onceYouRemoveItYouWillNoLongerBeAbleToRecoverIt": "Once you remove it, you will no longer be able to recover this item"
+
 }
