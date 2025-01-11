@@ -42,7 +42,7 @@ SumbaList é uma aplicação móvel projetada para facilitar a organização e g
 A aplicação foi construída usando uma arquitetura baseado em Model-View-ViewModel (MVVM).
 Este padrão de desenho ajuda na separação dos dados,
 UI e lógica de negócio, permitindo uma base de código mais modular e
-testável. A mesma é aprimorada com a biblioteca GetX para gerenciamento de estado de forma reactiva
+testável. A  mesma é aprimorada com a biblioteca GetX para gerenciamento de estado de forma reactiva
 
 ## Executando localmente
 
