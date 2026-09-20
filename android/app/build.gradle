@@ -36,12 +36,16 @@ if (keystorePropertiesFile.exists()) {
 
 android {
     namespace = "com.gquende.sumbalist"
-    compileSdk = flutter.compileSdkVersion
+    compileSdk = 36
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_1_8
-        targetCompatibility = JavaVersion.VERSION_1_8
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_17.toString()
     }
 
     defaultConfig {
@@ -49,8 +53,8 @@ android {
         applicationId = "com.gquende.sumbalist"
         // You can update the following values to match your application needs.
         // For more information, see: https://docs.flutter.dev/deployment/android#reviewing-the-gradle-build-configuration.
-        minSdk = 23
-        targetSdk = flutter.targetSdkVersion
+        minSdkVersion = flutter.minSdkVersion
+        targetSdk = 36
         versionCode = flutterVersionCode.toInteger()
         versionName = flutterVersionName
     }
@@ -72,14 +76,15 @@ android {
     }
 
 
-    flavorDimensions "default"
+    flavorDimensions = ["default"]
     productFlavors {
         dev {
+            dimension = "default"
             applicationIdSuffix ".dev"
             resValue "string", "app_name", "SumbaList Dev"
         }
         prod {
-
+            dimension = "default"
             resValue "string", "app_name", "SumbaList"
         }
     }

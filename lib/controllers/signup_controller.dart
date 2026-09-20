@@ -78,7 +78,7 @@ class SignupController extends GetxController {
             Utils.showSnackBar(
                 'Alerta',
                 'Preencha todos os campos',
-                const Icon(
+                const FaIcon(
                   FontAwesomeIcons.triangleExclamation,
                   color: Colors.pink,
                 ),
@@ -97,7 +97,7 @@ class SignupController extends GetxController {
             Utils.showSnackBar(
                 'Alerta',
                 'Insere um email válido',
-                const Icon(
+                const FaIcon(
                   FontAwesomeIcons.triangleExclamation,
                   color: Colors.pink,
                 ),
@@ -106,7 +106,7 @@ class SignupController extends GetxController {
             Utils.showSnackBar(
                 'Alerta',
                 'A palavra dever ter mais 6 caracteres',
-                const Icon(
+                const FaIcon(
                   FontAwesomeIcons.triangleExclamation,
                   color: Colors.pink,
                 ),
