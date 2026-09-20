@@ -130,58 +130,114 @@ extension SemanticColorsX on BuildContext {
 }
 
 /// Os dois [ColorScheme] da aplicação.
+///
+/// Escritos por extenso, sem `ColorScheme.fromSeed`.
+///
+/// Porquê: o `fromSeed` deriva **todos** os papéis do matiz do seed e
+/// amplifica-lhes a saturação. Com o amarelo da marca como seed, a app ficou
+/// amarelada; ao trocar para o preto-tinta (`#231F20`, cujo vermelho é
+/// ligeiramente superior ao verde e ao azul), o Material leu isso como matiz
+/// avermelhado e gerou `secondaryContainer: #FFD9E4` — rosa pastel, que foi
+/// parar ao menu lateral.
+///
+/// Sobrepor caso a caso não resolve, porque a lista de papéis que podem ganhar
+/// cor é longa e cresce com as versões do Flutter. Escrever a paleta por
+/// extenso torna impossível aparecer um matiz que não esteja aqui.
+///
+/// Os únicos papéis cromáticos são de propósito: o amarelo da marca e os
+/// vermelhos de erro.
 abstract final class AppColorSchemes {
-  static final ColorScheme light = ColorScheme.fromSeed(
-    // Seed neutro: gera cinzentos, não amarelos.
-    seedColor: Brand.ink,
+  static const Color _inkLight = Color(0xFF1C1B1B);
+  static const Color _inkDark = Color(0xFFE6E1E1);
+
+  static const ColorScheme light = ColorScheme(
     brightness: Brightness.light,
-  ).copyWith(
+
+    // Acento da marca.
     primary: Brand.yellow,
     onPrimary: Brand.ink,
-
-    // Neutro, como no tema anterior (era `Colors.white`). Este papel é usado
-    // como superfície grande no drawer e no ecrã de registo.
     primaryContainer: Colors.white,
-    onPrimaryContainer: const Color(0xFF1C1B1B),
+    onPrimaryContainer: _inkLight,
+    inversePrimary: Brand.yellow,
 
-    // Superfícies do tema anterior: branco e cinzentos.
+    // Neutros.
+    secondary: Color(0xFF5E5E5E),
+    onSecondary: Colors.white,
+    secondaryContainer: Color(0xFFE9E9E9),
+    onSecondaryContainer: _inkLight,
+    tertiary: Color(0xFF6B6B6B),
+    onTertiary: Colors.white,
+    tertiaryContainer: Color(0xFFEFEFEF),
+    onTertiaryContainer: _inkLight,
+
+    // Superfícies: branco e cinzentos, como no tema original.
     surface: Colors.white,
-    onSurface: const Color(0xFF1C1B1B),
-    onSurfaceVariant: const Color(0xFF6B6B6B),
+    onSurface: _inkLight,
+    onSurfaceVariant: Color(0xFF6B6B6B),
     surfaceContainerLowest: Colors.white,
-    surfaceContainerLow: const Color(0xFFFAFAFA),
-    surfaceContainer: const Color(0xFFF2F2F2),
-    surfaceContainerHigh: const Color(0xFFE9E9E9),
-    surfaceContainerHighest: const Color(0xFFE0E0E0),
-    outline: const Color(0xFF8C8C8C),
-    outlineVariant: const Color(0xFFDCDCDC),
+    surfaceContainerLow: Color(0xFFFAFAFA),
+    surfaceContainer: Color(0xFFF2F2F2),
+    surfaceContainerHigh: Color(0xFFE9E9E9),
+    surfaceContainerHighest: Color(0xFFE0E0E0),
+    surfaceDim: Color(0xFFE0E0E0),
+    surfaceBright: Colors.white,
+    surfaceTint: Color(0xFF9E9E9E),
+    inverseSurface: Color(0xFF2F2F2F),
+    onInverseSurface: Color(0xFFF4F4F4),
 
-    // Tinta de elevação neutra: sem isto, uma barra de topo com conteúdo por
-    // baixo ganhava um véu amarelo ao rolar.
-    surfaceTint: const Color(0xFF9E9E9E),
+    outline: Color(0xFF8C8C8C),
+    outlineVariant: Color(0xFFDCDCDC),
+    shadow: Colors.black,
+    scrim: Colors.black,
+
+    // Erro: cromático de propósito — vermelho tem de se ler como vermelho.
+    error: Color(0xFFBA1A1A),
+    onError: Colors.white,
+    errorContainer: Color(0xFFFFDAD6),
+    onErrorContainer: Color(0xFF410002),
   );
 
-  static final ColorScheme dark = ColorScheme.fromSeed(
-    seedColor: Brand.ink,
+  static const ColorScheme dark = ColorScheme(
     brightness: Brightness.dark,
-  ).copyWith(
+
     primary: Brand.yellow,
     onPrimary: Brand.ink,
-    // Valor do tema escuro anterior.
-    primaryContainer: const Color(0xFF232224),
-    onPrimaryContainer: const Color(0xFFE6E1E1),
+    primaryContainer: Color(0xFF232224),
+    onPrimaryContainer: _inkDark,
+    inversePrimary: Brand.yellow,
 
-    // Valores do tema escuro anterior.
-    surface: const Color(0xFF181719),
-    onSurface: const Color(0xFFE6E1E1),
-    onSurfaceVariant: const Color(0xFFA8A4A4),
-    surfaceContainerLowest: const Color(0xFF121113),
-    surfaceContainerLow: const Color(0xFF1E1D1F),
-    surfaceContainer: const Color(0xFF232224),
-    surfaceContainerHigh: const Color(0xFF2C2C2D),
-    surfaceContainerHighest: const Color(0xFF343435),
-    outline: const Color(0xFF8A8788),
-    outlineVariant: const Color(0xFF3C3A3B),
-    surfaceTint: const Color(0xFF8A8788),
+    secondary: Color(0xFFC6C6C6),
+    onSecondary: Color(0xFF2E2E2E),
+    secondaryContainer: Color(0xFF3A393A),
+    onSecondaryContainer: _inkDark,
+    tertiary: Color(0xFFB8B8B8),
+    onTertiary: Color(0xFF2E2E2E),
+    tertiaryContainer: Color(0xFF333233),
+    onTertiaryContainer: _inkDark,
+
+    // Valores do tema escuro original.
+    surface: Color(0xFF181719),
+    onSurface: _inkDark,
+    onSurfaceVariant: Color(0xFFA8A4A4),
+    surfaceContainerLowest: Color(0xFF121113),
+    surfaceContainerLow: Color(0xFF1E1D1F),
+    surfaceContainer: Color(0xFF232224),
+    surfaceContainerHigh: Color(0xFF2C2C2D),
+    surfaceContainerHighest: Color(0xFF343435),
+    surfaceDim: Color(0xFF141315),
+    surfaceBright: Color(0xFF3A393B),
+    surfaceTint: Color(0xFF8A8788),
+    inverseSurface: _inkDark,
+    onInverseSurface: Color(0xFF2F2E30),
+
+    outline: Color(0xFF8A8788),
+    outlineVariant: Color(0xFF3C3A3B),
+    shadow: Colors.black,
+    scrim: Colors.black,
+
+    error: Color(0xFFFFB4AB),
+    onError: Color(0xFF690005),
+    errorContainer: Color(0xFF93000A),
+    onErrorContainer: Color(0xFFFFDAD6),
   );
 }

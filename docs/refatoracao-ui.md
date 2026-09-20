@@ -149,7 +149,7 @@ espaços no início do valor para o alinhar.
 - **Não foi testado em dispositivo.** Nenhuma destas mudanças foi vista a
   correr: o que está verificado é que compila e que o analisador está limpo.
 
-## Correção posterior: a app ficou amarelada
+## Correções posteriores: a cor fugiu duas vezes
 
 A primeira versão deste trabalho usava o amarelo da marca como *seed* do
 `ColorScheme` **e** aquecia as superfícies por cima (`#FFFBF5`, `#FFF8EE`, …).
@@ -168,10 +168,30 @@ Corrigido:
 - `surfaceTint` neutro, para a barra de topo não ganhar véu amarelo ao rolar.
 - O cartão de resumo do detalhe deixou de ser um bloco em `primaryContainer`.
 
+### Segunda volta: o menu lateral ficou rosa
+
+Trocar o seed para `Brand.ink` (`#231F20`) não resolveu o problema de fundo. O
+canal vermelho dessa cor é ligeiramente superior ao verde e ao azul; o Material
+leu isso como matiz avermelhado e gerou `secondaryContainer: #FFD9E4` — rosa
+pastel. O drawer usa esse papel, e ficou rosa.
+
+A primeira versão do teste não apanhou isto porque listava à mão apenas as
+superfícies e o `primaryContainer`.
+
+Corrigido de vez: os dois `ColorScheme` passaram a ser escritos por extenso,
+sem `fromSeed`. Nenhum papel pode ganhar matiz sem estar escrito no ficheiro.
+
+### O teste
+
 [`test/theme/color_scheme_test.dart`](../test/theme/color_scheme_test.dart)
-fixa a decisão: falha se alguma superfície voltar a ter croma, se o contraste
-do texto sobre o amarelo cair abaixo de 4.5:1, ou se o tema claro voltar a ser
-construído com brilho escuro.
+verifica todos os papéis por exclusão, em vez de listar os suspeitos: enumera o
+esquema e tira os que são cromáticos de propósito. Falha se algum dos restantes
+ganhar croma, se o contraste do texto sobre o amarelo cair abaixo de 4.5:1, se
+o vermelho de erro deixar de ser vermelho, ou se um tema for construído com o
+brilho trocado.
+
+Foi verificado que falha mesmo: repondo `fromSeed`, acusa
+`secondary está tingido (croma 28)`.
 
 ## O que ficou por fazer
 

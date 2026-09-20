@@ -6,8 +6,7 @@ import 'package:sumbalist/core/design/app_palette.dart';
 
 /// Distância entre o canal mais alto e o mais baixo de uma cor.
 ///
-/// Zero é cinzento puro. Quanto maior, mais saturada — e, no caso desta app,
-/// mais amarelada.
+/// Zero é cinzento puro. Quanto maior, mais saturada.
 int _chroma(Color color) {
   final r = (color.r * 255).round();
   final g = (color.g * 255).round();
@@ -16,68 +15,75 @@ int _chroma(Color color) {
   return math.max(r, math.max(g, b)) - math.min(r, math.min(g, b));
 }
 
-/// Luminância relativa segundo a WCAG.
-double _luminance(Color color) => color.computeLuminance();
-
 double _contrastRatio(Color a, Color b) {
-  final la = _luminance(a);
-  final lb = _luminance(b);
-  final lighter = math.max(la, lb);
-  final darker = math.min(la, lb);
+  final lighter = math.max(a.computeLuminance(), b.computeLuminance());
+  final darker = math.min(a.computeLuminance(), b.computeLuminance());
 
   return (lighter + 0.05) / (darker + 0.05);
 }
 
+/// Todos os papéis do [ColorScheme] que devem ser neutros.
+///
+/// A lista é construída por exclusão: enumera-se o esquema inteiro e tiram-se
+/// os papéis que são cromáticos de propósito. Assim, um papel novo introduzido
+/// por uma versão futura do Flutter entra automaticamente na verificação — foi
+/// precisamente a falha da primeira versão deste teste, que listava à mão
+/// apenas as superfícies e deixou passar um `secondaryContainer` cor-de-rosa.
+Map<String, Color> _neutralRoles(ColorScheme s) => {
+      'secondary': s.secondary,
+      'onSecondary': s.onSecondary,
+      'secondaryContainer': s.secondaryContainer,
+      'onSecondaryContainer': s.onSecondaryContainer,
+      'tertiary': s.tertiary,
+      'onTertiary': s.onTertiary,
+      'tertiaryContainer': s.tertiaryContainer,
+      'onTertiaryContainer': s.onTertiaryContainer,
+      'surface': s.surface,
+      'onSurface': s.onSurface,
+      'onSurfaceVariant': s.onSurfaceVariant,
+      'surfaceContainerLowest': s.surfaceContainerLowest,
+      'surfaceContainerLow': s.surfaceContainerLow,
+      'surfaceContainer': s.surfaceContainer,
+      'surfaceContainerHigh': s.surfaceContainerHigh,
+      'surfaceContainerHighest': s.surfaceContainerHighest,
+      'surfaceDim': s.surfaceDim,
+      'surfaceBright': s.surfaceBright,
+      'surfaceTint': s.surfaceTint,
+      'inverseSurface': s.inverseSurface,
+      'onInverseSurface': s.onInverseSurface,
+      'outline': s.outline,
+      'outlineVariant': s.outlineVariant,
+      'shadow': s.shadow,
+      'scrim': s.scrim,
+      // Deliberadamente fora: primary/onPrimary/primaryContainer/inversePrimary
+      // (amarelo da marca) e a família error (vermelho).
+    };
+
 void main() {
-  // Uma versão anterior desta refatoração usava o amarelo da marca como seed do
-  // ColorScheme e aquecia as superfícies por cima, o que tingia a app inteira.
-  // Estes testes fixam a decisão: superfícies neutras, amarelo só como acento.
-  group('superfícies são neutras', () {
+  // Esta app já ficou amarelada uma vez e cor-de-rosa outra, sempre pela mesma
+  // razão: `ColorScheme.fromSeed` deriva todos os papéis do matiz do seed e
+  // amplifica-lhes a saturação. Os esquemas passaram a ser escritos por
+  // extenso; estes testes garantem que assim continuam.
+  group('só o acento e o erro têm cor', () {
     const maxChroma = 6;
 
-    test('tema claro', () {
-      final scheme = AppColorSchemes.light;
-
-      for (final entry in <String, Color>{
-        'surface': scheme.surface,
-        'surfaceContainerLowest': scheme.surfaceContainerLowest,
-        'surfaceContainerLow': scheme.surfaceContainerLow,
-        'surfaceContainer': scheme.surfaceContainer,
-        'surfaceContainerHigh': scheme.surfaceContainerHigh,
-        'surfaceContainerHighest': scheme.surfaceContainerHighest,
-        'primaryContainer': scheme.primaryContainer,
-        'outlineVariant': scheme.outlineVariant,
-      }.entries) {
-        expect(
-          _chroma(entry.value),
-          lessThanOrEqualTo(maxChroma),
-          reason: '${entry.key} está tingido (croma ${_chroma(entry.value)})',
-        );
-      }
-    });
-
-    test('tema escuro', () {
-      final scheme = AppColorSchemes.dark;
-
-      for (final entry in <String, Color>{
-        'surface': scheme.surface,
-        'surfaceContainerLowest': scheme.surfaceContainerLowest,
-        'surfaceContainerLow': scheme.surfaceContainerLow,
-        'surfaceContainer': scheme.surfaceContainer,
-        'surfaceContainerHigh': scheme.surfaceContainerHigh,
-        'surfaceContainerHighest': scheme.surfaceContainerHighest,
-        'primaryContainer': scheme.primaryContainer,
-      }.entries) {
-        expect(
-          _chroma(entry.value),
-          lessThanOrEqualTo(maxChroma),
-          reason: '${entry.key} está tingido (croma ${_chroma(entry.value)})',
-        );
-      }
-    });
+    for (final entry in {
+      'tema claro': AppColorSchemes.light,
+      'tema escuro': AppColorSchemes.dark,
+    }.entries) {
+      test(entry.key, () {
+        _neutralRoles(entry.value).forEach((role, color) {
+          expect(
+            _chroma(color),
+            lessThanOrEqualTo(maxChroma),
+            reason: '$role está tingido (croma ${_chroma(color)})',
+          );
+        });
+      });
+    }
   });
 
-  group('o amarelo da marca é acento', () {
+  group('o amarelo da marca é o acento', () {
     test('primary é o amarelo nos dois temas', () {
       expect(AppColorSchemes.light.primary, Brand.yellow);
       expect(AppColorSchemes.dark.primary, Brand.yellow);
@@ -93,27 +99,56 @@ void main() {
     });
   });
 
-  group('o tema claro é mesmo claro', () {
+  group('o erro continua vermelho', () {
+    test('tem saturação suficiente para se ler como erro', () {
+      for (final scheme in [AppColorSchemes.light, AppColorSchemes.dark]) {
+        expect(_chroma(scheme.error), greaterThan(30));
+      }
+    });
+  });
+
+  group('cada tema tem o brilho certo', () {
     // O bug original: `light` era construído com `ColorScheme.dark(...)`, o que
     // punha onSurface a branco sobre fundo branco.
-    test('brightness e contraste', () {
-      final scheme = AppColorSchemes.light;
-
-      expect(scheme.brightness, Brightness.light);
+    test('claro', () {
+      expect(AppColorSchemes.light.brightness, Brightness.light);
       expect(
-        _contrastRatio(scheme.surface, scheme.onSurface),
+        _contrastRatio(
+          AppColorSchemes.light.surface,
+          AppColorSchemes.light.onSurface,
+        ),
         greaterThanOrEqualTo(4.5),
       );
     });
 
-    test('o tema escuro também', () {
-      final scheme = AppColorSchemes.dark;
-
-      expect(scheme.brightness, Brightness.dark);
+    test('escuro', () {
+      expect(AppColorSchemes.dark.brightness, Brightness.dark);
       expect(
-        _contrastRatio(scheme.surface, scheme.onSurface),
+        _contrastRatio(
+          AppColorSchemes.dark.surface,
+          AppColorSchemes.dark.onSurface,
+        ),
         greaterThanOrEqualTo(4.5),
       );
+    });
+  });
+
+  group('texto sobre superfícies de contentor é legível', () {
+    // Os cartões e as folhas usam surfaceContainer*, não surface. Se o
+    // contraste ali falhar, o texto some-se nos cartões mas não no fundo.
+    test('nos dois temas', () {
+      for (final scheme in [AppColorSchemes.light, AppColorSchemes.dark]) {
+        for (final container in [
+          scheme.surfaceContainerLow,
+          scheme.surfaceContainer,
+          scheme.surfaceContainerHigh,
+        ]) {
+          expect(
+            _contrastRatio(container, scheme.onSurface),
+            greaterThanOrEqualTo(4.5),
+          );
+        }
+      }
     });
   });
 }

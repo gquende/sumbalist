@@ -21,25 +21,39 @@ divergir.
 
 ## Cor
 
-**Superfícies neutras, amarelo só como acento.** O *seed* do `ColorScheme` é o
-preto-tinta da marca, que gera escalas praticamente acromáticas; as superfícies
-são depois fixadas nos valores do tema original — branco e cinzentos no claro,
-`#181719` e afins no escuro.
+**Superfícies neutras, amarelo só como acento.** Os dois `ColorScheme` são
+escritos por extenso, sem `ColorScheme.fromSeed`.
 
 ```dart
-ColorScheme.fromSeed(seedColor: Brand.ink, brightness: ...).copyWith(
-  primary: Brand.yellow,     // acento
-  onPrimary: Brand.ink,      // tinta escura, não branco
-  surface: Colors.white,     // superfícies neutras
+static const ColorScheme light = ColorScheme(
+  brightness: Brightness.light,
+  primary: Brand.yellow,          // acento
+  onPrimary: Brand.ink,           // tinta escura, não branco
+  secondaryContainer: Color(0xFFE9E9E9),   // neutro, escrito à mão
+  surface: Colors.white,
   ...
-)
+);
 ```
 
-Usar o amarelo como *seed* foi a primeira tentativa e estava errado: o Material
-propaga o matiz do seed a todos os papéis (superfícies, contornos, tinta de
-elevação), e a app inteira ficava amarelada. Há testes em
-[`test/theme/color_scheme_test.dart`](../test/theme/color_scheme_test.dart) que
-falham se alguma superfície voltar a ganhar cor.
+**Não se usa `fromSeed` aqui, e a razão importa.** Esse construtor deriva
+*todos* os papéis do matiz do seed e amplifica-lhes a saturação. Esta app pagou
+isso duas vezes:
+
+1. Com o amarelo da marca como seed, superfícies, contornos e tinta de elevação
+   saíram todos amarelados.
+2. Ao trocar para o preto-tinta `#231F20` — cujo canal vermelho é ligeiramente
+   superior ao verde e ao azul — o Material leu um matiz avermelhado e gerou
+   `secondaryContainer: #FFD9E4`. Rosa pastel, que foi parar ao menu lateral.
+
+Sobrepor papéis caso a caso não chega: a lista dos que podem ganhar cor é longa
+e cresce com as versões do Flutter. A paleta por extenso torna impossível
+aparecer um matiz que não esteja lá escrito.
+
+[`test/theme/color_scheme_test.dart`](../test/theme/color_scheme_test.dart)
+verifica *todos* os papéis por exclusão — enumera o esquema e tira os que são
+cromáticos de propósito (a família `primary`, amarela, e a família `error`,
+vermelha). Um papel novo numa versão futura do Flutter entra automaticamente na
+verificação.
 
 O amarelo aparece onde é informação: botão flutuante, botões primários, barra de
 progresso e categoria selecionada. Para o quadrado do ícone de categoria há um
