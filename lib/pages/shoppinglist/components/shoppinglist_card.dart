@@ -2,290 +2,214 @@ import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:provider/provider.dart';
 import 'package:sumbalist/mocks/shopping_list_category_mock.dart';
-import 'package:sumbalist/utils/theme/theme.dart';
 
 import '../../../controllers/currency_controller.dart';
 import '../../../controllers/shopping_list_controller.dart';
 import '../../../core/configs/app_locale.dart';
+import '../../../core/design/app_palette.dart';
+import '../../../core/design/design_tokens.dart';
 import '../../../core/di/dependecy_injection.dart';
 import '../../../mixins/localization_mixin.dart';
 import '../../../models/shopping_list.dart';
-import '../../../utils/constants/app_colors.dart';
 import '../../../utils/currency.dart';
+import '../../widgets/app_progress_bar.dart';
+import '../../widgets/confirm_dialog.dart';
 import '../shopping_list_details.dart';
 import 'create_list.dart';
+import 'list_totals.dart';
 
-class ShoppingListCard extends StatefulWidget {
-  ShoppingList shoppinglist;
+/// Cartão de uma lista de compras.
+///
+/// Reescrito nesta refatoração. O que mudou em relação à versão anterior:
+///
+/// * Altura deixou de ser `MediaQuery.height / 5` — o cartão cresce com o seu
+///   conteúdo, por isso não se parte com fontes ampliadas nem em tablets.
+/// * O menu deixou de ser posicionado com `Positioned(left: width * 0.85)`;
+///   está numa [Row], que se adapta a qualquer largura.
+/// * `GestureDetector` deu lugar a [InkWell]: o toque passa a ter ripple.
+/// * O ícone de categoria é um [Hero] partilhado com o ecrã de detalhe.
+/// * Apagar passa a pedir confirmação.
+class ShoppingListCard extends StatelessWidget {
+  const ShoppingListCard(this.shoppinglist, {super.key});
 
-  ShoppingListCard(this.shoppinglist);
+  final ShoppingList shoppinglist;
 
-  @override
-  State<ShoppingListCard> createState() => _ShoppingListCardState();
-}
-
-class _ShoppingListCardState extends State<ShoppingListCard>
-    with LocalizationMixin {
-  var controller = GetIt.instance.get<ShoppingListController>();
+  /// Tag do [Hero] do ícone. Partilhada com o ecrã de detalhe.
+  static String heroTag(ShoppingList list) => 'list-icon-${list.uuid}';
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-
+    // Redesenha quando a moeda muda (o total é formatado com ela).
     context.watch<CurrencyController>();
+
     return ListenableBuilder(
-        listenable: Listenable.merge([DI.get<AppLocale>()]),
-        builder: (_, __) {
-          return GestureDetector(
-            onTap: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                  builder: (ctx) =>
-                      ShoplistDetails(shoppingList: this.widget.shoppinglist)));
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height / 5,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8),
-                  color: Theme.of(context).colorScheme.primaryContainer,
-                  boxShadow: [
-                    BoxShadow(
-                        color: AppTheme.isDarkMode.value
-                            ? Colors.transparent
-                            : Theme.of(context)
-                                .colorScheme
-                                .secondaryContainer
-                                .withOpacity(0.6),
-                        blurRadius: 11,
-                        spreadRadius: 2)
-                  ]),
-              child: Stack(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Column(
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Row(
-                                  children: [
-                                    Container(
-                                      width: size.width * 0.12,
-                                      height: size.width * 0.12,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5),
-                                        color:
-                                            Color.fromRGBO(253, 185, 19, 0.2),
-                                      ),
-                                      child: Icon(
-                                        iconCategory[
-                                            "${widget.shoppinglist.categoryUUID}"],
-                                        size: 30,
-
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      width: 10,
-                                    ),
-                                    Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          width: size.width / 1.8,
-                                          child: Text(
-                                            "${widget.shoppinglist.name}",
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w500),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                        Text(
-                                          AppCurrencyFormat.format(widget
-                                              .shoppinglist
-                                              .calculateTotal()),
-                                          style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w400,
-                                              color: Colors.grey),
-                                        ),
-                                      ],
-                                    )
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Column(
-                          children: [
-                            SizedBox(
-                              height: 2,
-
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      strings.completed,
-                                      style: TextStyle(
-                                        fontFamily: 'Poppins-Medium',
-                                        fontSize: 16,
-                                      ),
-                                      // style: Text(),
-                                    ),
-                                    Text(
-                                      "${AppCurrencyFormat.format(widget.shoppinglist.calculateTotalBuyed())} (${widget.shoppinglist.calculateTotalItemBuyed()})",
-                                      style: TextStyle(
-                                          fontFamily: 'Poppins-Medium',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500),
-                                    )
-                                  ],
-                                ),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Text(
-                                      strings.remaining,
-
-                                      style: TextStyle(
-                                          fontFamily: 'Poppins-Medium',
-                                          fontSize: 16,
-                                          color: Colors.grey),
-                                      // style: Text(),
-                                    ),
-                                    Text(
-                                      "${AppCurrencyFormat.format(widget.shoppinglist.calculateTotal() - widget.shoppinglist.calculateTotalBuyed())} (${widget.shoppinglist.calculateTotalItemPending()})",
-                                      style: TextStyle(
-                                          fontFamily: 'Poppins-Medium',
-                                          fontSize: 18,
-                                          fontWeight: FontWeight.w500,
-                                          color: Colors.grey),
-                                    )
-                                  ],
-                                )
-                              ],
-                            ),
-                            SizedBox(
-                              height: 8,
-                            ),
-                            Stack(
-                              children: [
-                                Container(
-                                  width: (size.width - 40),
-                                  height: 20,
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color:
-                                          Color(0xff67727d).withOpacity(0.1)),
-                                ),
-                                Container(
-                                  width: (size.width - 40) *
-                                      widget.shoppinglist
-                                          .getPercentBuyedByItem() /
-                                      100,
-                                  height: 20,
-
-                                  decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(50),
-                                      color: PRIMARYCOLOR),
-                                ),
-                                Positioned(
-                                    left: (size.width - 50) / 2,
-                                    child: Text(
-                                        "${(widget.shoppinglist.getPercentBuyedByItem()).round()} %"))
-                              ],
-                            )
-                          ],
-                        )
-                      ],
-                    ),
-                  ),
-                  Positioned(
-                    left: size.width * 0.85,
-                    child: PopupMenuButton(
-                      itemBuilder: (context) {
-                        return [
-                          PopupMenuItem(
-                              onTap: () {
-                                shoplistForm(context, widget.shoppinglist);
-                              },
-                              child: Row(
-                                children: [
-                                  Icon(Icons.edit),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    strings.edit,
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  )
-                                ],
-                              )),
-                          PopupMenuItem(
-                            child: Row(
-                              children: [
-                                Icon(Icons.delete),
-                                SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  strings.delete,
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
-                                )
-                              ],
-                            ),
-                            onTap: () {
-                              controller
-                                  .deleteShoppinglist(widget.shoppinglist);
-                            },
-                          )
-                        ];
-                      },
-                      icon: Row(
-                        children: [
-                          CircleAvatar(
-                            radius: 3,
-                            backgroundColor: Colors.grey[300],
-                          ),
-                          SizedBox(
-                            width: 2,
-                          ),
-                          CircleAvatar(
-                            radius: 3,
-                            backgroundColor: Colors.grey[300],
-                          ),
-                          SizedBox(
-                            width: 2,
-                          ),
-                          CircleAvatar(
-                            radius: 3,
-                            backgroundColor: Colors.grey[300],
-                          ),
-                          const SizedBox(
-                            width: 5,
-                          )
-                        ],
-                      ),
-                      color: Theme.of(context).colorScheme.secondaryContainer,
-                    ),
-                  )
-                ],
-              ),
-            ),
-          );
-        });
+      listenable: Listenable.merge([DI.get<AppLocale>()]),
+      builder: (_, __) => _CardBody(shoppinglist),
+    );
   }
 }
+
+class _CardBody extends StatelessWidget {
+  const _CardBody(this.list);
+
+  final ShoppingList list;
+
+  @override
+  Widget build(BuildContext context) {
+    final percent = list.getPercentBuyedByItem();
+    final bought = list.calculateTotalItemBuyed();
+    final total = list.items?.length ?? 0;
+
+    // Sem este resumo, o leitor de ecrã anuncia oito fragmentos soltos
+    // ("Comprado", "1.200", "(3)", …) em vez de descrever a lista.
+    return Semantics(
+      container: true,
+      button: true,
+      label: '${list.name}, $bought/$total, ${percent.round()}%',
+      child: Card(
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
+          onTap: () => Navigator.of(context).push(
+            MaterialPageRoute(
+                builder: (_) => ShoplistDetails(shoppingList: list)),
+          ),
+          child: Padding(
+            padding: Spacing.card,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _Header(list: list),
+                const SizedBox(height: Spacing.lg),
+                ListTotals(list: list),
+                const SizedBox(height: Spacing.md),
+                // O texto da percentagem já está no resumo semântico do cartão,
+                // por isso aqui a barra é puramente visual.
+                ExcludeSemantics(child: AppProgressBar(percent: percent)),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Linha de topo: ícone da categoria, nome, total e menu de acções.
+class _Header extends StatelessWidget {
+  const _Header({required this.list});
+
+  final ShoppingList list;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Hero(
+          tag: ShoppingListCard.heroTag(list),
+          child: Container(
+            width: Sizes.categoryIcon,
+            height: Sizes.categoryIcon,
+            decoration: BoxDecoration(
+              borderRadius: Radii.medium,
+              color: context.semantic.accentSoft,
+            ),
+            child: Icon(
+              iconCategory[list.categoryUUID] ?? Icons.category,
+              size: 24,
+              color: context.semantic.onAccentSoft,
+            ),
+          ),
+        ),
+        const SizedBox(width: Spacing.md),
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                list.name,
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.titleLarge,
+              ),
+              const SizedBox(height: Spacing.xs),
+              Text(
+                AppCurrencyFormat.format(list.calculateTotal()),
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ],
+          ),
+        ),
+        _ListMenu(list: list),
+      ],
+    );
+  }
+}
+
+/// Menu de acções do cartão (editar / apagar).
+class _ListMenu extends StatelessWidget {
+  const _ListMenu({required this.list});
+
+  final ShoppingList list;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final controller = GetIt.instance.get<ShoppingListController>();
+
+    return PopupMenuButton<_ListAction>(
+      icon: const Icon(Icons.more_vert_rounded),
+      tooltip: MaterialLocalizations.of(context).showMenuTooltip,
+      position: PopupMenuPosition.under,
+      onSelected: (action) async {
+        switch (action) {
+          case _ListAction.edit:
+            shoplistForm(context, list);
+          case _ListAction.delete:
+            final confirmed = await ConfirmDialog.show(
+              context,
+              title: appStrings.deleteListTitle,
+              message: appStrings.deleteListMessage(list.name),
+              confirmLabel: appStrings.delete,
+              cancelLabel: appStrings.cancel,
+            );
+            if (!confirmed || !context.mounted) return;
+
+            await controller.deleteShoppinglist(list);
+            if (!context.mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text(appStrings.listDeleted)),
+            );
+        }
+      },
+      itemBuilder: (context) => [
+        PopupMenuItem(
+          value: _ListAction.edit,
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: const Icon(Icons.edit_outlined),
+            title: Text(appStrings.edit),
+          ),
+        ),
+        PopupMenuItem(
+          value: _ListAction.delete,
+          child: ListTile(
+            contentPadding: EdgeInsets.zero,
+            leading: Icon(Icons.delete_outline_rounded,
+                color: theme.colorScheme.error),
+            title: Text(
+              appStrings.delete,
+              style: TextStyle(color: theme.colorScheme.error),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+enum _ListAction { edit, delete }

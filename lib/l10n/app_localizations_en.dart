@@ -150,4 +150,38 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get listName => 'List name';
+
+  @override
+  String get cancel => 'Cancel';
+
+  @override
+  String get deleteListTitle => 'Delete list?';
+
+  @override
+  String deleteListMessage(String name) {
+    return 'This action cannot be undone. The list \"$name\" and all its items will be removed.';
+  }
+
+  @override
+  String get listDeleted => 'List deleted';
+
+  @override
+  String get createFirstList => 'Create my first list';
+
+  @override
+  String itemsProgress(int bought, int total) {
+    return '$bought of $total items';
+  }
+
+  @override
+  String get fillAllFields => 'Please fill in all fields';
+
+  @override
+  String get newList => 'New list';
+
+  @override
+  String get decreaseQuantity => 'Decrease quantity';
+
+  @override
+  String get increaseQuantity => 'Increase quantity';
 }

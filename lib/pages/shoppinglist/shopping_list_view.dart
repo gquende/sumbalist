@@ -1,14 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
+
 import '../../controllers/shopping_list_controller.dart';
 import '../../core/configs/app_locale.dart';
+import '../../core/design/design_tokens.dart';
 import '../../core/di/dependecy_injection.dart';
 import '../../mixins/localization_mixin.dart';
-import 'components/shoppinglist_card.dart';
 import '../../utils/constants/files.dart';
+import '../widgets/app_empty_state.dart';
+import '../widgets/app_skeleton.dart';
+import '../widgets/staggered_entrance.dart';
+import 'components/create_list.dart';
+import 'components/shoppinglist_card.dart';
 
+/// Ecrã com as listas de compras por concluir.
+///
+/// Reescrito nesta refatoração:
+///
+/// * A lista era um `Column(children: List.generate(...))` dentro de dois
+///   [SingleChildScrollView] aninhados. Todos os cartões eram construídos de
+///   uma vez, mesmo os que estavam fora do ecrã, e os dois scrolls competiam
+///   pelo gesto. Passou a [CustomScrollView] com `SliverList.builder`, que só
+///   constrói o que está visível.
+/// * Enquanto carrega, mostra esqueletos com a forma dos cartões em vez de um
+///   spinner — a passagem para o conteúdo real não desloca o layout.
+/// * Ganhou *pull-to-refresh*.
 class ShoppingListView extends StatefulWidget {
   const ShoppingListView({super.key});
 
@@ -18,91 +35,103 @@ class ShoppingListView extends StatefulWidget {
 
 class _ShoppingListViewState extends State<ShoppingListView>
     with LocalizationMixin {
-  TextEditingController search = TextEditingController();
-  ShoppingListController controller =
+  final ShoppingListController controller =
       GetIt.instance.get<ShoppingListController>();
 
-  int pageIndex = 0;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+  Future<void> _refresh() =>
+      controller.getAllShoppingListNotCompleted(status: "not completed");
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
-
     return ListenableBuilder(
-        listenable: Listenable.merge([DI.get<AppLocale>()]),
-        builder: (_, __) {
-          return GestureDetector(
-            onTap: () => FocusScope.of(context).requestFocus(FocusNode()),
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 30),
-                child: Obx(() {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      controller.allShoppingList.isNotEmpty
-                          ? Text(
-                              strings.myList,
-                              style: TextStyle(
-                                  fontSize: 26, fontWeight: FontWeight.w600),
-                            )
-                          : const SizedBox(),
-                      const SizedBox(
-                        height: 30,
-                      ),
-                      controller.allShoppingList.isEmpty
-                          ? SizedBox(
-                              width: size.width,
-                              height: size.height / 1.5,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Center(
-                                    child: SvgPicture.asset(
-                                      AppAssets.NO_DATA_IMAGE,
-                                      width: size.width / 1.7,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    strings.whatAreYouGoingToBuyToday,
-                                    style:
-                                        Theme.of(context).textTheme.titleMedium,
-                                  ),
-                                  const SizedBox(
-                                    height: 5,
-                                  ),
-                                  Text(
-                                    strings.createAListAndFollowUp,
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
-                                  )
-                                ],
-                              ),
-                            )
-                          : Column(
-                              children: List.generate(
-                                  controller.allShoppingList.value.length,
-                                  (index) => Padding(
-                                        padding:
-                                            const EdgeInsets.only(bottom: 16.0),
-                                        child: ShoppingListCard(controller
-                                            .allShoppingList.value[index]),
-                                      )),
-                            ),
-                    ],
-                  );
-                }),
-              ),
-            ),
+      listenable: Listenable.merge([DI.get<AppLocale>()]),
+      builder: (_, __) => RefreshIndicator(
+        onRefresh: _refresh,
+        child: Obx(() {
+          final lists = controller.allShoppingList;
+          final isLoading = controller.isLoading.value;
+
+          return CustomScrollView(
+            // Mantém o gesto de puxar disponível mesmo quando o conteúdo não
+            // chega para encher o ecrã.
+            physics: const AlwaysScrollableScrollPhysics(),
+            slivers: [
+              if (lists.isNotEmpty)
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.lg,
+                    Spacing.lg,
+                    Spacing.lg,
+                    Spacing.md,
+                  ),
+                  sliver: SliverToBoxAdapter(
+                    child: Text(
+                      strings.myList,
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
+                ),
+              if (isLoading && lists.isEmpty)
+                const _LoadingSkeletons()
+              else if (lists.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppEmptyState(
+                    illustration: AppAssets.NO_DATA_IMAGE,
+                    title: strings.whatAreYouGoingToBuyToday,
+                    message: strings.createAListAndFollowUp,
+                    action: FilledButton.icon(
+                      onPressed: () => shoplistForm(context),
+                      icon: const Icon(Icons.add_rounded),
+                      label: Text(strings.createFirstList),
+                    ),
+                  ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.lg,
+                    0,
+                    Spacing.lg,
+                    // Espaço para o FAB não tapar o último cartão.
+                    Spacing.xxxl * 2,
+                  ),
+                  sliver: SliverList.separated(
+                    itemCount: lists.length,
+                    separatorBuilder: (_, __) =>
+                        const SizedBox(height: Spacing.md),
+                    itemBuilder: (context, index) {
+                      final list = lists[index];
+                      return StaggeredEntrance(
+                        index: index,
+                        // A chave amarra o estado do cartão à lista que mostra,
+                        // para que reordenar não reaproveite o widget errado.
+                        child: ShoppingListCard(list, key: ValueKey(list.uuid)),
+                      );
+                    },
+                  ),
+                ),
+            ],
           );
-        });
+        }),
+      ),
+    );
+  }
+}
+
+/// Três cartões-fantasma enquanto a base de dados responde.
+class _LoadingSkeletons extends StatelessWidget {
+  const _LoadingSkeletons();
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+      sliver: SliverList.separated(
+        itemCount: 3,
+        separatorBuilder: (_, __) => const SizedBox(height: Spacing.md),
+        itemBuilder: (_, __) => const ShoppingListCardSkeleton(),
+      ),
+    );
   }
 }

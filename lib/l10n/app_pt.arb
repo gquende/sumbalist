@@ -1,4 +1,3 @@
-
 {
   "language": "Língua",
   "languages": "Línguas",
@@ -34,16 +33,43 @@
   "confirm": "Confirmar",
   "whatAreYouGoingToBuyToday": "O que vai comprar hoje?",
   "createAListAndFollowUp": "Crie uma lista e acompanhe",
-  "youhaveNotRegisteredYet": "Você ainda não se registou\uD83D\uDE25",
+  "youhaveNotRegisteredYet": "Você ainda não se registou😥",
   "category": "Categoria",
   "planYourShoppingList": "Planeie sua lista compra",
   "theSecretToEfficient": "O segredo para uma compra eficiente está no planeamento da sua lista de compra. Economize tempo planeando a sua lista de compras",
-  "efficientShoppingList":"Lista de compras eficiente",
-  "makeYourGroceryShoppingAnEfficient":"Transforme suas idas ao mercado em uma experiência eficiente e sem complicações",
-  "beHappy":"Seja feliz",
-  "beHappyWithSumbalist":"Seja feliz com suas compras usando Sumbalist",
-  "toContinue":"Continuar",
-  "newVersionTitle":"Nova versão",
-  "versionMessage":"A sua versão está desactualizada, baixe nova versão na loja de aplicativos",
-  "listName": "Nome da lista"
+  "efficientShoppingList": "Lista de compras eficiente",
+  "makeYourGroceryShoppingAnEfficient": "Transforme suas idas ao mercado em uma experiência eficiente e sem complicações",
+  "beHappy": "Seja feliz",
+  "beHappyWithSumbalist": "Seja feliz com suas compras usando Sumbalist",
+  "toContinue": "Continuar",
+  "newVersionTitle": "Nova versão",
+  "versionMessage": "A sua versão está desactualizada, baixe nova versão na loja de aplicativos",
+  "listName": "Nome da lista",
+  "cancel": "Cancelar",
+  "deleteListTitle": "Apagar lista?",
+  "deleteListMessage": "Esta acção não pode ser anulada. A lista \"{name}\" e todos os seus itens serão removidos.",
+  "@deleteListMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "listDeleted": "Lista apagada",
+  "createFirstList": "Criar a minha primeira lista",
+  "itemsProgress": "{bought} de {total} itens",
+  "@itemsProgress": {
+    "placeholders": {
+      "bought": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "fillAllFields": "Preencha todos os campos",
+  "newList": "Nova lista",
+  "decreaseQuantity": "Diminuir quantidade",
+  "increaseQuantity": "Aumentar quantidade"
 }

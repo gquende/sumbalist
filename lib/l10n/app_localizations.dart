@@ -373,6 +373,66 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'List name'**
   String get listName;
+
+  /// No description provided for @cancel.
+  ///
+  /// In en, this message translates to:
+  /// **'Cancel'**
+  String get cancel;
+
+  /// No description provided for @deleteListTitle.
+  ///
+  /// In en, this message translates to:
+  /// **'Delete list?'**
+  String get deleteListTitle;
+
+  /// No description provided for @deleteListMessage.
+  ///
+  /// In en, this message translates to:
+  /// **'This action cannot be undone. The list \"{name}\" and all its items will be removed.'**
+  String deleteListMessage(String name);
+
+  /// No description provided for @listDeleted.
+  ///
+  /// In en, this message translates to:
+  /// **'List deleted'**
+  String get listDeleted;
+
+  /// No description provided for @createFirstList.
+  ///
+  /// In en, this message translates to:
+  /// **'Create my first list'**
+  String get createFirstList;
+
+  /// No description provided for @itemsProgress.
+  ///
+  /// In en, this message translates to:
+  /// **'{bought} of {total} items'**
+  String itemsProgress(int bought, int total);
+
+  /// No description provided for @fillAllFields.
+  ///
+  /// In en, this message translates to:
+  /// **'Please fill in all fields'**
+  String get fillAllFields;
+
+  /// No description provided for @newList.
+  ///
+  /// In en, this message translates to:
+  /// **'New list'**
+  String get newList;
+
+  /// No description provided for @decreaseQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Decrease quantity'**
+  String get decreaseQuantity;
+
+  /// No description provided for @increaseQuantity.
+  ///
+  /// In en, this message translates to:
+  /// **'Increase quantity'**
+  String get increaseQuantity;
 }
 
 class _AppLocalizationsDelegate

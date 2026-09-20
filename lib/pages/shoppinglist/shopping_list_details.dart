@@ -1,26 +1,50 @@
-import 'package:currency_text_input_formatter/currency_text_input_formatter.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
 import 'package:sumbalist/mixins/localization_mixin.dart';
-import 'package:sumbalist/utils/currency.dart';
-import 'package:uuid/uuid.dart';
 
 import '../../controllers/shopping_list_controller.dart';
 import '../../core/configs/app_locale.dart';
+import '../../core/design/app_palette.dart';
+import '../../core/design/design_tokens.dart';
 import '../../core/di/dependecy_injection.dart';
+import '../../mocks/shopping_list_category_mock.dart';
 import '../../models/shopping_list.dart';
 import '../../models/shopping_list_item.dart';
-import '../../utils/constants/app_colors.dart';
 import '../../utils/constants/files.dart';
-import '../widgets/common_button.dart';
+import '../widgets/app_empty_state.dart';
+import '../widgets/app_progress_bar.dart';
+import '../widgets/app_skeleton.dart';
+import 'item_ordering.dart';
+import 'components/item_form_sheet.dart';
+import 'components/list_totals.dart';
+import 'components/shopping_item_tile.dart';
+import 'components/shoppinglist_card.dart';
 
+/// Detalhe de uma lista: resumo no topo, itens em baixo.
+///
+/// ## Ordenação e movimento
+///
+/// Os itens por comprar ficam em cima e os comprados em baixo. Marcar um item
+/// manda-o para o **fim** da lista; desmarcá-lo trá-lo de volta para o fim do
+/// grupo dos pendentes. A passagem é animada: o item encolhe e desliza na
+/// direção para onde vai, e reaparece do lado de onde veio.
+///
+/// A lista é uma [SliverAnimatedList] em vez de uma `SliverList`, porque só
+/// esta sabe animar entradas e saídas. A consequência é que a posição dos itens
+/// deixa de poder ser alterada por reconstrução: toda a mutação tem de passar
+/// por `insertItem`/`removeItem`, senão a lista e o que está no ecrã
+/// dessincronizam. É por isso que [ItemFormSheet] devolve o item em vez de o
+/// inserir por si.
+///
+/// Antes desta versão, `_reorderItem` inseria o item marcado no índice do
+/// primeiro item já comprado — ou seja, no **topo** do grupo dos comprados, e
+/// não no fim da lista. A troca era instantânea, sem transição.
 class ShoplistDetails extends StatefulWidget {
-  ShoppingList shoppingList;
+  const ShoplistDetails({super.key, required this.shoppingList});
 
-  ShoplistDetails({required this.shoppingList});
+  final ShoppingList shoppingList;
 
   @override
   State<ShoplistDetails> createState() => _ShoplistDetailsState();
@@ -28,799 +52,372 @@ class ShoplistDetails extends StatefulWidget {
 
 class _ShoplistDetailsState extends State<ShoplistDetails>
     with LocalizationMixin {
-  var controller = GetIt.instance.get<ShoppingListController>();
+  final ShoppingListController controller =
+      GetIt.instance.get<ShoppingListController>();
+
+  final GlobalKey<SliverAnimatedListState> _listKey = GlobalKey();
+
+  /// Duração de uma passagem de item entre grupos.
+  static const Duration _moveDuration = Duration(milliseconds: 340);
+
+  bool _loaded = false;
+
+  /// A lista que está no ecrã. É a mesma instância que o controlador usa para
+  /// calcular totais, por isso as duas vistas nunca divergem.
+  List<ShoppinglistItem> get _items =>
+      controller.shoppingList.value.items ??= <ShoppinglistItem>[];
 
   @override
   void initState() {
+    super.initState();
+
     controller.shoppingList.value = widget.shoppingList;
-    controller.getItemsOfShoppingList(widget.shoppingList.uuid).then((value) {
-      controller.shoppingList.value.items = value;
+    controller.getItemsOfShoppingList(widget.shoppingList.uuid).then((items) {
+      if (!mounted) return;
+
+      ItemOrdering.sortByDone(items);
+
+      controller.shoppingList.value.items = items;
+      controller.shoppingList.refresh();
+      setState(() => _loaded = true);
     });
+  }
+
+  int _targetIndex(ShoppinglistItem item) =>
+      ItemOrdering.targetIndex(_items, item);
+
+  /// Tira o item da posição atual e volta a pô-lo no sítio certo, com animação
+  /// de saída e de entrada.
+  void _animateToPosition(ShoppinglistItem item) {
+    final from = _items.indexOf(item);
+    if (from == -1) return;
+
+    _items.removeAt(from);
+    final to = _targetIndex(item);
+
+    if (from == to) {
+      // Já estava no sítio: repõe sem animar, para não piscar.
+      _items.insert(to, item);
+      return;
+    }
+
+    _listKey.currentState?.removeItem(
+      from,
+      (context, animation) => _leavingRow(item, animation),
+      duration: _moveDuration,
+    );
+
+    _items.insert(to, item);
+    _listKey.currentState?.insertItem(to, duration: _moveDuration);
+  }
+
+  Future<void> _toggleDone(ShoppinglistItem item, bool done) async {
+    HapticFeedback.selectionClick();
+
+    // O movimento acontece já. Guardar na base de dados e no Firebase demora o
+    // suficiente para a animação parecer um salto atrasado se esperássemos.
+    setState(() {
+      item.isDone = done;
+      _animateToPosition(item);
+    });
+    controller.shoppingList.refresh();
+
+    await controller.updateItem(item);
+    if (!mounted) return;
+
+    final list = controller.shoppingList.value;
+    final isComplete = list.getPercentBuyedByItem() == 100.0;
+
+    list.statusUUID = isComplete ? "completed" : "not completed";
+    await controller.updateShoppinglist(list);
+
+    if (!mounted || !isComplete) return;
+
+    HapticFeedback.mediumImpact();
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(strings.doneList)),
+    );
+  }
+
+  Future<void> _changeQty(ShoppinglistItem item, int qty) async {
+    setState(() => item.qty = qty);
+    controller.shoppingList.refresh();
+
+    await controller.updateItem(item);
+  }
+
+  void _dismissItem(ShoppinglistItem item) {
+    final index = _items.indexOf(item);
+    if (index == -1) return;
+
+    _items.removeAt(index);
+
+    // O [Dismissible] já fechou o espaço, por isso a remoção da lista animada é
+    // instantânea — animá-la outra vez fazia o resto da lista saltar.
+    _listKey.currentState?.removeItem(
+      index,
+      (context, animation) => const SizedBox.shrink(),
+      duration: Duration.zero,
+    );
+
+    controller.shoppingList.refresh();
+    setState(() {});
+
+    controller.removeItem(item);
+  }
+
+  Future<void> _openForm({ShoppinglistItem? item}) async {
+    final saved = await ItemFormSheet.show(
+      context,
+      controller: controller,
+      listUuid: widget.shoppingList.uuid,
+      item: item,
+    );
+
+    if (saved == null || !mounted) return;
+
+    if (_items.contains(saved)) {
+      // Edição: pode ter mudado o preço ou a quantidade, mas não o grupo.
+      setState(() {});
+    } else {
+      final to = _targetIndex(saved);
+      setState(() => _items.insert(to, saved));
+      _listKey.currentState?.insertItem(to, duration: _moveDuration);
+    }
+
+    controller.shoppingList.refresh();
   }
 
   @override
   Widget build(BuildContext context) {
-    var size = MediaQuery.of(context).size;
     return ListenableBuilder(
-        listenable: Listenable.merge([DI.get<AppLocale>()]),
-        builder: (_, __) {
-          return Scaffold(
-            appBar: AppBar(
-              title: Text(
-                widget.shoppingList.name,
-                style: TextStyle(fontSize: 16),
-              ),
-              backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-              elevation: 0,
-            ),
-            body: SafeArea(
-              child: Stack(
-                children: [
-                  Positioned(
-                    top: size.height * 0.13,
+      listenable: Listenable.merge([DI.get<AppLocale>()]),
+      builder: (_, __) => Scaffold(
+        body: Obx(() {
+          final list = controller.shoppingList.value;
 
-                    child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Obx(() {
-                          return Container(
-                            height: size.height * 0.8,
-                            width: size.width,
-                            child: SingleChildScrollView(
-                              child: Column(
-                                children: [
-                                  const SizedBox(
-                                    height: 10,
-                                  ),
-                                  controller.shoppingList.value.items!.isEmpty
-                                      ? Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 20.0, right: 20),
-                                          child: SizedBox(
-                                            width: size.width,
-                                            height: size.height / 1.5,
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Center(
-                                                  child: SvgPicture.asset(
-                                                    AppAssets.ADD_NOTE_IMAGE,
-                                                    width: size.width / 2,
-                                                  ),
-                                                ),
-                                                const SizedBox(
-                                                  height: 10,
-                                                ),
-                                                Text(
-                                                  strings.noItemListToBuy,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .titleMedium,
-                                                ),
-                                                const SizedBox(
-                                                  height: 5,
-                                                ),
-                                                Text(
-                                                  strings.addItemAndBuy,
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall,
-                                                  textAlign: TextAlign.center,
-                                                )
-                                              ],
-                                            ),
-
-                                          ),
-                                        )
-                                      : Column(
-                                          children: List.generate(
-                                              controller.shoppingList.value
-                                                      .items!.length ??
-                                                  0,
-                                              (index) => Dismissible(
-                                                    key: UniqueKey(),
-                                                    onDismissed: (direction) {
-                                                      if (direction ==
-                                                          DismissDirection
-                                                              .endToStart) {
-                                                        controller
-                                                            .removeItem(controller
-                                                                .shoppingList
-                                                                .value
-                                                                .items![index])
-                                                            .then((value) {
-                                                          setState(() {});
-                                                        });
-                                                      } else {
-                                                        setState(() {});
-
-                                                      }
-                                                    },
-                                                    background: Container(
-                                                      width: size.width,
-                                                      color: Colors.transparent,
-                                                    ),
-                                                    secondaryBackground:
-                                                        Container(
-                                                      width: size.width,
-                                                      color: Colors.red,
-                                                      child: const Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .end,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                EdgeInsets.only(
-                                                                    right:
-                                                                        18.0),
-                                                            child: Icon(
-                                                              Icons.delete,
-                                                              size: 26,
-                                                            ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    ),
-                                                    child: Padding(
-                                                      padding: EdgeInsets.only(
-                                                          bottom: 8.0,
-                                                          right: size.width *
-                                                              0.036),
-
-                                                      child:
-                                                          _shoppinglistItemWidget(
-                                                              item: controller
-                                                                  .shoppingList
-                                                                  .value
-                                                                  .items![index],
-                                                              index: index),
-                                                    ),
-                                                  ))),
-                                  controller.shoppingList.value.items!.length >
-                                          7
-                                      ? SizedBox(
-                                          height: 80,
-                                        )
-                                      : SizedBox()
-                                ],
-                              ),
-                            ),
-                          );
-                        })),
+          return CustomScrollView(
+            slivers: [
+              SliverAppBar(pinned: true, title: _Title(list: list)),
+              SliverToBoxAdapter(child: _Summary(list: list)),
+              if (!_loaded)
+                const _LoadingItems()
+              else if (_items.isEmpty)
+                SliverFillRemaining(
+                  hasScrollBody: false,
+                  child: AppEmptyState(
+                    illustration: AppAssets.ADD_NOTE_IMAGE,
+                    title: strings.noItemListToBuy,
+                    message: strings.addItemAndBuy,
                   ),
-                  Positioned(
-                      child: Column(
-                    children: [
-                      Container(
-                          width: MediaQuery.of(context).size.width,
-                          height: MediaQuery.of(context).size.height / 7.8,
-
-                          decoration: BoxDecoration(
-                              color: Theme.of(context)
-                                  .colorScheme
-                                  .primaryContainer,
-                              boxShadow: [
-                                BoxShadow(
-                                    color: Colors.black12,
-                                    blurRadius: 7,
-                                    spreadRadius: 3)
-                              ]),
-                          child: Padding(
-                              padding: const EdgeInsets.all(12.0),
-                              child: Column(
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            strings.completed,
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins-Medium',
-                                              fontSize: 16,
-                                            ),
-                                            // style: Text(),
-                                          ),
-                                          Text(
-                                            "${AppCurrencyFormat.format(controller.shoppingList.value.calculateTotalBuyed())} (${controller.shoppingList.value.calculateTotalItemBuyed()})",
-                                            style: TextStyle(
-                                              fontFamily: 'Poppins-Medium',
-                                              fontSize: 18,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            strings.remaining,
-
-                                            style: TextStyle(
-                                                fontFamily: 'Poppins-Medium',
-                                                fontSize: 16,
-                                                color: Colors.grey),
-                                            // style: Text(),
-                                          ),
-                                          Text(
-                                            "    ${AppCurrencyFormat.format(controller.shoppingList.value.calculateTotal() - controller.shoppingList.value.calculateTotalBuyed())} (${controller.shoppingList.value.calculateTotalItemPending()})",
-                                            style: TextStyle(
-                                                fontFamily: 'Poppins-Medium',
-                                                fontSize: 18,
-                                                color: Colors.grey),
-                                          )
-                                        ],
-                                      )
-                                    ],
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-
-                                  ),
-                                  Stack(
-                                    children: [
-                                      Container(
-                                        width: (size.width - 20),
-                                        height: 20,
-
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            color: Color(0xff67727d)
-                                                .withOpacity(0.1)),
-                                      ),
-                                      Container(
-                                        width: (size.width - 20) *
-                                            controller.shoppingList.value
-                                                .getPercentBuyedByItem() /
-                                            100,
-                                        height: 20,
-
-                                        decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(50),
-                                            color: PRIMARYCOLOR),
-                                      ),
-                                      Positioned(
-                                          left: (size.width - 30) / 2,
-                                          child: Text(
-                                              "${(controller.shoppingList.value.getPercentBuyedByItem()).round()} %"))
-                                    ],
-                                  )
-                                ],
-                              ))),
-                    ],
-                  )),
-                ],
-              ),
-            ),
-            floatingActionButton: FloatingActionButton(
-              onPressed: () async {
-                Get.bottomSheet(
-                  bottomSheet(null) as Widget,
-                  backgroundColor:
-                      Theme.of(context).colorScheme.primaryContainer,
-                ).then((value) {
-                  setState(() {});
-                });
-              },
-              child: Icon(Icons.add),
-              backgroundColor: PRIMARYCOLOR,
-            ),
+                )
+              else
+                SliverPadding(
+                  padding: const EdgeInsets.fromLTRB(
+                    Spacing.lg,
+                    0,
+                    Spacing.lg,
+                    // Espaço para o botão flutuante não tapar o último item.
+                    Spacing.xxxl * 2,
+                  ),
+                  sliver: SliverAnimatedList(
+                    key: _listKey,
+                    initialItemCount: _items.length,
+                    itemBuilder: (context, index, animation) {
+                      if (index >= _items.length) {
+                        return const SizedBox.shrink();
+                      }
+                      return _arrivingRow(_items[index], animation);
+                    },
+                  ),
+                ),
+            ],
           );
-        });
-  }
-
-  Widget _shoppinglistItemWidget(
-      {required ShoppinglistItem item, required int index}) {
-    var size = MediaQuery.of(context).size;
-
-    return Stack(
-      children: [
-        Container(
-          width: size.width,
-          height: size.height * 0.093,
-          decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.secondaryContainer,
-              borderRadius: BorderRadius.circular(5)),
-          child: Padding(
-            padding: const EdgeInsets.only(left: 12.0, right: 8.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () async {
-                    Get.bottomSheet(
-                      bottomSheet(item) as Widget,
-                      backgroundColor:
-                          Theme.of(context).colorScheme.primaryContainer,
-                    ).then((value) {
-                      setState(() {});
-                    });
-                  },
-                  child: Row(
-                    children: [
-                      Container(
-                        width: 55,
-                        height: 55,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
-                            color: Theme.of(context).primaryColor),
-                        alignment: Alignment.center,
-                        child: Icon(
-                          Icons.shopping_cart,
-                          color: SECONDARYCOLOR,
-                        ),
-                      ),
-                      const SizedBox(
-                        width: 10,
-                      ),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            item.itemName,
-                            style: Theme.of(context).textTheme.labelLarge,
-                          ),
-                          // SizedBox(
-                          //   height: size.height * 0.002,
-                          // ),
-                          Text(
-                            item.description,
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                          // SizedBox(
-                          //   height: size.height * 0.006,
-                          // ),
-                          Container(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(
-                                  AppCurrencyFormat.format(
-                                      item.price * item.qty),
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        Positioned(
-            left: size.width / 1.42,
-            top: size.width * 0.11,
-            child: Container(
-              height: size.height * 0.03,
-              width: size.width * 0.245,
-              padding: EdgeInsets.only(left: 0, right: 0, bottom: 0),
-              alignment: Alignment.center,
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
-                  border: Border.all(color: Colors.grey)),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    onTap: () {
-                      if (item.qty > 1) {
-                        item.qty--;
-                        controller.updateItem(item).then((value) {
-                          // setState(() {});
-                        });
-
-                        setState(() {});
-                      }
-                    },
-                    child: Container(
-                      width: 30,
-                      height: 25,
-                      alignment: Alignment.center,
-                      decoration: const BoxDecoration(
-                          color: Colors.grey,
-                          borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(5),
-                            bottomLeft: Radius.circular(5),
-                          )),
-                      child: const Text(
-                        "-",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 20),
-                      ),
-                    ),
-                  ),
-                  Text(
-                    "${item.qty}",
-                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 18),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      item.qty++;
-
-                      controller.updateItem(item).then((value) {
-                        setState(() {});
-                      });
-                    },
-                    child: Container(
-                      width: 30,
-                      height: 25,
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(5),
-                            bottomRight: Radius.circular(5),
-                          )),
-                      child: Text(
-                        "+",
-                        style: TextStyle(
-                            fontWeight: FontWeight.w600, fontSize: 20),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            )),
-        Positioned(
-            left: size.width / 1.16,
-            top: -3,
-            child: Theme(
-              data: Theme.of(context).copyWith(
-                unselectedWidgetColor: Colors.red,
-              ),
-              child: Checkbox(
-                value: item.isDone,
-                onChanged: (value) {
-                  item.isDone = value!;
-                  controller.updateItem(item).then((value) {
-                    setState(() {
-                      _reorderItem(index);
-                      controller.shoppingList.refresh();
-
-                      if (controller.shoppingList.value
-                              .getPercentBuyedByItem() ==
-                          100.0) {
-                        controller.shoppingList.value.statusUUID = "completed";
-                        controller
-                            .updateShoppinglist(controller.shoppingList.value)
-                            .then((value) {
-                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                            content: Text(strings.doneList),
-                            backgroundColor: Colors.green,
-                          ));
-                        });
-                      } else {
-                        controller.shoppingList.value.statusUUID =
-                            'not completed';
-                        controller
-                            .updateShoppinglist(controller.shoppingList.value);
-                      }
-                    });
-                  });
-                },
-                side: BorderSide(
-                    color: Theme.of(context)
-                        .scaffoldBackgroundColor
-                        .withOpacity(0.8),
-                    width: 2),
-              ),
-            ))
-      ],
-    );
-  }
-
-  Widget bottomSheet(ShoppinglistItem? item) {
-    var size = MediaQuery.of(context).size;
-
-    var priority = 1.obs;
-    var categoryIdSelected = 1.obs;
-
-    final CurrencyTextInputFormatter inputCurrencyFormat =
-        CurrencyTextInputFormatter.currency(
-            symbol: AppCurrencyFormat.formater.value.symbol);
-
-    if (item != null) {
-      controller.nameFieldController.text = item!.itemName;
-      controller.descriptionController.text = item!.description;
-      controller.qtyController.text = "${item!.qty}";
-      controller.priceController.text = "${item!.price.round()}";
-      controller.priority = item!.priority;
-      priority.value = item!.priority;
-    }
-
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0, right: 8.0),
-      child: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            Text(strings.name),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: size.width,
-              height: 55,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(8)),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextField(
-                  controller: controller.nameFieldController,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        CupertinoIcons.rectangle_stack,
-                      ),
-                      hintText: "",
-                      contentPadding: EdgeInsets.only(bottom: 10),
-                      focusColor:
-                          Theme.of(context).colorScheme.secondaryContainer,
-                      filled: true,
-                      enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(11))),
-                      focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(11))),
-                      fillColor:
-                          Theme.of(context).colorScheme.secondaryContainer,
-                      border: OutlineInputBorder()),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(strings.price),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      width: size.width / 2.5,
-                      height: 55,
-                      decoration: BoxDecoration(
-                          color:
-                              Theme.of(context).colorScheme.secondaryContainer,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          controller: controller.priceController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              prefixIcon:
-                                  Icon(CupertinoIcons.money_dollar_circle),
-                              hintText: "",
-                              contentPadding: EdgeInsets.only(bottom: 10),
-                              focusColor: Color(0xff000000),
-                              filled: true,
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(11))),
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(11))),
-                              fillColor: Theme.of(context)
-                                  .colorScheme
-                                  .secondaryContainer,
-                              labelStyle: TextStyle(color: Color(0xff000000)),
-                              border: OutlineInputBorder()),
-                          inputFormatters: [inputCurrencyFormat],
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Text(strings.quantity),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      width: size.width / 2.5,
-                      height: 55,
-                      decoration: BoxDecoration(
-                          color:
-                              Theme.of(context).colorScheme.secondaryContainer,
-                          borderRadius: BorderRadius.circular(8)),
-                      child: Padding(
-                        padding: const EdgeInsets.all(10),
-                        child: TextField(
-                          controller: controller.qtyController,
-                          keyboardType: TextInputType.number,
-                          decoration: InputDecoration(
-                              prefixIcon: Icon(CupertinoIcons.number),
-                              hintText: "",
-                              contentPadding: EdgeInsets.only(bottom: 10),
-                              focusColor: Color(0xff000000),
-                              filled: true,
-                              enabledBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(11))),
-                              focusedBorder: const OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius:
-                                      BorderRadius.all(Radius.circular(11))),
-                              fillColor: Theme.of(context)
-                                  .colorScheme
-                                  .secondaryContainer,
-                              labelStyle: TextStyle(color: Color(0xff000000)),
-                              border: OutlineInputBorder()),
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            Text(strings.description),
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              width: size.width,
-              height: 55,
-              decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.secondaryContainer,
-                  borderRadius: BorderRadius.circular(8)),
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: TextField(
-                  controller: controller.descriptionController,
-                  decoration: InputDecoration(
-                      prefixIcon: Icon(
-                        CupertinoIcons.square_list,
-                      ),
-                      hintText: "",
-                      contentPadding: EdgeInsets.only(bottom: 10),
-                      focusColor: Color(0xff000000),
-                      filled: true,
-                      enabledBorder: const OutlineInputBorder(
-                          borderSide: BorderSide(color: Color(0xff)),
-                          borderRadius: BorderRadius.all(Radius.circular(11))),
-                      focusedBorder: const OutlineInputBorder(
-                          borderSide: BorderSide.none,
-                          borderRadius: BorderRadius.all(Radius.circular(11))),
-                      fillColor:
-                          Theme.of(context).colorScheme.secondaryContainer,
-                      labelStyle: TextStyle(color: Color(0xff000000)),
-                      border: OutlineInputBorder()),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            CommonButton(
-                active: true,
-                title: Text(
-                  item == null ? strings.add : strings.update,
-                  style: TextStyle(color: SECONDARYCOLOR),
-                ),
-                action: () async {
-                  if (controller.validateForm(context)) {
-                    if (item == null) {
-                      var uuid = Uuid();
-
-                      ShoppinglistItem item = ShoppinglistItem(
-                          uuid: uuid.v4(),
-                          isDone: false,
-                          listUUID: widget.shoppingList.uuid,
-                          itemName: controller.nameFieldController.text,
-                          description: controller.descriptionController.text,
-                          qty: int.parse(controller.qtyController.text),
-                          price: double.parse(
-                              "${inputCurrencyFormat.getUnformattedValue()}"),
-                          priority: controller.priority);
-
-                      var value = await controller.addItem(item);
-
-                      if (value != 0) {
-                        //Adiciona item na view
-                        controller.shoppingList.value.items?.add(item);
-
-                        //Actualiza o estado lista
-                        controller.shoppingList.value.statusUUID =
-                            'not completed';
-                        controller
-                            .updateShoppinglist(controller.shoppingList.value);
-                      }
-                    } else {
-                      item.itemName = controller.nameFieldController.text;
-                      item.description = controller.descriptionController.text;
-                      item.qty = int.parse(controller.qtyController.text);
-                      item.price = double.parse(
-                          "${inputCurrencyFormat.getUnformattedValue()}");
-                      item.priority = controller.priority;
-                      controller.updateItem(item as ShoppinglistItem);
-                    }
-
-                    Navigator.of(context).pop();
-                  }
-                }),
-            SizedBox(
-              height: 10,
-            ),
-          ],
+        }),
+        floatingActionButton: FloatingActionButton.extended(
+          onPressed: _openForm,
+          icon: const Icon(Icons.add_rounded),
+          label: Text(strings.add),
         ),
       ),
     );
   }
 
-  void _reorderItem(int oldIndex) {
-    debugPrint("Index: $oldIndex");
+  /// Item a chegar à posição nova.
+  ///
+  /// Entra pelo lado de onde veio: um item comprado desceu, portanto assoma por
+  /// cima; um desmarcado subiu, portanto assoma por baixo. É esse detalhe que
+  /// faz a transição ler-se como um movimento e não como dois acasos.
+  Widget _arrivingRow(ShoppinglistItem item, Animation<double> animation) {
+    final curved = CurvedAnimation(parent: animation, curve: Motion.standard);
+    final fromAbove = item.isDone;
 
-    if (controller.shoppingList.value.items![oldIndex].isDone) {
-      ShoppinglistItem? removedItem =
-          controller.shoppingList.value.items!.removeAt(oldIndex);
-      debugPrint("Index: $oldIndex");
-
-      int newIndex = controller.shoppingList.value.items!
-          .indexWhere((item) => item.isDone);
-      if (newIndex == -1) {
-        newIndex = controller.shoppingList.value.items!.length;
-      }
-      setState(() {
-        controller.shoppingList.value.items!.insert(newIndex, removedItem);
-      });
-    } else {
-      ShoppinglistItem? removedItem =
-          controller.shoppingList.value.items!.removeAt(oldIndex);
-      debugPrint("Index: $oldIndex");
-
-      int newIndex = controller.shoppingList.value.items!
-          .indexWhere((item) => item.isDone);
-      if (newIndex == -1) {
-        newIndex = controller.shoppingList.value.items!.length;
-      }
-      setState(() {
-        controller.shoppingList.value.items!.insert(newIndex, removedItem);
-      });
-    }
+    return SizeTransition(
+      sizeFactor: curved,
+      child: FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(0, fromAbove ? -0.3 : 0.3),
+            end: Offset.zero,
+          ).animate(curved),
+          child: _row(item),
+        ),
+      ),
+    );
   }
 
-  Widget _buildItem(
-      ShoppinglistItem item, int index, Animation<double> animation) {
+  /// Item a sair da posição antiga: encolhe, desvanece e escorrega na direção
+  /// para onde vai.
+  Widget _leavingRow(ShoppinglistItem item, Animation<double> animation) {
+    final curved = CurvedAnimation(parent: animation, curve: Motion.standard);
+    final movingDown = item.isDone;
+
     return SizeTransition(
-      sizeFactor: animation,
-      child: _shoppinglistItemWidget(item: item, index: index),
+      sizeFactor: curved,
+      child: FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          // A animação corre de 1 para 0, por isso `begin` é o destino.
+          position: Tween<Offset>(
+            begin: Offset(0, movingDown ? 0.3 : -0.3),
+            end: Offset.zero,
+          ).animate(curved),
+          child: IgnorePointer(child: _row(item)),
+        ),
+      ),
+    );
+  }
+
+  Widget _row(ShoppinglistItem item) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
+      child: Dismissible(
+        key: ValueKey(item.uuid),
+        direction: DismissDirection.endToStart,
+        onDismissed: (_) {
+          HapticFeedback.mediumImpact();
+          _dismissItem(item);
+        },
+        background: const _DeleteBackground(),
+        child: ShoppingItemTile(
+          item: item,
+          onToggleDone: (done) => _toggleDone(item, done),
+          onChangeQty: (qty) => _changeQty(item, qty),
+          onEdit: () => _openForm(item: item),
+        ),
+      ),
+    );
+  }
+}
+
+/// Esqueletos enquanto os itens vêm da base de dados.
+class _LoadingItems extends StatelessWidget {
+  const _LoadingItems();
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+      sliver: SliverList.separated(
+        itemCount: 4,
+        separatorBuilder: (_, __) => const SizedBox(height: Spacing.sm),
+        itemBuilder: (_, __) => const AppSkeleton(height: 72),
+      ),
+    );
+  }
+}
+
+/// Título da barra: ícone da categoria (continuação do [Hero] do cartão) e nome.
+class _Title extends StatelessWidget {
+  const _Title({required this.list});
+
+  final ShoppingList list;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Hero(
+          tag: ShoppingListCard.heroTag(list),
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              borderRadius: Radii.small,
+              color: context.semantic.accentSoft,
+            ),
+            child: Icon(
+              iconCategory[list.categoryUUID] ?? Icons.category,
+              size: 20,
+              color: context.semantic.onAccentSoft,
+            ),
+          ),
+        ),
+        const SizedBox(width: Spacing.md),
+        Expanded(
+          child: Text(
+            list.name,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleLarge,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Cartão de resumo: totais e progresso da lista.
+class _Summary extends StatelessWidget {
+  const _Summary({required this.list});
+
+  final ShoppingList list;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        Spacing.lg,
+        Spacing.sm,
+        Spacing.lg,
+        Spacing.lg,
+      ),
+      child: Card(
+        color: Theme.of(context).colorScheme.surfaceContainer,
+        child: Padding(
+          padding: Spacing.card,
+          child: Column(
+            children: [
+              ListTotals(list: list),
+              const SizedBox(height: Spacing.lg),
+              AppProgressBar(percent: list.getPercentBuyedByItem()),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Fundo revelado ao arrastar um item para a esquerda.
+class _DeleteBackground extends StatelessWidget {
+  const _DeleteBackground();
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+
+    return Container(
+      alignment: Alignment.centerRight,
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.xl),
+      decoration: BoxDecoration(
+        borderRadius: Radii.large,
+        color: scheme.errorContainer,
+      ),
+      child: Icon(Icons.delete_outline_rounded, color: scheme.onErrorContainer),
     );
   }
 }

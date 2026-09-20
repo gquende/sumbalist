@@ -67,7 +67,25 @@ Instale as dependências
 Confirme que tenha um telemóvel ou emulador rodando e execute:
 
 ```bash
-  flutter run
+  flutter run --flavor dev -t lib/main_dev.dart
 ```
+
+> **O flavor é obrigatório.** O projecto define dois *product flavors* no
+> Android (`dev` e `prod`). Um `flutter run` sem `--flavor` manda o Gradle
+> compilar os dois e depois procura um `app-debug.apk` que nunca é gerado,
+> falhando com:
+>
+> ```
+> Gradle build failed to produce an .apk file.
+> ```
+
+Para a variante de produção:
+
+```bash
+  flutter run --flavor prod -t lib/main.dart
+```
+
+No VS Code, as configurações em `.vscode/launch.json` já passam o flavor —
+basta escolher *SumbaList Dev* ou *SumbaList Prod* no menu de execução.
 
 

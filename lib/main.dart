@@ -10,9 +10,8 @@ void main() async {
     isDarkMode: false,
   ));
 
- // runApp(TEST2());
+  // runApp(TEST2());
 }
-
 
 class TEST2 extends StatefulWidget {
   const TEST2({super.key});
@@ -24,6 +23,12 @@ class TEST2 extends StatefulWidget {
 class _TEST2State extends State<TEST2> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(home: Scaffold(appBar: AppBar(title: Text("TEST"),),),);
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          title: Text("TEST"),
+        ),
+      ),
+    );
   }
 }
