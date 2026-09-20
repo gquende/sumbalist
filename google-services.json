@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "454364344608",
+    "firebase_url": "https://sumbalist-default-rtdb.firebaseio.com",
+    "project_id": "sumbalist",
+    "storage_bucket": "sumbalist.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:454364344608:android:bca650cd7893e712c4e745",
+        "android_client_info": {
+          "package_name": "com.gquende.sumbalist"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "454364344608-fidalg9k1dtl21dl24bet0v4v36np19t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCn0wBwwmx15rkfvyhp6_AB3zmt77bePEI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "454364344608-fidalg9k1dtl21dl24bet0v4v36np19t.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "454364344608-n7tln7lfa7o3cr9q98auuu6h9kvlecp8.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.gquende.sumbalist"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
