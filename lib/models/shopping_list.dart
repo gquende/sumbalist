@@ -11,6 +11,14 @@ class ShoppingList extends BaseModel {
   List<ShoppinglistItem>? items = [];
   double total;
 
+  /// Código ISO da moeda desta lista, por exemplo `AOA`.
+  ///
+  /// `null` significa **herdar a moeda do utilizador**: é o valor com que todas
+  /// as listas nascem, e o que as listas criadas antes desta funcionalidade
+  /// têm. Só deixa de ser nulo quando alguém escolhe explicitamente uma moeda
+  /// para esta lista.
+  String? currencyCode;
+
   ShoppingList(
       {required String uuid,
       required this.userUUID,
@@ -18,6 +26,7 @@ class ShoppingList extends BaseModel {
       required this.statusUUID,
       required this.name,
       required this.total,
+      this.currencyCode,
       int? id,
       this.items,
       String? created_at,
@@ -32,6 +41,7 @@ class ShoppingList extends BaseModel {
         categoryUUID: map["categoryUUID"],
         statusUUID: map["statusUUID"],
         items: [],
+        currencyCode: map["currencyCode"] as String?,
         total: double.parse("${map["total"] ?? 0}"));
   }
 
@@ -54,6 +64,7 @@ class ShoppingList extends BaseModel {
       "categoryUUID": this.categoryUUID,
       "statusUUID": this.statusUUID,
       "total": this.total,
+      "currencyCode": this.currencyCode,
       "created_at": this.created_at,
       "updated_at": this.updated_at
     };

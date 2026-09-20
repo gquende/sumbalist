@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -57,6 +58,13 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
 
   final GlobalKey<SliverAnimatedListState> _listKey = GlobalKey();
 
+  final ScrollController _scrollController = ScrollController();
+
+  /// Se a lista já saiu do topo. Só serve para revelar a linha por baixo do
+  /// cabeçalho fixo, e por isso é um [ValueNotifier] em vez de `setState`: não
+  /// vale a pena reconstruir o ecrã inteiro a cada pixel de scroll.
+  final ValueNotifier<bool> _scrolled = ValueNotifier<bool>(false);
+
   /// Duração de uma passagem de item entre grupos.
   static const Duration _moveDuration = Duration(milliseconds: 340);
 
@@ -71,6 +79,12 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
   void initState() {
     super.initState();
 
+    _scrollController.addListener(() {
+      final scrolled =
+          _scrollController.hasClients && _scrollController.offset > 0;
+      if (scrolled != _scrolled.value) _scrolled.value = scrolled;
+    });
+
     controller.shoppingList.value = widget.shoppingList;
     controller.getItemsOfShoppingList(widget.shoppingList.uuid).then((items) {
       if (!mounted) return;
@@ -81,6 +95,13 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
       controller.shoppingList.refresh();
       setState(() => _loaded = true);
     });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _scrolled.dispose();
+    super.dispose();
   }
 
   int _targetIndex(ShoppinglistItem item) =>
@@ -171,6 +192,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
       context,
       controller: controller,
       listUuid: widget.shoppingList.uuid,
+      currencyCode: controller.shoppingList.value.currencyCode,
       item: item,
     );
 
@@ -193,44 +215,19 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
     return ListenableBuilder(
       listenable: Listenable.merge([DI.get<AppLocale>()]),
       builder: (_, __) => Scaffold(
+        appBar: AppBar(
+            title: Obx(() => _Title(list: controller.shoppingList.value))),
         body: Obx(() {
           final list = controller.shoppingList.value;
 
-          return CustomScrollView(
-            slivers: [
-              SliverAppBar(pinned: true, title: _Title(list: list)),
-              SliverToBoxAdapter(child: _Summary(list: list)),
-              if (!_loaded)
-                const _LoadingItems()
-              else if (_items.isEmpty)
-                SliverFillRemaining(
-                  hasScrollBody: false,
-                  child: AppEmptyState(
-                    illustration: AppAssets.ADD_NOTE_IMAGE,
-                    title: strings.noItemListToBuy,
-                    message: strings.addItemAndBuy,
-                  ),
-                )
-              else
-                SliverPadding(
-                  padding: const EdgeInsets.fromLTRB(
-                    Spacing.lg,
-                    0,
-                    Spacing.lg,
-                    // Espaço para o botão flutuante não tapar o último item.
-                    Spacing.xxxl * 2,
-                  ),
-                  sliver: SliverAnimatedList(
-                    key: _listKey,
-                    initialItemCount: _items.length,
-                    itemBuilder: (context, index, animation) {
-                      if (index >= _items.length) {
-                        return const SizedBox.shrink();
-                      }
-                      return _arrivingRow(_items[index], animation);
-                    },
-                  ),
-                ),
+          // O resumo fica fora do [CustomScrollView], por isso não rola. Não é
+          // um SliverPersistentHeader de propósito: esse exige altura fixa em
+          // pixels, e a altura deste cartão depende do tamanho de letra do
+          // sistema — voltaria a partir-se com a fonte ampliada.
+          return Column(
+            children: [
+              _PinnedSummary(list: list, scrolled: _scrolled),
+              Expanded(child: _itemsScrollView()),
             ],
           );
         }),
@@ -240,6 +237,46 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
           label: Text(strings.add),
         ),
       ),
+    );
+  }
+
+  /// A parte que rola: só os itens.
+  Widget _itemsScrollView() {
+    return CustomScrollView(
+      controller: _scrollController,
+      slivers: [
+        if (!_loaded)
+          const _LoadingItems()
+        else if (_items.isEmpty)
+          SliverFillRemaining(
+            hasScrollBody: false,
+            child: AppEmptyState(
+              illustration: AppAssets.ADD_NOTE_IMAGE,
+              title: strings.noItemListToBuy,
+              message: strings.addItemAndBuy,
+            ),
+          )
+        else
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(
+              Spacing.lg,
+              Spacing.md,
+              Spacing.lg,
+              // Espaço para o botão flutuante não tapar o último item.
+              Spacing.xxxl * 2,
+            ),
+            sliver: SliverAnimatedList(
+              key: _listKey,
+              initialItemCount: _items.length,
+              itemBuilder: (context, index, animation) {
+                if (index >= _items.length) {
+                  return const SizedBox.shrink();
+                }
+                return _arrivingRow(_items[index], animation);
+              },
+            ),
+          ),
+      ],
     );
   }
 
@@ -302,6 +339,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
         background: const _DeleteBackground(),
         child: ShoppingItemTile(
           item: item,
+          currencyCode: controller.shoppingList.value.currencyCode,
           onToggleDone: (done) => _toggleDone(item, done),
           onChangeQty: (qty) => _changeQty(item, qty),
           onEdit: () => _openForm(item: item),
@@ -318,7 +356,7 @@ class _LoadingItems extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SliverPadding(
-      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+      padding: const EdgeInsets.fromLTRB(Spacing.lg, Spacing.md, Spacing.lg, 0),
       sliver: SliverList.separated(
         itemCount: 4,
         separatorBuilder: (_, __) => const SizedBox(height: Spacing.sm),
@@ -370,31 +408,61 @@ class _Title extends StatelessWidget {
   }
 }
 
-/// Cartão de resumo: totais e progresso da lista.
-class _Summary extends StatelessWidget {
-  const _Summary({required this.list});
+/// Cabeçalho fixo: totais e progresso da lista.
+///
+/// Fica acima da área que rola, por isso os números de referência estão sempre
+/// à vista enquanto se percorre os itens.
+///
+/// A linha por baixo só aparece depois de a lista sair do topo. Sem ela, um
+/// item a passar por trás do cabeçalho não tem onde "desaparecer" e o cartão
+/// parece colado ao conteúdo; com ela sempre visível, pesa quando não é
+/// preciso. A largura da borda é sempre 1 — só a cor é que anima — para o
+/// aparecimento não deslocar o layout por um pixel.
+class _PinnedSummary extends StatelessWidget {
+  const _PinnedSummary({required this.list, required this.scrolled});
 
   final ShoppingList list;
+  final ValueListenable<bool> scrolled;
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(
-        Spacing.lg,
-        Spacing.sm,
-        Spacing.lg,
-        Spacing.lg,
-      ),
-      child: Card(
-        color: Theme.of(context).colorScheme.surfaceContainer,
-        child: Padding(
-          padding: Spacing.card,
-          child: Column(
-            children: [
-              ListTotals(list: list),
-              const SizedBox(height: Spacing.lg),
-              AppProgressBar(percent: list.getPercentBuyedByItem()),
-            ],
+    final scheme = Theme.of(context).colorScheme;
+
+    return ValueListenableBuilder<bool>(
+      valueListenable: scrolled,
+      builder: (context, hasScrolled, child) {
+        return AnimatedContainer(
+          duration: Motion.fast,
+          curve: Motion.standard,
+          decoration: BoxDecoration(
+            color: scheme.surface,
+            border: Border(
+              bottom: BorderSide(
+                color: hasScrolled ? scheme.outlineVariant : Colors.transparent,
+              ),
+            ),
+          ),
+          child: child,
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.fromLTRB(
+          Spacing.lg,
+          Spacing.sm,
+          Spacing.lg,
+          Spacing.lg,
+        ),
+        child: Card(
+          color: scheme.surfaceContainer,
+          child: Padding(
+            padding: Spacing.card,
+            child: Column(
+              children: [
+                ListTotals(list: list),
+                const SizedBox(height: Spacing.lg),
+                AppProgressBar(percent: list.getPercentBuyedByItem()),
+              ],
+            ),
           ),
         ),
       ),

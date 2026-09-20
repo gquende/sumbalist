@@ -3,6 +3,19 @@ import 'dart:io';
 import 'package:sqflite_common_ffi/sqflite_ffi.dart';
 
 class AppDatabase {
+  /// Versão do esquema local.
+  ///
+  /// **Ao alterar o esquema, incrementa-se isto e acrescenta-se um bloco em
+  /// [migrate].** Até à versão 2 a base de dados não tinha `onUpgrade`: o
+  /// esquema estava congelado na versão 1, e qualquer coluna nova rebentava
+  /// para quem já tivesse a app instalada, porque a tabela antiga continuava lá
+  /// sem ela.
+  ///
+  /// Histórico:
+  /// - 1: esquema inicial.
+  /// - 2: `currencyCode` em `shopping_lists` — moeda própria de cada lista.
+  static const int schemaVersion = 2;
+
   final String _userTable = "users";
   final String _statusTable = "statuses";
   final String _shoppingListTable = "shopping_lists";
@@ -23,15 +36,21 @@ class AppDatabase {
       var databaseFactory = databaseFactoryFfi;
       db = await databaseFactory.openDatabase(inMemoryDatabasePath,
           options: OpenDatabaseOptions(
-              version: 1,
-              onCreate: (Database db, int version) async {
-                await createTables(db, path);
-              }));
+            version: schemaVersion,
+            onCreate: (Database db, int version) async {
+              await createTables(db, path);
+            },
+            onUpgrade: migrate,
+          ));
     } else {
-      db = await openDatabase(path, version: 1,
-          onCreate: (Database db, int version) async {
-        await createTables(db, path);
-      });
+      db = await openDatabase(
+        path,
+        version: schemaVersion,
+        onCreate: (Database db, int version) async {
+          await createTables(db, path);
+        },
+        onUpgrade: migrate,
+      );
     }
 
     return db;
@@ -70,6 +89,7 @@ class AppDatabase {
               name TEXT,
               total REAL,
               statusUUID TEXT,
+              currencyCode TEXT,
               created_at TEXT,
               updated_at TEXT
               )
@@ -101,6 +121,21 @@ class AppDatabase {
               updated_at TEXT
               )
         ''');
+  }
+
+  /// Leva uma base de dados existente da versão [from] até à [to].
+  ///
+  /// Os blocos são encadeados por número de versão e não por `else if`: quem
+  /// saltar várias versões de uma vez (por exemplo, quem não abre a app há
+  /// muito tempo) passa por todos os passos pela ordem certa.
+  Future<void> migrate(Database db, int from, int to) async {
+    if (from < 2) {
+      // Nulo significa "herda a moeda do utilizador". As listas que já existem
+      // ficam com nulo, portanto não mudam de comportamento.
+      await db.execute(
+        'ALTER TABLE $_shoppingListTable ADD COLUMN currencyCode TEXT',
+      );
+    }
   }
 
   Future close() async => db!.close();

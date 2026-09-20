@@ -71,5 +71,8 @@
   "fillAllFields": "Please fill in all fields",
   "newList": "New list",
   "decreaseQuantity": "Decrease quantity",
-  "increaseQuantity": "Increase quantity"
+  "increaseQuantity": "Increase quantity",
+  "defaultCurrency": "Default",
+  "useDefaultCurrency": "Use default",
+  "search": "Search"
 }

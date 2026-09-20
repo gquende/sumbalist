@@ -25,11 +25,15 @@ class ItemFormSheet extends StatefulWidget {
     super.key,
     required this.controller,
     required this.listUuid,
+    required this.currencyCode,
     this.item,
   });
 
   final ShoppingListController controller;
   final String listUuid;
+
+  /// Moeda da lista, para o campo de preço aparecer na moeda certa.
+  final String? currencyCode;
 
   /// `null` para criar um item novo; caso contrário, o item a editar.
   final ShoppinglistItem? item;
@@ -43,6 +47,7 @@ class ItemFormSheet extends StatefulWidget {
     BuildContext context, {
     required ShoppingListController controller,
     required String listUuid,
+    required String? currencyCode,
     ShoppinglistItem? item,
   }) {
     return showModalBottomSheet<ShoppinglistItem>(
@@ -52,6 +57,7 @@ class ItemFormSheet extends StatefulWidget {
       builder: (_) => ItemFormSheet(
         controller: controller,
         listUuid: listUuid,
+        currencyCode: currencyCode,
         item: item,
       ),
     );
@@ -64,7 +70,7 @@ class ItemFormSheet extends StatefulWidget {
 class _ItemFormSheetState extends State<ItemFormSheet> with LocalizationMixin {
   late final CurrencyTextInputFormatter _currencyFormatter =
       CurrencyTextInputFormatter.currency(
-    symbol: AppCurrencyFormat.formater.value.symbol,
+    symbol: AppCurrencyFormat.symbolFor(widget.currencyCode),
   );
 
   ShoppingListController get _controller => widget.controller;
@@ -76,13 +82,32 @@ class _ItemFormSheetState extends State<ItemFormSheet> with LocalizationMixin {
     super.initState();
 
     final item = widget.item;
-    if (item != null) {
+
+    if (item == null) {
+      // Os `TextEditingController` vivem no controlador partilhado, por isso
+      // guardam o que lá ficou. Sem esta limpeza, abrir "adicionar" logo a
+      // seguir a cancelar uma edição trazia os dados do item anterior.
+      _controller.resetData();
+    } else {
       _controller.nameFieldController.text = item.itemName;
       _controller.descriptionController.text = item.description;
       _controller.qtyController.text = "${item.qty}";
-      _controller.priceController.text = "${item.price.round()}";
       _controller.priority = item.priority;
     }
+
+    // O preço **tem** de entrar pelo formatador, não por `.text`.
+    //
+    // `CurrencyTextInputFormatter` guarda o valor num campo interno que só é
+    // atualizado quando o utilizador escreve — os `inputFormatters` do Flutter
+    // não correm em atribuições programáticas. Como `_save()` lê o preço de
+    // `getUnformattedValue()`, uma atribuição direta deixava esse valor a zero:
+    // quem editasse um item mexendo só na quantidade gravava o preço a zero.
+    //
+    // `formatDouble` faz as duas coisas — devolve o texto formatado para o
+    // campo e inicializa o valor interno. Ver
+    // `test/pages/item_price_formatter_test.dart`.
+    _controller.priceController.text =
+        _currencyFormatter.formatDouble(item?.price ?? 0);
   }
 
   Future<void> _save() async {

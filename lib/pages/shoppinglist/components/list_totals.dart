@@ -25,7 +25,10 @@ class ListTotals extends StatelessWidget {
         Expanded(
           child: TotalBlock(
             label: appStrings.completed,
-            value: AppCurrencyFormat.format(list.calculateTotalBuyed()),
+            value: AppCurrencyFormat.formatFor(
+              list.calculateTotalBuyed(),
+              list.currencyCode,
+            ),
             count: list.calculateTotalItemBuyed(),
             valueColor: theme.colorScheme.onSurface,
           ),
@@ -34,8 +37,9 @@ class ListTotals extends StatelessWidget {
         Expanded(
           child: TotalBlock(
             label: appStrings.remaining,
-            value: AppCurrencyFormat.format(
+            value: AppCurrencyFormat.formatFor(
               list.calculateTotal() - list.calculateTotalBuyed(),
+              list.currencyCode,
             ),
             count: list.calculateTotalItemPending(),
             valueColor: theme.colorScheme.onSurfaceVariant,

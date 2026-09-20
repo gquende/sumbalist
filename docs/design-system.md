@@ -115,6 +115,13 @@ Onde é usado:
   sexto. Respeita `MediaQuery.disableAnimationsOf` (redução de movimento).
 - **Estado do item** — o risco sobre o nome de um item comprado aparece com
   `AnimatedDefaultTextStyle`.
+- **Cabeçalho fixo no detalhe** — o cartão de totais e progresso fica fora da
+  área que rola, num `Column` com `Expanded` por baixo. Não é um
+  `SliverPersistentHeader` de propósito: esse exige altura fixa em pixels, e a
+  altura do cartão depende do tamanho de letra do sistema. Uma linha aparece por
+  baixo do cabeçalho assim que a lista sai do topo, para o conteúdo ter onde
+  desaparecer; a borda tem sempre 1px e só a cor anima, senão o aparecimento
+  deslocava o layout.
 - **Passagem entre grupos** — marcar um item manda-o para o fim da lista e
   desmarcá-lo trá-lo de volta, em ambos os casos com transição. A lista de itens
   é uma `SliverAnimatedList`, a única que sabe animar entradas e saídas.

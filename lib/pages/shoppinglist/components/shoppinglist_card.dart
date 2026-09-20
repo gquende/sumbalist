@@ -136,7 +136,10 @@ class _Header extends StatelessWidget {
               ),
               const SizedBox(height: Spacing.xs),
               Text(
-                AppCurrencyFormat.format(list.calculateTotal()),
+                AppCurrencyFormat.formatFor(
+                  list.calculateTotal(),
+                  list.currencyCode,
+                ),
                 style: theme.textTheme.bodyMedium?.copyWith(
                   color: theme.colorScheme.onSurfaceVariant,
                 ),

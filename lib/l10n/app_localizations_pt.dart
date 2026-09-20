@@ -184,4 +184,13 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get increaseQuantity => 'Aumentar quantidade';
+
+  @override
+  String get defaultCurrency => 'Predefinida';
+
+  @override
+  String get useDefaultCurrency => 'Usar a predefinida';
+
+  @override
+  String get search => 'Procurar';
 }

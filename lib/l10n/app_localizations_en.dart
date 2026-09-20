@@ -184,4 +184,13 @@ class AppLocalizationsEn extends AppLocalizations {
 
   @override
   String get increaseQuantity => 'Increase quantity';
+
+  @override
+  String get defaultCurrency => 'Default';
+
+  @override
+  String get useDefaultCurrency => 'Use default';
+
+  @override
+  String get search => 'Search';
 }

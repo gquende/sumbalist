@@ -58,15 +58,23 @@ coluna `isDone` com o tipo `integer statusUUID TEXT` e a coluna `statusUUID`
 **nunca chega a existir**. Hoje é inofensivo porque `ShoppinglistItem` não tem
 esse campo, mas é uma mina para quem lá mexer.
 
-### 1.4 Não há migrações
+### 1.4 Não há migrações — ~~bloqueador~~ resolvido
 
-A base de dados abre com `version: 1` e só define `onCreate`. Não existe
-`onUpgrade`.
+> **Resolvido** na branch `feat/moeda-por-lista`, que precisou disto para
+> acrescentar uma coluna. `AppDatabase.schemaVersion` e `AppDatabase.migrate`
+> passaram a existir, com testes em
+> [`test/core/migration_test.dart`](../test/core/migration_test.dart).
+>
+> **Ao mudar o esquema:** incrementa-se `schemaVersion` e acrescenta-se um
+> bloco `if (from < N)` em `migrate`. Os blocos são encadeados por número, não
+> em `else if`, para quem salte várias versões de uma vez passar por todos os
+> passos.
 
-Isto é o verdadeiro bloqueador: **qualquer funcionalidade que acrescente uma
-coluna obriga os utilizadores existentes a reinstalar a app para não rebentar**.
-Unidades de medida, orçamento, categorias personalizadas, histórico de preços —
-tudo o que está na secção 3 precisa disto primeiro.
+O texto original ficava assim: a base de dados abria com `version: 1` e só
+definia `onCreate`. Qualquer funcionalidade que acrescentasse uma coluna
+obrigava os utilizadores existentes a reinstalar a app. Unidades de medida,
+orçamento, categorias personalizadas e histórico de preços dependiam todos
+disto.
 
 ### 1.5 A sincronização só puxa no login
 
@@ -241,7 +249,7 @@ ou um PDF do recibo da compra. Simples, e útil antes de a partilha nativa
 ## 4. Ordem sugerida
 
 **Primeiro**, porque desbloqueia o resto e tira risco da loja:
-§1.1 permissões · §1.2 HTTPS · §1.3 vírgula · §1.4 migrações
+§1.1 permissões · §1.2 HTTPS · §1.3 vírgula · ~~§1.4 migrações~~ (feito)
 
 **Depois**, valor imediato e pouco código:
 §3.8 desfazer · §3.5 pesquisa · §2.1 prioridade · §2.2 progresso por valor ·
