@@ -9,7 +9,7 @@ import 'package:sumbalist/repository/shopping_list_item_repository.dart';
 import 'package:sumbalist/repository/shopping_list_repository.dart';
 import 'package:sumbalist/utils/theme/theme.dart';
 import 'package:sumbalist/utils/utils.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+import 'package:sumbalist/l10n/app_localizations.dart';
 import 'controllers/currency_controller.dart';
 import 'controllers/shopping_list_controller.dart';
 import 'core/configs/app_locale.dart';
