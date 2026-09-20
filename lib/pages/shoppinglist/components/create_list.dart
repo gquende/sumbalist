@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -8,216 +7,236 @@ import 'package:sumbalist/models/users.dart';
 import 'package:uuid/uuid.dart';
 
 import '../../../controllers/shopping_list_controller.dart';
+import '../../../core/design/design_tokens.dart';
 import '../../../mocks/shopping_list_category_mock.dart';
 import '../../../models/shopping_list.dart';
 import '../../../models/shopping_list_categories.dart';
-import '../../../utils/constants/app_colors.dart';
 import '../shopping_list_details.dart';
 
+/// Abre o formulário de criar (ou editar) uma lista de compras.
+///
+/// Assinatura mantida para não mexer em quem chama.
+///
+/// Reescrito nesta refatoração:
+///
+/// * **Bug corrigido:** o destaque da categoria escolhida era decidido por
+///   `index == i`, a comparar um `RxInt` com um `int`. Nunca era verdadeiro, por
+///   isso nenhuma categoria aparecia selecionada. A seleção passou a estado
+///   local do formulário, comparado como `int`.
+/// * Era um [Dialog] com altura fixa de 40% do ecrã; com o teclado aberto o
+///   conteúdo não cabia. Passou a bottom sheet que acompanha o teclado.
+/// * As categorias estavam numa [Row] com `spaceBetween`, que rebentava em
+///   ecrãs estreitos. Passaram a [Wrap].
+/// * A mensagem de validação estava fixa em português.
 Future<void> shoplistForm(BuildContext context, [ShoppingList? item]) async {
-  var controller = await GetIt.instance.get<ShoppingListController>();
-  var appLocale = DI.get<AppLocale>();
+  final controller = GetIt.instance.get<ShoppingListController>();
 
-  var size = MediaQuery.of(context).size;
-  TextEditingController shoplistNameController = TextEditingController();
-
-  var index = 0.obs;
-
-  if (item != null) {
-    shoplistNameController.text = item.name;
-
-    index.value = int.parse(item.categoryUUID);
-  }
-
-  await showDialog(
-      context: context,
-      builder: (context) {
-        return Dialog(
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
-          child: GestureDetector(
-            onTap: () {
-              FocusScope.of(context).requestFocus(FocusNode());
-            },
-            child: SingleChildScrollView(child: Obx(() {
-              return Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: MediaQuery.of(context).size.height * 0.4,
-                  decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.primaryContainer,
-                      borderRadius: BorderRadius.circular(30)),
-                  child: Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Text(appLocale.strings.category),
-                          const SizedBox(
-                            height: 5,
-                          ),
-                          Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: List.generate(
-                                  shoppingListCategoriesMock.length, (i) {
-                                return GestureDetector(
-                                  onTap: () {
-                                    index.value = i; //Set category by index
-                                  },
-                                  child: categoryIcon(
-                                      index == i,
-                                      appLocale.locale.value.languageCode ==
-                                              "pt"
-                                          ? shoppingListCategoriesMock[i]
-                                          : shoppingListCategoriesMockEnglish[
-                                              i],
-                                      context),
-                                );
-                              })),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          // const Text("Nome da lista"),
-                          const SizedBox(
-                            height: 10,
-                          ),
-                          Container(
-                            width: size.width,
-                            height: 55,
-                            decoration: BoxDecoration(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .secondaryContainer,
-                                borderRadius: BorderRadius.circular(8)),
-                            child: Padding(
-                              padding: const EdgeInsets.all(10),
-                              child: TextFormField(
-                                controller: shoplistNameController,
-                                decoration: InputDecoration(
-                                    hintText: appLocale.strings.listName,
-                                    hintStyle:
-                                        Theme.of(context).textTheme.labelMedium,
-                                    contentPadding: EdgeInsets.only(bottom: 10),
-                                    filled: true,
-                                    prefixIcon: Icon(
-                                      CupertinoIcons.square_list,
-                                    ),
-                                    enabledBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    focusedBorder: const OutlineInputBorder(
-                                        borderSide: BorderSide.none,
-                                        borderRadius: BorderRadius.all(
-                                            Radius.circular(8))),
-                                    fillColor: Theme.of(context)
-                                        .colorScheme
-                                        .secondaryContainer,
-                                    labelStyle: const TextStyle(
-                                        color: Color(0xff000000)),
-                                    border: const OutlineInputBorder()),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          GestureDetector(
-                            onTap: () async {
-                              if (shoplistNameController.text.isNotEmpty) {
-                                if (item == null) {
-                                  var shoplist = ShoppingList(
-                                      uuid: Uuid().v4(),
-                                      userUUID:
-                                          User.logged?.uuid ?? 'not defined',
-                                      categoryUUID: "$index",
-                                      statusUUID: 'not completed',
-                                      name: shoplistNameController.text,
-                                      total: 0,
-                                      items: []);
-
-                                  await controller.createShoppinglist(shoplist);
-
-                                  Navigator.of(context).pushReplacement(
-                                      MaterialPageRoute(
-                                          builder: (ctx) => ShoplistDetails(
-                                              shoppingList: shoplist)));
-                                } else {
-                                  item.name = shoplistNameController.text;
-                                  item.categoryUUID = "${index.value}";
-
-                                  controller.updateShoppinglist(item);
-                                  Navigator.pop(context);
-                                }
-                              } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(
-                                        content: Text(
-                                            "Insere um nome para lista e seleccione uma categoria")));
-                              }
-                            },
-                            child: Container(
-                                width: size.width,
-                                height: 55,
-                                decoration: BoxDecoration(
-                                    color: PRIMARYCOLOR,
-                                    boxShadow: [
-                                      const BoxShadow(
-                                          offset: Offset(0, 0),
-                                          color: Colors.black12,
-                                          spreadRadius: .7,
-                                          blurRadius: 2)
-                                    ],
-                                    borderRadius: BorderRadius.circular(5)),
-                                child: Center(
-                                  child: item == null
-                                      ? Text(
-                                          appLocale.strings.add,
-                                          style: TextStyle(color: Colors.black),
-                                        )
-                                      : Text(
-                                          appLocale.strings.update,
-                                          style: TextStyle(color: Colors.black),
-                                        ),
-                                )),
-                          ),
-                        ],
-                      )));
-            })),
-          ),
-        );
-      });
-
-  return null;
+  await showModalBottomSheet<void>(
+    context: context,
+    isScrollControlled: true,
+    useSafeArea: true,
+    builder: (_) => _ShoplistForm(controller: controller, item: item),
+  );
 }
 
-Widget categoryIcon(
-    bool active, ShoppingListCategory category, BuildContext context) {
-  return Column(
-    children: [
-      Container(
-        width: 55,
-        height: 55,
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: active
-                ? const Color.fromRGBO(253, 185, 19, 0.1)
-                : Theme.of(context).colorScheme.secondaryContainer,
-            border: active ? Border.all(color: PRIMARYCOLOR) : null),
-        child: Icon(
-          category.icon,
-          color:
-              active ? Theme.of(context).primaryColor : const Color(0xff9C9C9C),
+class _ShoplistForm extends StatefulWidget {
+  const _ShoplistForm({required this.controller, this.item});
+
+  final ShoppingListController controller;
+  final ShoppingList? item;
+
+  @override
+  State<_ShoplistForm> createState() => _ShoplistFormState();
+}
+
+class _ShoplistFormState extends State<_ShoplistForm> {
+  late final TextEditingController _nameController =
+      TextEditingController(text: widget.item?.name ?? '');
+
+  late int _categoryIndex = int.tryParse(widget.item?.categoryUUID ?? '0') ?? 0;
+
+  bool get _isEditing => widget.item != null;
+
+  @override
+  void dispose() {
+    _nameController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _submit() async {
+    final appLocale = DI.get<AppLocale>();
+    final name = _nameController.text.trim();
+
+    if (name.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(appLocale.strings.fillAllFields),
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
+      return;
+    }
+
+    final existing = widget.item;
+
+    if (existing == null) {
+      final shoplist = ShoppingList(
+        uuid: const Uuid().v4(),
+        userUUID: User.logged?.uuid ?? 'not defined',
+        categoryUUID: "$_categoryIndex",
+        statusUUID: 'not completed',
+        name: name,
+        total: 0,
+        items: [],
+      );
+
+      await widget.controller.createShoppinglist(shoplist);
+      if (!mounted) return;
+
+      // Fecha a folha e abre logo a lista criada, para o utilizador poder
+      // começar a adicionar itens sem mais um toque.
+      Navigator.of(context).pop();
+      await Navigator.of(context).push(
+        MaterialPageRoute(
+            builder: (_) => ShoplistDetails(shoppingList: shoplist)),
+      );
+    } else {
+      existing.name = name;
+      existing.categoryUUID = "$_categoryIndex";
+
+      await widget.controller.updateShoppinglist(existing);
+      if (mounted) Navigator.of(context).pop();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final appLocale = DI.get<AppLocale>();
+    final strings = appLocale.strings;
+
+    return Obx(() {
+      final categories = appLocale.locale.value.languageCode == "pt"
+          ? shoppingListCategoriesMock
+          : shoppingListCategoriesMockEnglish;
+
+      return Padding(
+        padding:
+            EdgeInsets.only(bottom: MediaQuery.viewInsetsOf(context).bottom),
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.fromLTRB(
+            Spacing.lg,
+            Spacing.sm,
+            Spacing.lg,
+            Spacing.xl,
+          ),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                _isEditing ? strings.update : strings.newList,
+                style: theme.textTheme.headlineSmall,
+              ),
+              const SizedBox(height: Spacing.xl),
+              TextField(
+                controller: _nameController,
+                autofocus: !_isEditing,
+                textCapitalization: TextCapitalization.sentences,
+                textInputAction: TextInputAction.done,
+                onSubmitted: (_) => _submit(),
+                decoration: InputDecoration(
+                  labelText: strings.listName,
+                  prefixIcon: const Icon(Icons.list_alt_rounded),
+                ),
+              ),
+              const SizedBox(height: Spacing.xl),
+              Text(
+                strings.category,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              ),
+              const SizedBox(height: Spacing.md),
+              Wrap(
+                spacing: Spacing.md,
+                runSpacing: Spacing.md,
+                children: [
+                  for (var i = 0; i < categories.length; i++)
+                    CategoryOption(
+                      category: categories[i],
+                      selected: _categoryIndex == i,
+                      onTap: () => setState(() => _categoryIndex = i),
+                    ),
+                ],
+              ),
+              const SizedBox(height: Spacing.xl),
+              FilledButton(
+                onPressed: _submit,
+                child: Text(_isEditing ? strings.update : strings.add),
+              ),
+            ],
+          ),
+        ),
+      );
+    });
+  }
+}
+
+/// Um quadrado de categoria, selecionável.
+class CategoryOption extends StatelessWidget {
+  const CategoryOption({
+    super.key,
+    required this.category,
+    required this.selected,
+    required this.onTap,
+  });
+
+  final ShoppingListCategory category;
+  final bool selected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final background = selected
+        ? theme.colorScheme.primary
+        : theme.colorScheme.surfaceContainerHigh;
+    final foreground = selected
+        ? theme.colorScheme.onPrimary
+        : theme.colorScheme.onSurfaceVariant;
+
+    return Semantics(
+      selected: selected,
+      button: true,
+      label: category.name,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: Radii.medium,
+        child: AnimatedContainer(
+          duration: Motion.fast,
+          curve: Motion.standard,
+          width: 76,
+          padding: const EdgeInsets.symmetric(vertical: Spacing.md),
+          decoration: BoxDecoration(
+            borderRadius: Radii.medium,
+            color: background,
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(category.icon, color: foreground),
+              const SizedBox(height: Spacing.xs),
+              Text(
+                category.name,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.labelSmall?.copyWith(color: foreground),
+              ),
+            ],
+          ),
         ),
       ),
-      Text(
-        "${category.name}",
-        style: TextStyle(
-            color: active ? Theme.of(context).primaryColor : Colors.grey),
-      )
-    ],
-  );
+    );
+  }
 }

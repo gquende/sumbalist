@@ -150,4 +150,38 @@ class AppLocalizationsPt extends AppLocalizations {
 
   @override
   String get listName => 'Nome da lista';
+
+  @override
+  String get cancel => 'Cancelar';
+
+  @override
+  String get deleteListTitle => 'Apagar lista?';
+
+  @override
+  String deleteListMessage(String name) {
+    return 'Esta acção não pode ser anulada. A lista \"$name\" e todos os seus itens serão removidos.';
+  }
+
+  @override
+  String get listDeleted => 'Lista apagada';
+
+  @override
+  String get createFirstList => 'Criar a minha primeira lista';
+
+  @override
+  String itemsProgress(int bought, int total) {
+    return '$bought de $total itens';
+  }
+
+  @override
+  String get fillAllFields => 'Preencha todos os campos';
+
+  @override
+  String get newList => 'Nova lista';
+
+  @override
+  String get decreaseQuantity => 'Diminuir quantidade';
+
+  @override
+  String get increaseQuantity => 'Aumentar quantidade';
 }

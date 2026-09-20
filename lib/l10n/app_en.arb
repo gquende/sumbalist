@@ -1,4 +1,3 @@
-
 {
   "language": "Language",
   "languages": "Languages",
@@ -34,16 +33,43 @@
   "confirm": "Confirm",
   "whatAreYouGoingToBuyToday": "What are you going to buy today?",
   "createAListAndFollowUp": "Create a list and follow up",
-  "youhaveNotRegisteredYet": "You have not registered yet\uD83D\uDE25",
+  "youhaveNotRegisteredYet": "You have not registered yet😥",
   "category": "Category",
   "planYourShoppingList": "Plan your shopping list",
   "theSecretToEfficient": "The secret to efficient shopping is planning your shopping list. Save time by planning your shopping list",
   "efficientShoppingList": "Efficient shopping list",
   "makeYourGroceryShoppingAnEfficient": "Make your grocery shopping an efficient, hassle-free experience",
-  "beHappy":"Be happy",
-  "beHappyWithSumbalist":"Be happy with your purchases using Sumbalist",
-  "newVersionTitle":"New version",
-  "versionMessage":"Your version is out of date, download new version from store app",
-  "toContinue":"Continue",
-  "listName": "List name"
+  "beHappy": "Be happy",
+  "beHappyWithSumbalist": "Be happy with your purchases using Sumbalist",
+  "newVersionTitle": "New version",
+  "versionMessage": "Your version is out of date, download new version from store app",
+  "toContinue": "Continue",
+  "listName": "List name",
+  "cancel": "Cancel",
+  "deleteListTitle": "Delete list?",
+  "deleteListMessage": "This action cannot be undone. The list \"{name}\" and all its items will be removed.",
+  "@deleteListMessage": {
+    "placeholders": {
+      "name": {
+        "type": "String"
+      }
+    }
+  },
+  "listDeleted": "List deleted",
+  "createFirstList": "Create my first list",
+  "itemsProgress": "{bought} of {total} items",
+  "@itemsProgress": {
+    "placeholders": {
+      "bought": {
+        "type": "int"
+      },
+      "total": {
+        "type": "int"
+      }
+    }
+  },
+  "fillAllFields": "Please fill in all fields",
+  "newList": "New list",
+  "decreaseQuantity": "Decrease quantity",
+  "increaseQuantity": "Increase quantity"
 }

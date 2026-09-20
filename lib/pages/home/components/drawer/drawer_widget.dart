@@ -280,7 +280,6 @@ class _DrawerWidgetState extends State<DrawerWidget> {
 
                                         setState(() {});
                                       },
-
                                       iconBuilder: (value) => value
                                           ? const Icon(
                                               Icons.power_settings_new_rounded,

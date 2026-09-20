@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:sumbalist/services/firebase_service.dart';
 
 import '../core/error/errorLog.dart';
+import '../mixins/localization_mixin.dart';
 import '../models/shopping_list.dart';
 import '../models/shopping_list_item.dart';
 import '../models/users.dart';
@@ -269,9 +270,11 @@ class ShoppingListController extends ChangeNotifier {
     if (nameFieldController.text.isEmpty ||
         qtyController.text.isEmpty ||
         priceController.text.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text("Preencha todos os campos"),
-        backgroundColor: Colors.red,
+      // A mensagem vem das traduções: antes estava fixa em português, mesmo
+      // com a app em inglês.
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text(appStrings.fillAllFields),
+        backgroundColor: Theme.of(context).colorScheme.error,
       ));
 
       return false;
