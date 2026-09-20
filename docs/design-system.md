@@ -115,6 +115,21 @@ Onde é usado:
   sexto. Respeita `MediaQuery.disableAnimationsOf` (redução de movimento).
 - **Estado do item** — o risco sobre o nome de um item comprado aparece com
   `AnimatedDefaultTextStyle`.
+- **Passagem entre grupos** — marcar um item manda-o para o fim da lista e
+  desmarcá-lo trá-lo de volta, em ambos os casos com transição. A lista de itens
+  é uma `SliverAnimatedList`, a única que sabe animar entradas e saídas.
+
+  O item que sai encolhe, desvanece e escorrega na direção para onde vai; o que
+  chega assoma do lado de onde veio — por cima se desceu, por baixo se subiu. É
+  esse detalhe que faz a transição ler-se como um movimento e não como dois
+  acasos.
+
+  **Consequência para quem lá mexer:** com uma `SliverAnimatedList`, a posição
+  dos itens não pode ser mudada por reconstrução. Toda a mutação tem de passar
+  por `insertItem`/`removeItem`, senão a lista em memória e o que está no ecrã
+  dessincronizam. A regra de ordenação vive em
+  [`item_ordering.dart`](../lib/pages/shoppinglist/item_ordering.dart), separada
+  do ecrã e coberta por testes.
 
 ## Feedback tátil
 

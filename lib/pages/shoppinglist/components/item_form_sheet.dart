@@ -34,14 +34,18 @@ class ItemFormSheet extends StatefulWidget {
   /// `null` para criar um item novo; caso contrário, o item a editar.
   final ShoppinglistItem? item;
 
-  /// Abre o formulário. Resolve para `true` se algo foi gravado.
-  static Future<bool> show(
+  /// Abre o formulário e devolve o item gravado, ou `null` se foi cancelado.
+  ///
+  /// O formulário persiste mas **não** insere o item na lista em memória: quem
+  /// chama é que decide a posição e a animação de entrada. Sem isto, um item
+  /// novo aparecia no fim da lista, depois dos já comprados.
+  static Future<ShoppinglistItem?> show(
     BuildContext context, {
     required ShoppingListController controller,
     required String listUuid,
     ShoppinglistItem? item,
-  }) async {
-    final saved = await showModalBottomSheet<bool>(
+  }) {
+    return showModalBottomSheet<ShoppinglistItem>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
@@ -51,8 +55,6 @@ class ItemFormSheet extends StatefulWidget {
         item: item,
       ),
     );
-
-    return saved ?? false;
   }
 
   @override
@@ -104,10 +106,12 @@ class _ItemFormSheetState extends State<ItemFormSheet> with LocalizationMixin {
 
       final result = await _controller.addItem(item);
       if (result != 0) {
-        _controller.shoppingList.value.items?.add(item);
         _controller.shoppingList.value.statusUUID = 'not completed';
         await _controller.updateShoppinglist(_controller.shoppingList.value);
       }
+
+      if (mounted) Navigator.of(context).pop(item);
+      return;
     } else {
       existing.itemName = _controller.nameFieldController.text;
       existing.description = _controller.descriptionController.text;
@@ -117,7 +121,7 @@ class _ItemFormSheetState extends State<ItemFormSheet> with LocalizationMixin {
       await _controller.updateItem(existing);
     }
 
-    if (mounted) Navigator.of(context).pop(true);
+    if (mounted) Navigator.of(context).pop(existing);
   }
 
   @override

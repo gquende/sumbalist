@@ -15,6 +15,8 @@ import '../../models/shopping_list_item.dart';
 import '../../utils/constants/files.dart';
 import '../widgets/app_empty_state.dart';
 import '../widgets/app_progress_bar.dart';
+import '../widgets/app_skeleton.dart';
+import 'item_ordering.dart';
 import 'components/item_form_sheet.dart';
 import 'components/list_totals.dart';
 import 'components/shopping_item_tile.dart';
@@ -22,15 +24,23 @@ import 'components/shoppinglist_card.dart';
 
 /// Detalhe de uma lista: resumo no topo, itens em baixo.
 ///
-/// Reescrito nesta refatoração. O ficheiro tinha 826 linhas, com a estrutura
-/// montada num [Stack] cujos filhos eram posicionados em frações do ecrã
-/// (`top: size.height * 0.13`, altura fixa `size.height * 0.8`). O conteúdo
-/// sobrepunha-se em ecrãs mais baixos e o formulário de item ocupava 260 dessas
-/// linhas dentro do próprio ecrã.
+/// ## Ordenação e movimento
 ///
-/// Agora: [CustomScrollView] com barra que colapsa ao rolar, itens em
-/// `SliverList.builder` (só se constrói o que se vê), e o formulário vive em
-/// [ItemFormSheet].
+/// Os itens por comprar ficam em cima e os comprados em baixo. Marcar um item
+/// manda-o para o **fim** da lista; desmarcá-lo trá-lo de volta para o fim do
+/// grupo dos pendentes. A passagem é animada: o item encolhe e desliza na
+/// direção para onde vai, e reaparece do lado de onde veio.
+///
+/// A lista é uma [SliverAnimatedList] em vez de uma `SliverList`, porque só
+/// esta sabe animar entradas e saídas. A consequência é que a posição dos itens
+/// deixa de poder ser alterada por reconstrução: toda a mutação tem de passar
+/// por `insertItem`/`removeItem`, senão a lista e o que está no ecrã
+/// dessincronizam. É por isso que [ItemFormSheet] devolve o item em vez de o
+/// inserir por si.
+///
+/// Antes desta versão, `_reorderItem` inseria o item marcado no índice do
+/// primeiro item já comprado — ou seja, no **topo** do grupo dos comprados, e
+/// não no fim da lista. A troca era instantânea, sem transição.
 class ShoplistDetails extends StatefulWidget {
   const ShoplistDetails({super.key, required this.shoppingList});
 
@@ -45,28 +55,75 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
   final ShoppingListController controller =
       GetIt.instance.get<ShoppingListController>();
 
+  final GlobalKey<SliverAnimatedListState> _listKey = GlobalKey();
+
+  /// Duração de uma passagem de item entre grupos.
+  static const Duration _moveDuration = Duration(milliseconds: 340);
+
+  bool _loaded = false;
+
+  /// A lista que está no ecrã. É a mesma instância que o controlador usa para
+  /// calcular totais, por isso as duas vistas nunca divergem.
+  List<ShoppinglistItem> get _items =>
+      controller.shoppingList.value.items ??= <ShoppinglistItem>[];
+
   @override
   void initState() {
-    // A versão anterior não chamava super.initState() — o analisador assinalava
-    // `must_call_super`.
     super.initState();
 
     controller.shoppingList.value = widget.shoppingList;
     controller.getItemsOfShoppingList(widget.shoppingList.uuid).then((items) {
       if (!mounted) return;
+
+      ItemOrdering.sortByDone(items);
+
       controller.shoppingList.value.items = items;
       controller.shoppingList.refresh();
+      setState(() => _loaded = true);
     });
   }
 
-  /// Marca/desmarca um item e mantém os comprados agrupados no fim.
-  Future<void> _toggleDone(ShoppinglistItem item, int index, bool done) async {
-    item.isDone = done;
+  int _targetIndex(ShoppinglistItem item) =>
+      ItemOrdering.targetIndex(_items, item);
+
+  /// Tira o item da posição atual e volta a pô-lo no sítio certo, com animação
+  /// de saída e de entrada.
+  void _animateToPosition(ShoppinglistItem item) {
+    final from = _items.indexOf(item);
+    if (from == -1) return;
+
+    _items.removeAt(from);
+    final to = _targetIndex(item);
+
+    if (from == to) {
+      // Já estava no sítio: repõe sem animar, para não piscar.
+      _items.insert(to, item);
+      return;
+    }
+
+    _listKey.currentState?.removeItem(
+      from,
+      (context, animation) => _leavingRow(item, animation),
+      duration: _moveDuration,
+    );
+
+    _items.insert(to, item);
+    _listKey.currentState?.insertItem(to, duration: _moveDuration);
+  }
+
+  Future<void> _toggleDone(ShoppinglistItem item, bool done) async {
+    HapticFeedback.selectionClick();
+
+    // O movimento acontece já. Guardar na base de dados e no Firebase demora o
+    // suficiente para a animação parecer um salto atrasado se esperássemos.
+    setState(() {
+      item.isDone = done;
+      _animateToPosition(item);
+    });
+    controller.shoppingList.refresh();
+
     await controller.updateItem(item);
     if (!mounted) return;
-
-    setState(() => _reorderItem(index));
-    controller.shoppingList.refresh();
 
     final list = controller.shoppingList.value;
     final isComplete = list.getPercentBuyedByItem() == 100.0;
@@ -76,7 +133,6 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
 
     if (!mounted || !isComplete) return;
 
-    // Lista terminada: vibração de sucesso e confirmação visível.
     HapticFeedback.mediumImpact();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(content: Text(strings.doneList)),
@@ -84,16 +140,30 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
   }
 
   Future<void> _changeQty(ShoppinglistItem item, int qty) async {
-    item.qty = qty;
+    setState(() => item.qty = qty);
+    controller.shoppingList.refresh();
+
     await controller.updateItem(item);
-    if (mounted) controller.shoppingList.refresh();
   }
 
-  Future<void> _removeItem(ShoppinglistItem item) async {
-    await controller.removeItem(item);
-    if (!mounted) return;
+  void _dismissItem(ShoppinglistItem item) {
+    final index = _items.indexOf(item);
+    if (index == -1) return;
+
+    _items.removeAt(index);
+
+    // O [Dismissible] já fechou o espaço, por isso a remoção da lista animada é
+    // instantânea — animá-la outra vez fazia o resto da lista saltar.
+    _listKey.currentState?.removeItem(
+      index,
+      (context, animation) => const SizedBox.shrink(),
+      duration: Duration.zero,
+    );
+
     controller.shoppingList.refresh();
     setState(() {});
+
+    controller.removeItem(item);
   }
 
   Future<void> _openForm({ShoppinglistItem? item}) async {
@@ -103,10 +173,19 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
       listUuid: widget.shoppingList.uuid,
       item: item,
     );
-    if (saved && mounted) {
-      controller.shoppingList.refresh();
+
+    if (saved == null || !mounted) return;
+
+    if (_items.contains(saved)) {
+      // Edição: pode ter mudado o preço ou a quantidade, mas não o grupo.
       setState(() {});
+    } else {
+      final to = _targetIndex(saved);
+      setState(() => _items.insert(to, saved));
+      _listKey.currentState?.insertItem(to, duration: _moveDuration);
     }
+
+    controller.shoppingList.refresh();
   }
 
   @override
@@ -116,16 +195,14 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
       builder: (_, __) => Scaffold(
         body: Obx(() {
           final list = controller.shoppingList.value;
-          final items = list.items ?? <ShoppinglistItem>[];
 
           return CustomScrollView(
             slivers: [
-              SliverAppBar(
-                pinned: true,
-                title: _Title(list: list),
-              ),
+              SliverAppBar(pinned: true, title: _Title(list: list)),
               SliverToBoxAdapter(child: _Summary(list: list)),
-              if (items.isEmpty)
+              if (!_loaded)
+                const _LoadingItems()
+              else if (_items.isEmpty)
                 SliverFillRemaining(
                   hasScrollBody: false,
                   child: AppEmptyState(
@@ -143,31 +220,14 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
                     // Espaço para o botão flutuante não tapar o último item.
                     Spacing.xxxl * 2,
                   ),
-                  sliver: SliverList.separated(
-                    itemCount: items.length,
-                    separatorBuilder: (_, __) =>
-                        const SizedBox(height: Spacing.sm),
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-
-                      return Dismissible(
-                        // A chave era `UniqueKey()`, que muda a cada build: o
-                        // Flutter perdia o rasto do item a meio do gesto.
-                        key: ValueKey(item.uuid),
-                        direction: DismissDirection.endToStart,
-                        onDismissed: (_) {
-                          HapticFeedback.mediumImpact();
-                          _removeItem(item);
-                        },
-                        background: const _DeleteBackground(),
-                        child: ShoppingItemTile(
-                          item: item,
-                          onToggleDone: (done) =>
-                              _toggleDone(item, index, done),
-                          onChangeQty: (qty) => _changeQty(item, qty),
-                          onEdit: () => _openForm(item: item),
-                        ),
-                      );
+                  sliver: SliverAnimatedList(
+                    key: _listKey,
+                    initialItemCount: _items.length,
+                    itemBuilder: (context, index, animation) {
+                      if (index >= _items.length) {
+                        return const SizedBox.shrink();
+                      }
+                      return _arrivingRow(_items[index], animation);
                     },
                   ),
                 ),
@@ -183,17 +243,88 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
     );
   }
 
-  /// Move o item para junto dos seus pares: comprados no fim, por comprar no
-  /// início. Mantém o comportamento da versão anterior.
-  void _reorderItem(int oldIndex) {
-    final items = controller.shoppingList.value.items;
-    if (items == null || oldIndex >= items.length) return;
+  /// Item a chegar à posição nova.
+  ///
+  /// Entra pelo lado de onde veio: um item comprado desceu, portanto assoma por
+  /// cima; um desmarcado subiu, portanto assoma por baixo. É esse detalhe que
+  /// faz a transição ler-se como um movimento e não como dois acasos.
+  Widget _arrivingRow(ShoppinglistItem item, Animation<double> animation) {
+    final curved = CurvedAnimation(parent: animation, curve: Motion.standard);
+    final fromAbove = item.isDone;
 
-    final moved = items.removeAt(oldIndex);
-    var newIndex = items.indexWhere((item) => item.isDone);
-    if (newIndex == -1) newIndex = items.length;
+    return SizeTransition(
+      sizeFactor: curved,
+      child: FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          position: Tween<Offset>(
+            begin: Offset(0, fromAbove ? -0.3 : 0.3),
+            end: Offset.zero,
+          ).animate(curved),
+          child: _row(item),
+        ),
+      ),
+    );
+  }
 
-    items.insert(newIndex, moved);
+  /// Item a sair da posição antiga: encolhe, desvanece e escorrega na direção
+  /// para onde vai.
+  Widget _leavingRow(ShoppinglistItem item, Animation<double> animation) {
+    final curved = CurvedAnimation(parent: animation, curve: Motion.standard);
+    final movingDown = item.isDone;
+
+    return SizeTransition(
+      sizeFactor: curved,
+      child: FadeTransition(
+        opacity: curved,
+        child: SlideTransition(
+          // A animação corre de 1 para 0, por isso `begin` é o destino.
+          position: Tween<Offset>(
+            begin: Offset(0, movingDown ? 0.3 : -0.3),
+            end: Offset.zero,
+          ).animate(curved),
+          child: IgnorePointer(child: _row(item)),
+        ),
+      ),
+    );
+  }
+
+  Widget _row(ShoppinglistItem item) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: Spacing.sm),
+      child: Dismissible(
+        key: ValueKey(item.uuid),
+        direction: DismissDirection.endToStart,
+        onDismissed: (_) {
+          HapticFeedback.mediumImpact();
+          _dismissItem(item);
+        },
+        background: const _DeleteBackground(),
+        child: ShoppingItemTile(
+          item: item,
+          onToggleDone: (done) => _toggleDone(item, done),
+          onChangeQty: (qty) => _changeQty(item, qty),
+          onEdit: () => _openForm(item: item),
+        ),
+      ),
+    );
+  }
+}
+
+/// Esqueletos enquanto os itens vêm da base de dados.
+class _LoadingItems extends StatelessWidget {
+  const _LoadingItems();
+
+  @override
+  Widget build(BuildContext context) {
+    return SliverPadding(
+      padding: const EdgeInsets.symmetric(horizontal: Spacing.lg),
+      sliver: SliverList.separated(
+        itemCount: 4,
+        separatorBuilder: (_, __) => const SizedBox(height: Spacing.sm),
+        itemBuilder: (_, __) => const AppSkeleton(height: 72),
+      ),
+    );
   }
 }
 
@@ -255,8 +386,6 @@ class _Summary extends StatelessWidget {
         Spacing.lg,
       ),
       child: Card(
-        // Superfície neutra: este cartão ocupa o topo do ecrã inteiro, e em
-        // `primaryContainer` amarelado dominava a vista.
         color: Theme.of(context).colorScheme.surfaceContainer,
         child: Padding(
           padding: Spacing.card,
@@ -273,7 +402,7 @@ class _Summary extends StatelessWidget {
   }
 }
 
-/// Fundo vermelho revelado ao arrastar um item para a esquerda.
+/// Fundo revelado ao arrastar um item para a esquerda.
 class _DeleteBackground extends StatelessWidget {
   const _DeleteBackground();
 

@@ -227,6 +227,9 @@ Apagar uma lista ou um item é definitivo. Já existe confirmação para listas,
 um item arrastado desaparece sem rede de segurança. Um `SnackBar` com *Anular*,
 a segurar a remoção durante alguns segundos, é trabalho de uma tarde.
 
+Ficou mais barato desde que a lista passou a `SliverAnimatedList`: repor o item
+é um `insertItem` no índice que `ItemOrdering.targetIndex` devolver.
+
 ### 3.9 Exportar
 
 Partilhar uma lista com quem não tem a app: gerar texto simples para WhatsApp,
@@ -260,8 +263,8 @@ o que está acima pelo mesmo tempo:
 
 - Unificar a gestão de estado (GetX + Provider + get_it em simultâneo).
 - Redesenhar os ecrãs de autenticação, onboarding e drawer.
-- Testes de widget — não existe nenhum. Dos 24 testes atuais, 8 são do tema
-  (passam) e 13 falham por dependerem de Firebase e de rede reais. Essas falhas
-  são anteriores à refatoração de UI.
+- Testes de widget — não existe nenhum. Dos 31 testes atuais, 18 passam (tema e
+  ordenação de itens) e 13 falham por dependerem de Firebase e de rede reais.
+  Essas falhas são anteriores à refatoração de UI.
 - iOS não tem *schemes* correspondentes aos flavors `dev`/`prod` do Android:
   só existe `Runner.xcscheme`.
