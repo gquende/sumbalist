@@ -25,11 +25,15 @@ class ItemFormSheet extends StatefulWidget {
     super.key,
     required this.controller,
     required this.listUuid,
+    required this.currencyCode,
     this.item,
   });
 
   final ShoppingListController controller;
   final String listUuid;
+
+  /// Moeda da lista, para o campo de preço aparecer na moeda certa.
+  final String? currencyCode;
 
   /// `null` para criar um item novo; caso contrário, o item a editar.
   final ShoppinglistItem? item;
@@ -43,6 +47,7 @@ class ItemFormSheet extends StatefulWidget {
     BuildContext context, {
     required ShoppingListController controller,
     required String listUuid,
+    required String? currencyCode,
     ShoppinglistItem? item,
   }) {
     return showModalBottomSheet<ShoppinglistItem>(
@@ -52,6 +57,7 @@ class ItemFormSheet extends StatefulWidget {
       builder: (_) => ItemFormSheet(
         controller: controller,
         listUuid: listUuid,
+        currencyCode: currencyCode,
         item: item,
       ),
     );
@@ -64,7 +70,7 @@ class ItemFormSheet extends StatefulWidget {
 class _ItemFormSheetState extends State<ItemFormSheet> with LocalizationMixin {
   late final CurrencyTextInputFormatter _currencyFormatter =
       CurrencyTextInputFormatter.currency(
-    symbol: AppCurrencyFormat.formater.value.symbol,
+    symbol: AppCurrencyFormat.symbolFor(widget.currencyCode),
   );
 
   ShoppingListController get _controller => widget.controller;

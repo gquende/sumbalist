@@ -192,6 +192,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
       context,
       controller: controller,
       listUuid: widget.shoppingList.uuid,
+      currencyCode: controller.shoppingList.value.currencyCode,
       item: item,
     );
 
@@ -338,6 +339,7 @@ class _ShoplistDetailsState extends State<ShoplistDetails>
         background: const _DeleteBackground(),
         child: ShoppingItemTile(
           item: item,
+          currencyCode: controller.shoppingList.value.currencyCode,
           onToggleDone: (done) => _toggleDone(item, done),
           onChangeQty: (qty) => _changeQty(item, qty),
           onEdit: () => _openForm(item: item),

@@ -1,3 +1,4 @@
+import 'package:currency_picker/currency_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:get_it/get_it.dart';
@@ -11,6 +12,7 @@ import '../../../core/design/design_tokens.dart';
 import '../../../mocks/shopping_list_category_mock.dart';
 import '../../../models/shopping_list.dart';
 import '../../../models/shopping_list_categories.dart';
+import '../../../utils/currency.dart';
 import '../shopping_list_details.dart';
 
 /// Abre o formulário de criar (ou editar) uma lista de compras.
@@ -55,6 +57,11 @@ class _ShoplistFormState extends State<_ShoplistForm> {
 
   late int _categoryIndex = int.tryParse(widget.item?.categoryUUID ?? '0') ?? 0;
 
+  /// Moeda desta lista. `null` significa herdar a do utilizador — é como todas
+  /// as listas nascem, e a lista só deixa de acompanhar a predefinição quando
+  /// alguém escolhe aqui uma moeda.
+  late String? _currencyCode = widget.item?.currencyCode;
+
   bool get _isEditing => widget.item != null;
 
   @override
@@ -87,6 +94,7 @@ class _ShoplistFormState extends State<_ShoplistForm> {
         statusUUID: 'not completed',
         name: name,
         total: 0,
+        currencyCode: _currencyCode,
         items: [],
       );
 
@@ -103,6 +111,7 @@ class _ShoplistFormState extends State<_ShoplistForm> {
     } else {
       existing.name = name;
       existing.categoryUUID = "$_categoryIndex";
+      existing.currencyCode = _currencyCode;
 
       await widget.controller.updateShoppinglist(existing);
       if (mounted) Navigator.of(context).pop();
@@ -171,6 +180,11 @@ class _ShoplistFormState extends State<_ShoplistForm> {
                 ],
               ),
               const SizedBox(height: Spacing.xl),
+              _CurrencyField(
+                code: _currencyCode,
+                onChanged: (code) => setState(() => _currencyCode = code),
+              ),
+              const SizedBox(height: Spacing.xl),
               FilledButton(
                 onPressed: _submit,
                 child: Text(_isEditing ? strings.update : strings.add),
@@ -235,6 +249,91 @@ class CategoryOption extends StatelessWidget {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+}
+
+/// Escolha da moeda de uma lista.
+///
+/// Enquanto nada for escolhido, mostra a moeda predefinida do utilizador
+/// marcada como tal: é importante que se perceba que a lista a está a *herdar*
+/// e não a ter fixado, porque mudar a predefinição também muda esta lista.
+/// Depois de escolhida, aparece um botão para voltar a herdar.
+class _CurrencyField extends StatelessWidget {
+  const _CurrencyField({required this.code, required this.onChanged});
+
+  /// `null` quando a lista herda a moeda do utilizador.
+  final String? code;
+
+  final ValueChanged<String?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final strings = DI.get<AppLocale>().strings;
+
+    final inherits = code == null;
+    final shown = code ?? AppCurrencyFormat.currency?.code ?? '—';
+
+    return InkWell(
+      onTap: () => showCurrencyPicker(
+        context: context,
+        showFlag: true,
+        showSearchField: true,
+        showCurrencyName: true,
+        showCurrencyCode: true,
+        searchHint: strings.search,
+        onSelect: (Currency currency) => onChanged(currency.code),
+      ),
+      borderRadius: Radii.medium,
+      child: Container(
+        padding: const EdgeInsets.symmetric(
+          horizontal: Spacing.lg,
+          vertical: Spacing.md,
+        ),
+        decoration: BoxDecoration(
+          borderRadius: Radii.medium,
+          color: theme.colorScheme.surfaceContainerHigh,
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.payments_outlined,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: Spacing.md),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    strings.currency,
+                    style: theme.textTheme.labelSmall?.copyWith(
+                      color: theme.colorScheme.onSurfaceVariant,
+                    ),
+                  ),
+                  Text(
+                    inherits ? '$shown · ${strings.defaultCurrency}' : shown,
+                    style: theme.textTheme.titleMedium,
+                  ),
+                ],
+              ),
+            ),
+            if (inherits)
+              Icon(
+                Icons.chevron_right_rounded,
+                color: theme.colorScheme.onSurfaceVariant,
+              )
+            else
+              IconButton(
+                icon: const Icon(Icons.backspace_outlined, size: 18),
+                tooltip: strings.useDefaultCurrency,
+                onPressed: () => onChanged(null),
+              ),
+          ],
         ),
       ),
     );

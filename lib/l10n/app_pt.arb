@@ -71,5 +71,8 @@
   "fillAllFields": "Preencha todos os campos",
   "newList": "Nova lista",
   "decreaseQuantity": "Diminuir quantidade",
-  "increaseQuantity": "Aumentar quantidade"
+  "increaseQuantity": "Aumentar quantidade",
+  "defaultCurrency": "Predefinida",
+  "useDefaultCurrency": "Usar a predefinida",
+  "search": "Procurar"
 }

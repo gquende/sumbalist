@@ -12,22 +12,58 @@ class AppCurrencyFormat {
     "EUR": "eur",
     "REAL": "real"
   };
+
+  /// Moeda predefinida do utilizador. É a que vale para qualquer lista que não
+  /// tenha escolhido uma.
   static var formater = CurrencyFormat.usd.obs;
 
   static Currency? currency;
 
-  static updateCurrency(Currency cu) async {
+  /// Formatos já resolvidos a partir do código, para não reconstruir a tabela
+  /// de moedas do `currency_picker` a cada célula de uma lista.
+  static final Map<String, CurrencyFormat> _byCode = {};
+
+  static Future<void> updateCurrency(Currency cu) async {
     currency = cu;
-    formater.value = CurrencyFormat(
+    formater.value = formatOf(cu);
+
+    var shared = await SharedPreferences.getInstance();
+    shared.setString("currency", jsonEncode(cu));
+  }
+
+  /// Converte uma moeda do `currency_picker` no formato do `currency_formatter`.
+  static CurrencyFormat formatOf(Currency cu) {
+    return CurrencyFormat(
       symbol: cu.symbol,
       symbolSide: cu.symbolOnLeft ? SymbolSide.left : SymbolSide.right,
+      // O kwanza vem da tabela com separadores que não são os usados em
+      // Angola; esta exceção já existia antes desta funcionalidade.
       thousandSeparator: cu.code == "AOA" ? '.' : cu.thousandsSeparator,
       decimalSeparator: cu.code == "AOA" ? ',' : cu.decimalSeparator,
       symbolSeparator: cu.spaceBetweenAmountAndSymbol ? ' ' : '',
     );
+  }
 
-    var shared = await SharedPreferences.getInstance();
-    shared.setString("currency", jsonEncode(cu));
+  /// Formato de um código ISO, ou `null` se o código não existir na tabela.
+  static CurrencyFormat? formatOfCode(String code) {
+    final cached = _byCode[code];
+    if (cached != null) return cached;
+
+    final found = CurrencyService().findByCode(code);
+    if (found == null) return null;
+
+    return _byCode[code] = formatOf(found);
+  }
+
+  /// Resolve o formato a usar para uma lista.
+  ///
+  /// `null` — ou um código que não exista — cai na moeda do utilizador. Essa
+  /// queda é deliberada: uma lista sincronizada de outro dispositivo pode
+  /// trazer um código que esta versão da tabela não conhece, e mais vale
+  /// mostrar o valor na moeda predefinida do que não mostrar nada.
+  static CurrencyFormat resolve(String? currencyCode) {
+    if (currencyCode == null) return formater.value;
+    return formatOfCode(currencyCode) ?? formater.value;
   }
 
   static Future init() async {
@@ -87,7 +123,19 @@ class AppCurrencyFormat {
   //   }
   // }
 
+  /// Formata na moeda predefinida do utilizador.
   static String format(double value) {
     return CurrencyFormatter.format(value, formater.value);
   }
+
+  /// Formata na moeda de uma lista.
+  ///
+  /// É esta que os ecrãs de listas devem usar: passa-se sempre
+  /// `list.currencyCode`, e a herança da moeda do utilizador resolve-se aqui.
+  static String formatFor(double value, String? currencyCode) {
+    return CurrencyFormatter.format(value, resolve(currencyCode));
+  }
+
+  /// Símbolo da moeda de uma lista, para o campo de preço do formulário.
+  static String symbolFor(String? currencyCode) => resolve(currencyCode).symbol;
 }

@@ -84,17 +84,32 @@ class ShoppingListRepository {
   }
 
   //Update a Shoppinglist
+  ///
+  /// Passou a usar `update` com parâmetros em vez de uma string de SQL montada
+  /// por interpolação. Duas razões, ambas anteriores a esta funcionalidade:
+  ///
+  /// * O nome da lista ia para dentro de aspas simples sem escape, por isso uma
+  ///   lista chamada `Compras d'avó` rebentava a instrução.
+  /// * A instrução corria por `rawQuery`, que devolve linhas e não o número de
+  ///   registos afetados — a comparação `result == 1` era sempre falsa, e o
+  ///   método reportava insucesso mesmo quando gravava.
   Future<bool> update(ShoppingList item) async {
     try {
-      var query =
-          "UPDATE $_table SET  name = '${item.name}', categoryUUID ='${item.categoryUUID}' , statusUUID ='${item.statusUUID}', total = ${item.total}, updated_at = '${item.updated_at}' WHERE uuid='${item.uuid}'";
+      final affected = await this._appDatabase.db?.update(
+            _table,
+            {
+              "name": item.name,
+              "categoryUUID": item.categoryUUID,
+              "statusUUID": item.statusUUID,
+              "total": item.total,
+              "currencyCode": item.currencyCode,
+              "updated_at": item.updated_at,
+            },
+            where: "uuid = ?",
+            whereArgs: [item.uuid],
+          );
 
-      devLog("STATTUS itme:: ${item.statusUUID}");
-      var result = await this._appDatabase.db?.rawQuery(query);
-
-      if (result != null) {
-        return result == 1;
-      }
+      return (affected ?? 0) > 0;
     } catch (error, stackTrace) {
       devLog("Error");
       errorLog(error, stackTrace);

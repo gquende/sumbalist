@@ -433,6 +433,24 @@ abstract class AppLocalizations {
   /// In en, this message translates to:
   /// **'Increase quantity'**
   String get increaseQuantity;
+
+  /// No description provided for @defaultCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Default'**
+  String get defaultCurrency;
+
+  /// No description provided for @useDefaultCurrency.
+  ///
+  /// In en, this message translates to:
+  /// **'Use default'**
+  String get useDefaultCurrency;
+
+  /// No description provided for @search.
+  ///
+  /// In en, this message translates to:
+  /// **'Search'**
+  String get search;
 }
 
 class _AppLocalizationsDelegate

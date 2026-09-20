@@ -18,12 +18,19 @@ class ShoppingItemTile extends StatelessWidget {
   const ShoppingItemTile({
     super.key,
     required this.item,
+    required this.currencyCode,
     required this.onToggleDone,
     required this.onChangeQty,
     required this.onEdit,
   });
 
   final ShoppinglistItem item;
+
+  /// Moeda da lista a que este item pertence. `null` herda a do utilizador.
+  ///
+  /// Vem de fora porque o item não conhece a lista: só o ecrã sabe em que
+  /// moeda os valores desta lista devem aparecer.
+  final String? currencyCode;
 
   /// Chamado quando o item é marcado/desmarcado como comprado.
   final ValueChanged<bool> onToggleDone;
@@ -97,7 +104,8 @@ class ShoppingItemTile extends StatelessWidget {
                       ),
                     const SizedBox(height: Spacing.xs),
                     Text(
-                      AppCurrencyFormat.format(item.totalPrice()),
+                      AppCurrencyFormat.formatFor(
+                          item.totalPrice(), currencyCode),
                       style: theme.textTheme.labelMedium?.merge(
                         TextStyle(
                           color: theme.colorScheme.onSurfaceVariant,
