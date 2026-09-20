@@ -6,6 +6,7 @@ import 'package:sumbalist/mocks/shopping_list_category_mock.dart';
 import '../../../controllers/currency_controller.dart';
 import '../../../controllers/shopping_list_controller.dart';
 import '../../../core/configs/app_locale.dart';
+import '../../../core/design/app_palette.dart';
 import '../../../core/design/design_tokens.dart';
 import '../../../core/di/dependecy_injection.dart';
 import '../../../mixins/localization_mixin.dart';
@@ -113,12 +114,12 @@ class _Header extends StatelessWidget {
             height: Sizes.categoryIcon,
             decoration: BoxDecoration(
               borderRadius: Radii.medium,
-              color: theme.colorScheme.primaryContainer,
+              color: context.semantic.accentSoft,
             ),
             child: Icon(
               iconCategory[list.categoryUUID] ?? Icons.category,
               size: 24,
-              color: theme.colorScheme.onPrimaryContainer,
+              color: context.semantic.onAccentSoft,
             ),
           ),
         ),

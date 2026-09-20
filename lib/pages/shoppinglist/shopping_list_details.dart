@@ -6,6 +6,7 @@ import 'package:sumbalist/mixins/localization_mixin.dart';
 
 import '../../controllers/shopping_list_controller.dart';
 import '../../core/configs/app_locale.dart';
+import '../../core/design/app_palette.dart';
 import '../../core/design/design_tokens.dart';
 import '../../core/di/dependecy_injection.dart';
 import '../../mocks/shopping_list_category_mock.dart';
@@ -215,12 +216,12 @@ class _Title extends StatelessWidget {
             height: 36,
             decoration: BoxDecoration(
               borderRadius: Radii.small,
-              color: theme.colorScheme.primaryContainer,
+              color: context.semantic.accentSoft,
             ),
             child: Icon(
               iconCategory[list.categoryUUID] ?? Icons.category,
               size: 20,
-              color: theme.colorScheme.onPrimaryContainer,
+              color: context.semantic.onAccentSoft,
             ),
           ),
         ),
@@ -254,7 +255,9 @@ class _Summary extends StatelessWidget {
         Spacing.lg,
       ),
       child: Card(
-        color: Theme.of(context).colorScheme.primaryContainer,
+        // Superfície neutra: este cartão ocupa o topo do ecrã inteiro, e em
+        // `primaryContainer` amarelado dominava a vista.
+        color: Theme.of(context).colorScheme.surfaceContainer,
         child: Padding(
           padding: Spacing.card,
           child: Column(

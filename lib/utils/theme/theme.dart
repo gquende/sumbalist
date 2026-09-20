@@ -82,8 +82,13 @@ class AppTheme {
       ),
 
       cardTheme: CardThemeData(
-        elevation: 0,
-        color: scheme.surfaceContainerLow,
+        // Sobre um fundo branco, um cartão quase branco sem sombra não se lê.
+        // A elevação substitui a `boxShadow` que era desenhada à mão em cada
+        // cartão.
+        elevation: isDark ? 0 : 1,
+        shadowColor: Colors.black26,
+        color:
+            isDark ? scheme.surfaceContainerLow : scheme.surfaceContainerLowest,
         surfaceTintColor: Colors.transparent,
         margin: EdgeInsets.zero,
         shape: const RoundedRectangleBorder(borderRadius: Radii.large),
