@@ -51,3 +51,4 @@ app.*.map.json
 # Gradle problem reports
 /android/build/
 marketing/
+docs/
